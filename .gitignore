@@ -1,2 +1,8 @@
 /target
 Cargo.lock
+
+identity.db
+message.db
+
+Private.key
+Public.key

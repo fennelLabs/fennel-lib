@@ -11,19 +11,19 @@ use std::sync::Mutex;
 
 #[derive(Encode, Decode)]
 pub struct Identity {
-    pub id: [u8; 32],
+    pub id: [u8; 4],
     pub fingerprint: [u8; 32],
     pub public_key: [u8; 1038],
 }
 
 #[derive(Encode, Decode)]
 pub struct Message {
-    pub sender_id: [u8; 32],
+    pub sender_id: [u8; 4],
     pub fingerprint: [u8; 32],
     pub message: [u8; 1024],
     pub signature: [u8; 1024],
     pub public_key: [u8; 1038],
-    pub recipient_id: [u8; 32],
+    pub recipient_id: [u8; 4],
 }
 
 pub fn get_message_database_handle() -> Arc<Mutex<DB>> {
@@ -52,7 +52,7 @@ pub fn retrieve_messages(db_lock: Arc<Mutex<DB>>, identity: Identity) -> Vec<Mes
     let db = db_lock.lock().unwrap();
     let mut message_list: Vec<Message> = Vec::new();
     for (key, value) in db.iterator(IteratorMode::Start) {
-        if key[0..32] == identity.id {
+        if key[0..4] == identity.id {
             message_list.push(Decode::decode(&mut &(*value)).unwrap());
         }
     }
@@ -65,7 +65,7 @@ pub fn insert_identity(db_lock: Arc<Mutex<DB>>, identity: &Identity) -> Result<(
     Ok(())
 }
 
-pub fn retrieve_identity(db_lock: Arc<Mutex<DB>>, id: [u8; 32]) -> Identity {
+pub fn retrieve_identity(db_lock: Arc<Mutex<DB>>, id: [u8; 4]) -> Identity {
     let db = db_lock.lock().unwrap();
     let value = db.get(id).expect("failed to retrieve identity").unwrap();
     Decode::decode(&mut &*value).unwrap()

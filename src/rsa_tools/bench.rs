@@ -1,3 +1,4 @@
+#![feature(test)]
 extern crate test;
 
 use crate::rsa_tools::*;
