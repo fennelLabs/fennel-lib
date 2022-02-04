@@ -47,6 +47,14 @@ pub fn insert_message(db_lock: Arc<Mutex<DB>>, message: Message) -> Result<(), E
     Ok(())
 }
 
+pub fn insert_message_list(messages_db: Arc<Mutex<DB>>, messages_list: Vec<Message>) -> Result<(), Error> {
+    for message in messages_list {
+        let messages_db_clone = Arc::clone(&messages_db);
+        insert_message(messages_db_clone, message).unwrap();
+    }
+    Ok(())
+}
+
 /// Retrieve all messages for id. This is INCREDIBLY inefficient. We'll need to retool this.
 pub fn retrieve_messages(db_lock: Arc<Mutex<DB>>, identity: Identity) -> Vec<Message> {
     let db = db_lock.lock().unwrap();
