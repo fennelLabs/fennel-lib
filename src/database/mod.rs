@@ -47,7 +47,10 @@ pub fn insert_message(db_lock: Arc<Mutex<DB>>, message: Message) -> Result<(), E
     Ok(())
 }
 
-pub fn insert_message_list(messages_db: Arc<Mutex<DB>>, messages_list: Vec<Message>) -> Result<(), Error> {
+pub fn insert_message_list(
+    messages_db: Arc<Mutex<DB>>,
+    messages_list: Vec<Message>,
+) -> Result<(), Error> {
     for message in messages_list {
         let messages_db_clone = Arc::clone(&messages_db);
         insert_message(messages_db_clone, message).unwrap();
