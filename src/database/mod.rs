@@ -12,7 +12,7 @@ use std::sync::Mutex;
 #[derive(Encode, Decode)]
 pub struct Identity {
     pub id: [u8; 4],
-    pub fingerprint: [u8; 32],
+    pub fingerprint: [u8; 16],
     pub public_key: [u8; 1038],
 }
 

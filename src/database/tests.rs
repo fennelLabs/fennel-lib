@@ -9,7 +9,7 @@ fn test_insert_and_retrieve_message() {
         db,
         Message {
             sender_id: [0; 4],
-            fingerprint: [0; 32],
+            fingerprint: [0; 16],
             message: [0; 1024],
             signature: [0; 1024],
             public_key: [0; 1038],
@@ -34,7 +34,7 @@ fn test_insert_and_retrieve_identity() {
     let db_2 = Arc::clone(&db);
     let identity: Identity = Identity {
         id: [0; 4],
-        fingerprint: [0; 32],
+        fingerprint: [0; 16],
         public_key: [0; 1038],
     };
     insert_identity(db, &identity).expect("failed identity insertion");
