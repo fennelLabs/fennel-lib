@@ -4,11 +4,13 @@ pub mod aes_tools;
 pub mod database;
 pub mod rsa_tools;
 
+use codec::Decode;
+
 pub use crate::aes_tools::*;
 pub use crate::database::*;
 pub use crate::rsa_tools::*;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Encode, Decode)]
 pub struct FennelServerPacket {
     pub command: [u8; 1],
     pub identity: [u8; 4],
