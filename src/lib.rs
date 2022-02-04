@@ -4,7 +4,7 @@ pub mod aes_tools;
 pub mod database;
 pub mod rsa_tools;
 
-use codec::{Encode, Decode};
+use codec::{Decode, Encode};
 
 pub use crate::aes_tools::*;
 pub use crate::database::*;
