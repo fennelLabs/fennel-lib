@@ -1,11 +1,11 @@
 #![feature(test)]
 
-mod aes_tools;
-mod database;
-mod rsa_tools;
+pub mod aes_tools;
+pub mod database;
+pub mod rsa_tools;
 
 #[derive(Copy, Clone)]
-struct FennelServerPacket {
+pub struct FennelServerPacket {
     command: [u8; 1],
     identity: [u8; 32],
     fingerprint: [u8; 32],
