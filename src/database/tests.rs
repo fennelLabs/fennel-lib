@@ -21,7 +21,7 @@ fn test_insert_and_retrieve_message() {
         db_2,
         Identity {
             id: [0; 4],
-            fingerprint: [0; 32],
+            fingerprint: [0; 16],
             public_key: [0; 1038],
         },
     );
