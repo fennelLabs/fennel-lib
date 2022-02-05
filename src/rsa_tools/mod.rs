@@ -42,7 +42,7 @@ pub fn encrypt(public_key: RsaPublicKey, plaintext: Vec<u8>) -> Vec<u8> {
 
 /// Given a private key, decrypt ciphertext produced with its related public key.
 #[allow(unused)]
-pub fn decrypt(private_key: RsaPrivateKey, ciphertext: Vec<u8>) -> Vec<u8> {
+pub fn decrypt(private_key: &RsaPrivateKey, ciphertext: Vec<u8>) -> Vec<u8> {
     let padding = PaddingScheme::new_pkcs1v15_encrypt();
     private_key
         .decrypt(padding, &ciphertext)

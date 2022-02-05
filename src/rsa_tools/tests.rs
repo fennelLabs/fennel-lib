@@ -58,7 +58,7 @@ fn test_decrypt() {
     let test = b"this is test text";
     let (private_key, public_key) = generate_keypair(2048);
     let result = encrypt(public_key, test.to_vec());
-    let decrypt_result = decrypt(private_key, result);
+    let decrypt_result = decrypt(&private_key, result);
     assert_eq!(test.to_vec(), decrypt_result);
 }
 

@@ -39,7 +39,7 @@ fn bench_decrypt(b: &mut Bencher) {
     let (private_key, public_key) = generate_keypair(2048);
     let result = encrypt(public_key, test.to_vec());
     b.iter(|| {
-        decrypt(private_key.clone(), result.clone());
+        decrypt(&private_key.clone(), result.clone());
     });
 }
 
