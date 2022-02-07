@@ -76,17 +76,19 @@ pub fn encrypt<T: AsRef<str>>(key: &AesKey, iv: &mut [u8], plaintext: T) -> Vec<
 }
 
 pub fn decrypt<T: AsRef<Vec<u8>>>(key: &AesKey, iv: &mut [u8], ciphertext: T) -> Vec<u8> {
-    let ciphertext_slice = ciphertext.as_ref().as_slice();
+    /* let ciphertext_slice = ciphertext.as_ref().as_slice();
     let pos = ciphertext_slice.len();
     let length = calculate_resize(pos);
 
     let mut buffer = vec![0; length];
-    buffer[..pos].copy_from_slice(ciphertext_slice);
+    buffer[..pos].copy_from_slice(ciphertext_slice); */
 
     //let (length, buffer) = normalize_input(ciphertext.as_ref().to_owned());
 
+    let length = ciphertext.as_ref().len();
+
     let mut plaintext = vec![0; length];
-    aes_ige(&buffer, &mut plaintext, &key, iv, Mode::Decrypt);
+    aes_ige(ciphertext.as_ref(), &mut plaintext, &key, iv, Mode::Decrypt);
     plaintext
 }
 
