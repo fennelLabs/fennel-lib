@@ -15,7 +15,7 @@ pub struct FennelServerPacket {
     pub command: [u8; 1],
     pub identity: [u8; 4],
     pub fingerprint: [u8; 16],
-    pub message: [u8; 1024],
+    pub message: [u8; 2050],
     pub signature: [u8; 1024],
     pub public_key: [u8; 1038],
     pub recipient: [u8; 4],
