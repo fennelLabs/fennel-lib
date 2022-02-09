@@ -21,7 +21,7 @@ pub struct Message {
     pub sender_id: [u8; 4],
     pub fingerprint: [u8; 16],
     pub message: [u8; 2050],
-    pub signature: [u8; 1024],
+    pub signature: [u8; 2050],
     pub public_key: [u8; 1038],
     pub recipient_id: [u8; 4],
 }

@@ -11,7 +11,7 @@ fn test_insert_and_retrieve_message() {
             sender_id: [0; 4],
             fingerprint: [0; 16],
             message: [0; 2050],
-            signature: [0; 1024],
+            signature: [0; 2050],
             public_key: [0; 1038],
             recipient_id: [0; 4],
         },
