@@ -17,6 +17,15 @@ fn test_padding_returns_original_vector() {
 }
 
 #[test]
+fn test_padding_returns_original_vector_when_multiple_of_16() {
+    let buffer = vec![45; 32];
+    let padded_buffer = padding::pad(&buffer);
+    let buffer_returned = padding::pad_remove(&padded_buffer);
+
+    assert_eq!(buffer, buffer_returned);
+}
+
+#[test]
 fn test_key_gen_without_panic() {
     generate_keys();
 }
