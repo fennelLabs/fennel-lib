@@ -1,19 +1,19 @@
 use crate::aes_tools::*;
 
 #[test]
-fn test_key_gen() {
+fn test_key_gen_without_panic() {
     generate_keys();
 }
 
 #[test]
-fn test_encrypt() {
+fn test_encrypt_without_panic() {
     let message = "
     {
         \"id\": 1,
         \"name\": \"xyzab\"
     }";
 
-    let mut cipher: AESCipher = AESCipher::new();
+    let cipher: AESCipher = AESCipher::new();
     cipher.encrypt(message);
     ()
 }
@@ -27,7 +27,7 @@ fn test_message_is_same() {
     }"
     .to_string();
 
-    let mut cipher: AESCipher = AESCipher::new();
+    let cipher: AESCipher = AESCipher::new();
 
     let ciphertext: Vec<u8> = cipher.encrypt(&message);
     let plaintext = cipher.decrypt(ciphertext);
@@ -38,5 +38,5 @@ fn test_message_is_same() {
 
     //let decrypted = decrypt(encrypted);
 
-    assert_eq!(message.trim(), message_decoded.trim());
+    assert_eq!(message.trim_end(), message_decoded.trim_end());
 }
