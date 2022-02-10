@@ -35,3 +35,10 @@ fn test_message_is_same() {
 
     assert_eq!(message.trim_end(), message_decoded.trim_end());
 }
+
+#[test]
+fn test_padding_creates_multiple_16() {
+    let buffer = vec![0; 13];
+    let padded_buffer = padding::pad(&buffer, None);
+    assert_eq!(16, padded_buffer.len());
+}
