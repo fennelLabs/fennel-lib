@@ -24,8 +24,7 @@ fn test_message_is_same() {
     {
         \"id\": 1,
         \"name\": \"xyzab\"
-    }"
-    .to_string();
+    }";
 
     let cipher: AESCipher = AESCipher::new();
 
@@ -33,10 +32,6 @@ fn test_message_is_same() {
     let plaintext = cipher.decrypt(ciphertext);
 
     let message_decoded = String::from_utf8(plaintext).expect("Found invalid UTF-8");
-
-    println!("{:?}", &message_decoded);
-
-    //let decrypted = decrypt(encrypted);
 
     assert_eq!(message.trim_end(), message_decoded.trim_end());
 }
