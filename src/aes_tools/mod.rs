@@ -72,7 +72,7 @@ pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Ve
     let length = calculate_resize(pos);
 
     let mut buffer = plaintext_slice.to_vec();
-    buffer.resize(length, 0u8);
+    buffer.resize(length, 32u8);
 
     //let (length, buffer) = normalize_input(plaintext.as_ref().as_bytes().to_vec());
     let mut ciphertext = vec![0u8; length];

@@ -38,5 +38,5 @@ fn test_message_is_same() {
 
     //let decrypted = decrypt(encrypted);
 
-    assert_eq!(message, message_decoded);
+    assert_eq!(message.trim(), message_decoded.trim());
 }
