@@ -1,6 +1,22 @@
 use crate::aes_tools::*;
 
 #[test]
+fn test_padding_creates_multiple_16() {
+    let buffer = vec![0; 13];
+    let padded_buffer = padding::pad(&buffer);
+    assert_eq!(16, padded_buffer.len());
+}
+
+#[test]
+fn test_padding_returns_original_vector() {
+    let buffer = vec![0; 13];
+    let padded_buffer = padding::pad(&buffer);
+    let buffer_returned = padding::pad_remove(&padded_buffer);
+
+    assert_eq!(buffer, buffer_returned);
+}
+
+#[test]
 fn test_key_gen_without_panic() {
     generate_keys();
 }
@@ -33,11 +49,4 @@ fn test_message_is_same() {
     let ciphertext: Vec<u8> = cipher.encrypt(&message);
     let plaintext = cipher.decrypt(ciphertext);
     assert_eq!(message, plaintext);
-}
-
-#[test]
-fn test_padding_creates_multiple_16() {
-    let buffer = vec![0; 13];
-    let padded_buffer = padding::pad(&buffer, None);
-    assert_eq!(16, padded_buffer.len());
 }

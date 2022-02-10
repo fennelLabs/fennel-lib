@@ -9,7 +9,7 @@ mod tests;
 
 mod padding;
 
-use padding::pad;
+use padding::{pad, pad_remove};
 
 struct AESCipher {
     encrypt_key: AesKey,
@@ -52,21 +52,18 @@ pub fn generate_keys() -> (AesKey, AesKey) {
 }
 
 pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, iv: Vec<u8>, plaintext: T) -> Vec<u8> {
-    let buffer = pad(plaintext.as_ref().as_bytes(), None);
+    let buffer = pad(plaintext.as_ref().as_bytes());
     aes_crypt(key, iv, buffer, Mode::Encrypt)
 }
 
 pub fn aes_decrypt(key: &AesKey, iv: Vec<u8>, ciphertext: Vec<u8>) -> String {
     let plaintext = aes_crypt(key, iv, ciphertext, Mode::Decrypt);
-    String::from_utf8(plaintext)
-        .expect("invalid utf8 byte array")
-        .trim_end()
-        .to_owned()
+    String::from_utf8(pad_remove(&plaintext).into()).expect("invalid utf8 byte array")
 }
 
 fn aes_crypt(key: &AesKey, mut iv: Vec<u8>, input: Vec<u8>, mode: Mode) -> Vec<u8> {
     let mut output = vec![0u8; input.len()];
-    aes_ige(&input, &mut output, &key, &mut iv, mode);
+    aes_ige(&input, &mut output, key, &mut iv, mode);
     output
 }
 
