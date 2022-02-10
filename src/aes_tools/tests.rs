@@ -2,7 +2,7 @@ use crate::aes_tools::*;
 
 #[test]
 fn test_key_gen() {
-    generate_key();
+    generate_keys();
 }
 
 #[test]
