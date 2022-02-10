@@ -29,12 +29,17 @@ fn is_valid_size(data: &[u8]) -> bool {
 pub fn pad_remove(data: &[u8]) -> &[u8] {
     let length = data.len();
     let number_of_bytes_added: usize = data[length - 1].into();
+
+    if number_of_bytes_added > (PAD_BASE - 1) || number_of_bytes_added > length {
+        return data;
+    }
+
     let pos_of_original_vector = match length.checked_sub(number_of_bytes_added) {
         Some(x) => x,
         None => return data,
     };
 
-    if pos_of_original_vector > 0 || pos_of_original_vector < length {
+    if pos_of_original_vector > 0 && pos_of_original_vector < length {
         &data[0..(pos_of_original_vector)]
     } else {
         data
