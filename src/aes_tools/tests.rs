@@ -13,8 +13,8 @@ fn test_encrypt() {
         \"name\": \"xyzab\"
     }";
 
-    encrypt_gen_key_iv(message);
-
+    let mut cipher: AESCipher = AESCipher::new();
+    cipher.encrypt(message);
     ()
 }
 

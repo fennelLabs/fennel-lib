@@ -22,21 +22,19 @@ impl AESCipher {
     } */
 
     fn new() -> AESCipher {
-        let keys = generate_key();
+        let keys = generate_keys();
 
         AESCipher {
             encrypt_key: keys.0,
             decrypt_key: keys.1,
-            iv: generate_buffer_32()
-                .try_into()
-                .expect("failed to convert into Vec"),
+            iv: generate_buffer(32),
         }
     }
 }
 
 trait Cipher {
     fn encrypt<T: AsRef<str>>(&self, plaintext: T) -> Vec<u8>;
-    fn decrypt<T: AsRef<Vec<u8>>>(&self, ciphertext: T) -> Vec<u8>;
+    fn decrypt(&self, ciphertext: Vec<u8>) -> Vec<u8>;
 }
 
 impl Cipher for AESCipher {
@@ -44,26 +42,19 @@ impl Cipher for AESCipher {
         encrypt(&self.encrypt_key, self.iv.clone(), plaintext)
     }
 
-    fn decrypt<T: AsRef<Vec<u8>>>(&self, ciphertext: T) -> Vec<u8> {
+    fn decrypt(&self, ciphertext: Vec<u8>) -> Vec<u8> {
         decrypt(&self.decrypt_key, self.iv.clone(), ciphertext)
     }
 }
 
-pub fn generate_key() -> (AesKey, AesKey) {
-    let buf = generate_buffer_16(); // 128, 192, 256 bits or 16, 24, 32 bytes
+pub fn generate_keys() -> (AesKey, AesKey) {
+    let buf = generate_buffer(16); // 128, 192, 256 bits or 16, 24, 32 bytes
     let e_aeskey = AesKey::new_encrypt(&buf).expect("failed to generate encrypt key");
     let d_aeskey = AesKey::new_decrypt(&buf).expect("failed to generate decrypt key");
     (e_aeskey, d_aeskey)
 }
 
 pub fn generate_cipher() {}
-
-pub fn encrypt_gen_key_iv<T: AsRef<str>>(message: T) -> Vec<u8> {
-    let aeskey = generate_key();
-    let mut iv = generate_buffer_32().to_vec();
-
-    encrypt(&aeskey.0, iv, message)
-}
 
 pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
     let plaintext_slice = plaintext.as_ref().as_bytes();
@@ -80,25 +71,14 @@ pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Ve
     ciphertext
 }
 
-pub fn decrypt<T: AsRef<Vec<u8>>>(key: &AesKey, mut iv: Vec<u8>, ciphertext: T) -> Vec<u8> {
-    let input = ciphertext.as_ref();
-
-    let length = input.len();
-    let mut plaintext = vec![0u8; length];
-
-    aes_ige(&input, &mut plaintext, &key, &mut iv, Mode::Decrypt);
-
+pub fn decrypt(key: &AesKey, mut iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
+    let mut plaintext = vec![0u8; ciphertext.len()];
+    aes_ige(&ciphertext, &mut plaintext, &key, &mut iv, Mode::Decrypt);
     plaintext
 }
 
-fn generate_buffer_16() -> [u8; 16] {
-    let mut buf = [0; 16]; // 128, 192, 256 bits or 16, 24, 32 bytes
-    rand_bytes(&mut buf).unwrap();
-    buf
-}
-
-fn generate_buffer_32() -> [u8; 32] {
-    let mut buf = [0; 32]; // 128, 192, 256 bits or 16, 24, 32 bytes
+fn generate_buffer(length: usize) -> Vec<u8> {
+    let mut buf = vec![0; length]; // 128, 192, 256 bits or 16, 24, 32 bytes
     rand_bytes(&mut buf).unwrap();
     buf
 }
