@@ -31,7 +31,7 @@ impl AESCipher {
 
 trait Cipher {
     fn encrypt<T: AsRef<str>>(&self, plaintext: T) -> Vec<u8>;
-    fn decrypt(&self, ciphertext: Vec<u8>) -> Vec<u8>;
+    fn decrypt(&self, ciphertext: Vec<u8>) -> String;
 }
 
 impl Cipher for AESCipher {
@@ -39,7 +39,7 @@ impl Cipher for AESCipher {
         aes_encrypt(&self.encrypt_key, self.iv.clone(), plaintext)
     }
 
-    fn decrypt(&self, ciphertext: Vec<u8>) -> Vec<u8> {
+    fn decrypt(&self, ciphertext: Vec<u8>) -> String {
         aes_decrypt(&self.decrypt_key, self.iv.clone(), ciphertext)
     }
 }
@@ -56,8 +56,12 @@ pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, iv: Vec<u8>, plaintext: T) -> Ve
     aes_crypt(key, iv, buffer, Mode::Encrypt)
 }
 
-pub fn aes_decrypt(key: &AesKey, iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
-    aes_crypt(key, iv, ciphertext, Mode::Decrypt)
+pub fn aes_decrypt(key: &AesKey, iv: Vec<u8>, ciphertext: Vec<u8>) -> String {
+    let plaintext = aes_crypt(key, iv, ciphertext, Mode::Decrypt);
+    String::from_utf8(plaintext)
+        .expect("invalid utf8 byte array")
+        .trim_end()
+        .to_owned()
 }
 
 fn aes_crypt(key: &AesKey, mut iv: Vec<u8>, input: Vec<u8>, mode: Mode) -> Vec<u8> {

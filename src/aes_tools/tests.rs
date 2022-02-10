@@ -32,10 +32,7 @@ fn test_message_is_same() {
 
     let ciphertext: Vec<u8> = cipher.encrypt(&message);
     let plaintext = cipher.decrypt(ciphertext);
-
-    let message_decoded = String::from_utf8(plaintext).expect("Found invalid UTF-8");
-
-    assert_eq!(message.trim_end(), message_decoded.trim_end());
+    assert_eq!(message, plaintext);
 }
 
 #[test]
