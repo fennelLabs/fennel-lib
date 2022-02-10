@@ -29,15 +29,14 @@ fn test_message_is_same() {
 
     let mut cipher: AESCipher = AESCipher::new();
 
-    let ciphertext: Vec<u8> = cipher.encrypt(message);
+    let ciphertext: Vec<u8> = cipher.encrypt(&message);
     let plaintext = cipher.decrypt(ciphertext);
 
-    println!(
-        "{:?}",
-        String::from_utf8(plaintext).expect("Found invalid UTF-8")
-    );
+    let message_decoded = String::from_utf8(plaintext).expect("Found invalid UTF-8");
+
+    println!("{:?}", &message_decoded);
 
     //let decrypted = decrypt(encrypted);
 
-    assert_eq!(0, 1);
+    assert_eq!(message, message_decoded);
 }
