@@ -51,12 +51,12 @@ pub fn generate_keys() -> (AesKey, AesKey) {
     (e_aeskey, d_aeskey)
 }
 
-pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
+pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, iv: Vec<u8>, plaintext: T) -> Vec<u8> {
     let buffer = pad(plaintext.as_ref().as_bytes(), None);
     aes_crypt(key, iv, buffer, Mode::Encrypt)
 }
 
-pub fn aes_decrypt(key: &AesKey, mut iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
+pub fn aes_decrypt(key: &AesKey, iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
     aes_crypt(key, iv, ciphertext, Mode::Decrypt)
 }
 
