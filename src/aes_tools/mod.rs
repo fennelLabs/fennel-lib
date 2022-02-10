@@ -7,6 +7,10 @@ mod bench;
 #[cfg(test)]
 mod tests;
 
+mod padding;
+
+use padding::pad;
+
 struct AESCipher {
     encrypt_key: AesKey,
     decrypt_key: AesKey,
@@ -14,13 +18,6 @@ struct AESCipher {
 }
 
 impl AESCipher {
-    /* fn new(key: AesKey, iv: Vec<u8>) -> AESCipher {
-        AESCipher {
-            key,
-            iv
-        }
-    } */
-
     fn new() -> AESCipher {
         let keys = generate_keys();
 
@@ -55,16 +52,9 @@ pub fn generate_keys() -> (AesKey, AesKey) {
 }
 
 pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
-    let plaintext_slice = plaintext.as_ref().as_bytes();
+    let buffer = pad(plaintext.as_ref().as_bytes(), None);
 
-    let pos = plaintext_slice.len();
-    let length = calculate_resize(pos);
-
-    let mut buffer = plaintext_slice.to_vec();
-    buffer.resize(length, 32u8);
-
-    //let (length, buffer) = normalize_input(plaintext.as_ref().as_bytes().to_vec());
-    let mut ciphertext = vec![0u8; length];
+    let mut ciphertext = vec![0u8; buffer.len()];
     aes_ige(&buffer, &mut ciphertext, &key, &mut iv, Mode::Encrypt);
     ciphertext
 }
@@ -79,18 +69,4 @@ fn generate_buffer(length: usize) -> Vec<u8> {
     let mut buf = vec![0; length]; // 128, 192, 256 bits or 16, 24, 32 bytes
     rand_bytes(&mut buf).unwrap();
     buf
-}
-
-fn calculate_resize(size: usize) -> usize {
-    size + (16 - size % 16)
-}
-
-/// currently not working properly
-fn normalize_input<T: Copy>(data: Vec<T>) -> (usize, Vec<T>) {
-    let pos = data.len();
-    let length = calculate_resize(pos);
-
-    let mut buffer: Vec<T> = Vec::with_capacity(length);
-    buffer[..pos].copy_from_slice(data.as_slice());
-    (length, buffer)
 }
