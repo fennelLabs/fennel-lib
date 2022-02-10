@@ -36,11 +36,11 @@ trait Cipher {
 
 impl Cipher for AESCipher {
     fn encrypt<T: AsRef<str>>(&self, plaintext: T) -> Vec<u8> {
-        encrypt(&self.encrypt_key, self.iv.clone(), plaintext)
+        aes_encrypt(&self.encrypt_key, self.iv.clone(), plaintext)
     }
 
     fn decrypt(&self, ciphertext: Vec<u8>) -> Vec<u8> {
-        decrypt(&self.decrypt_key, self.iv.clone(), ciphertext)
+        aes_decrypt(&self.decrypt_key, self.iv.clone(), ciphertext)
     }
 }
 
@@ -51,18 +51,19 @@ pub fn generate_keys() -> (AesKey, AesKey) {
     (e_aeskey, d_aeskey)
 }
 
-pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
+pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
     let buffer = pad(plaintext.as_ref().as_bytes(), None);
-
-    let mut ciphertext = vec![0u8; buffer.len()];
-    aes_ige(&buffer, &mut ciphertext, &key, &mut iv, Mode::Encrypt);
-    ciphertext
+    aes_crypt(key, iv, buffer, Mode::Encrypt)
 }
 
-pub fn decrypt(key: &AesKey, mut iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
-    let mut plaintext = vec![0u8; ciphertext.len()];
-    aes_ige(&ciphertext, &mut plaintext, &key, &mut iv, Mode::Decrypt);
-    plaintext
+pub fn aes_decrypt(key: &AesKey, mut iv: Vec<u8>, ciphertext: Vec<u8>) -> Vec<u8> {
+    aes_crypt(key, iv, ciphertext, Mode::Decrypt)
+}
+
+fn aes_crypt(key: &AesKey, mut iv: Vec<u8>, input: Vec<u8>, mode: Mode) -> Vec<u8> {
+    let mut output = vec![0u8; input.len()];
+    aes_ige(&input, &mut output, &key, &mut iv, mode);
+    output
 }
 
 fn generate_buffer(length: usize) -> Vec<u8> {
