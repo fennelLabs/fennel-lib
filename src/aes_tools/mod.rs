@@ -54,8 +54,6 @@ pub fn generate_keys() -> (AesKey, AesKey) {
     (e_aeskey, d_aeskey)
 }
 
-pub fn generate_cipher() {}
-
 pub fn encrypt<T: AsRef<str>>(key: &AesKey, mut iv: Vec<u8>, plaintext: T) -> Vec<u8> {
     let plaintext_slice = plaintext.as_ref().as_bytes();
 
