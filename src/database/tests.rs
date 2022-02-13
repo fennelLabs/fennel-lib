@@ -5,27 +5,25 @@ use std::sync::Arc;
 fn test_insert_and_retrieve_message() {
     let db = get_message_database_handle();
     let db_2 = Arc::clone(&db);
-    insert_message(
-        db,
-        Message {
-            sender_id: [0; 4],
-            fingerprint: [0; 16],
-            message: [0; 2050],
-            signature: [0; 1024],
-            public_key: [0; 1038],
-            recipient_id: [0; 4],
-        },
-    )
-    .expect("failed message insertion");
+    let message_sent = Message {
+        sender_id: [2; 4],
+        fingerprint: [0; 16],
+        message: [0; 2050],
+        signature: [0; 1024],
+        public_key: [0; 1038],
+        recipient_id: [2; 4],
+    };
+    insert_message(db, message_sent).expect("failed message insertion");
     let result: Vec<Message> = retrieve_messages(
         db_2,
         Identity {
-            id: [0; 4],
+            id: [2; 4],
             fingerprint: [0; 16],
             public_key: [0; 1038],
         },
     );
-    assert_ne!(result.len(), 0);
+    assert_eq!(result.len(), 1);
+    assert_eq!([0; 2050], result[0].message);
 }
 
 #[test]
