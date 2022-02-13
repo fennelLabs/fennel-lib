@@ -78,6 +78,7 @@ pub fn insert_identity(db_lock: Arc<Mutex<DB>>, identity: &Identity) -> Result<(
 
 pub fn retrieve_identity(db_lock: Arc<Mutex<DB>>, id: [u8; 4]) -> Identity {
     let db = db_lock.lock().unwrap();
-    let value = db.get(id).expect("failed to retrieve identity").unwrap();
+    let return_value = db.get(id).expect("failed to retrieve identity");
+    let value = return_value.unwrap();
     Decode::decode(&mut &*value).unwrap()
 }
