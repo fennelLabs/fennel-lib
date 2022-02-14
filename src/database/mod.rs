@@ -9,14 +9,14 @@ use rocksdb::DB;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug)]
 pub struct Identity {
     pub id: [u8; 4],
     pub fingerprint: [u8; 16],
     pub public_key: [u8; 1038],
 }
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug)]
 pub struct Message {
     pub sender_id: [u8; 4],
     pub fingerprint: [u8; 16],
