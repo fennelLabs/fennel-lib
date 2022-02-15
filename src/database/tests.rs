@@ -8,7 +8,7 @@ fn test_insert_and_retrieve_message() {
     let message_sent = Message {
         sender_id: [2; 4],
         fingerprint: [0; 16],
-        message: [0; 2050],
+        message: [0; 1024],
         signature: [0; 1024],
         public_key: [0; 1038],
         recipient_id: [2; 4],
@@ -23,7 +23,7 @@ fn test_insert_and_retrieve_message() {
         },
     );
     assert_eq!(result.len(), 1);
-    assert_eq!([0; 2050], result[0].message);
+    assert_eq!([0; 1024], result[0].message);
 }
 
 #[test]
