@@ -1,9 +1,10 @@
 #[cfg(test)]
-
 #[test]
 fn try_generating_key_and_encrypting() {
-    use crate::{get_ephemeral_secret, get_ephemeral_public_key, get_shared_secret, AESCipher, aes_encrypt, aes_decrypt};
-
+    use crate::{
+        aes_decrypt, aes_encrypt, get_ephemeral_public_key, get_ephemeral_secret,
+        get_shared_secret, AESCipher,
+    };
 
     let secret = get_ephemeral_secret();
     let pub_key = get_ephemeral_public_key(&secret);
@@ -18,7 +19,11 @@ fn try_generating_key_and_encrypting() {
 
     let cipher: AESCipher = AESCipher::new_from_shared_secret(shared_secret);
 
-    let ciphertext = aes_encrypt(&cipher.encrypt_key, cipher.iv.clone(), String::from("This is a test."));
+    let ciphertext = aes_encrypt(
+        &cipher.encrypt_key,
+        cipher.iv.clone(),
+        String::from("This is a test."),
+    );
     let plaintext = aes_decrypt(&cipher.decrypt_key, cipher.iv, ciphertext);
 
     assert_eq!(String::from("This is a test."), plaintext);
