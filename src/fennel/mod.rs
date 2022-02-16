@@ -12,6 +12,7 @@ use subxt::{
 /// curl "https://github.com/paritytech/polkadot/releases/download/v0.9.13/polkadot" --output /usr/local/bin/polkadot --location
 /// fennel --dev --tmp
 /// 
+/// # to fetch the metadata from a running dev node
 /// curl -sX POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"state_getMetadata", "id": 1}' localhost:9933 \
 ///                 | jq .result \
 ///                 | cut -d '"' -f 2 \
@@ -20,8 +21,7 @@ use subxt::{
 #[subxt::subxt(runtime_metadata_path = "src/fennel/fennel-metadata.scale")]
 pub mod fennel {}
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn fetch_storage() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
     let api = ClientBuilder::new()
@@ -35,4 +35,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{}: {}", hex::encode(key), account.data.free);
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[tokio::test]
+    async fn test_fetch() {
+        fetch_storage().await.expect("Storage should have been fetched");
+    }
 }
