@@ -10,16 +10,27 @@ mod tests;
 mod padding;
 
 use padding::{pad, pad_remove};
+use x25519_dalek::SharedSecret;
 
-struct AESCipher {
-    encrypt_key: AesKey,
-    decrypt_key: AesKey,
-    iv: Vec<u8>,
+pub struct AESCipher {
+    pub encrypt_key: AesKey,
+    pub decrypt_key: AesKey,
+    pub iv: Vec<u8>,
 }
 
 impl AESCipher {
     fn new() -> AESCipher {
         let keys = generate_keys();
+
+        AESCipher {
+            encrypt_key: keys.0,
+            decrypt_key: keys.1,
+            iv: generate_buffer(32),
+        }
+    }
+
+    pub fn new_from_shared_secret(shared_secret: SharedSecret) -> AESCipher {
+        let keys = generate_keys_from_shared_secret(shared_secret);
 
         AESCipher {
             encrypt_key: keys.0,
@@ -45,9 +56,16 @@ impl Cipher for AESCipher {
 }
 
 pub fn generate_keys() -> (AesKey, AesKey) {
-    let buf = generate_buffer(16); // 128, 192, 256 bits or 16, 24, 32 bytes
+    let buf = generate_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
     let e_aeskey = AesKey::new_encrypt(&buf).expect("failed to generate encrypt key");
     let d_aeskey = AesKey::new_decrypt(&buf).expect("failed to generate decrypt key");
+    (e_aeskey, d_aeskey)
+}
+
+pub fn generate_keys_from_shared_secret(secret: SharedSecret) -> (AesKey, AesKey) {
+    let buf = secret.as_bytes();
+    let e_aeskey = AesKey::new_encrypt(buf).expect("failed to generate encrypt key");
+    let d_aeskey = AesKey::new_decrypt(buf).expect("failed to generate decrypt key");
     (e_aeskey, d_aeskey)
 }
 
