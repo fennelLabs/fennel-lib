@@ -3,6 +3,7 @@
 pub mod aes_tools;
 pub mod database;
 pub mod rsa_tools;
+mod fennel;
 
 use codec::{Decode, Encode};
 

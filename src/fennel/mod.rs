@@ -20,7 +20,7 @@ use subxt::{
 #[subxt::subxt(runtime_metadata_path = "src/fennel/fennel-metadata.scale")]
 pub mod fennel {}
 
-#[async_std::main]
+#[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
