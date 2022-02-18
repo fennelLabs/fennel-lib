@@ -10,7 +10,6 @@ mod tests;
 mod padding;
 
 use padding::{pad, pad_remove};
-use x25519_dalek::SharedSecret;
 
 pub struct AESCipher {
     pub encrypt_key: AesKey,
@@ -19,6 +18,7 @@ pub struct AESCipher {
 }
 
 impl AESCipher {
+    #[allow(unused)]
     fn new() -> AESCipher {
         let keys = generate_keys();
 
@@ -29,7 +29,7 @@ impl AESCipher {
         }
     }
 
-    pub fn new_from_shared_secret(shared_secret: SharedSecret) -> AESCipher {
+    pub fn new_from_shared_secret(shared_secret: &[u8; 32]) -> AESCipher {
         let keys = generate_keys_from_shared_secret(shared_secret);
 
         AESCipher {
@@ -62,8 +62,7 @@ pub fn generate_keys() -> (AesKey, AesKey) {
     (e_aeskey, d_aeskey)
 }
 
-pub fn generate_keys_from_shared_secret(secret: SharedSecret) -> (AesKey, AesKey) {
-    let buf = secret.as_bytes();
+pub fn generate_keys_from_shared_secret(buf: &[u8; 32]) -> (AesKey, AesKey) {
     let e_aeskey = AesKey::new_encrypt(buf).expect("failed to generate encrypt key");
     let d_aeskey = AesKey::new_decrypt(buf).expect("failed to generate decrypt key");
     (e_aeskey, d_aeskey)

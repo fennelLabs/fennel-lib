@@ -14,6 +14,7 @@ pub struct Identity {
     pub id: [u8; 4],
     pub fingerprint: [u8; 16],
     pub public_key: [u8; 1038],
+    pub shared_secret_key: [u8; 32],
 }
 
 #[derive(Encode, Decode, Debug)]
