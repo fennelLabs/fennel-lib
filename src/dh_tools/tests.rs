@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{Identity, insert_identity, retrieve_identity, get_identity_database_handle};
+use crate::{get_identity_database_handle, insert_identity, retrieve_identity, Identity};
 
 #[cfg(test)]
 #[test]
