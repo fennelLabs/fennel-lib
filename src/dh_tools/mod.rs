@@ -2,7 +2,7 @@
 mod tests;
 
 use rand_core::OsRng;
-pub use x25519_dalek::{EphemeralSecret, PublicKey, SharedSecret};
+use x25519_dalek::{EphemeralSecret, PublicKey, SharedSecret};
 
 pub fn get_ephemeral_secret() -> EphemeralSecret {
     EphemeralSecret::new(OsRng)
