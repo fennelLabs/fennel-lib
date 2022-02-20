@@ -75,7 +75,7 @@ pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, iv: Vec<u8>, plaintext: T) -> Ve
 
 pub fn aes_decrypt(key: &AesKey, iv: Vec<u8>, ciphertext: Vec<u8>) -> String {
     let plaintext = aes_crypt(key, iv, ciphertext, Mode::Decrypt);
-    String::from_utf8(pad_remove(&plaintext).into()).expect("invalid utf8 byte array")
+    String::from_utf8_lossy(pad_remove(&plaintext).into()).to_string()
 }
 
 fn aes_crypt(key: &AesKey, mut iv: Vec<u8>, input: Vec<u8>, mode: Mode) -> Vec<u8> {
