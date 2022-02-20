@@ -6,15 +6,15 @@ use crate::{get_identity_database_handle, insert_identity, retrieve_identity, Id
 #[test]
 fn try_generating_key_and_encrypting() {
     use crate::{
-        aes_decrypt, aes_encrypt, get_ephemeral_public_key, get_ephemeral_secret,
-        get_shared_secret, AESCipher,
+        aes_decrypt, aes_encrypt, get_session_public_key, get_session_secret, get_shared_secret,
+        AESCipher,
     };
 
-    let secret = get_ephemeral_secret();
-    let pub_key = get_ephemeral_public_key(&secret);
+    let secret = get_session_secret();
+    let pub_key = get_session_public_key(&secret);
 
-    let other_secret = get_ephemeral_secret();
-    let other_pub_key = get_ephemeral_public_key(&other_secret);
+    let other_secret = get_session_secret();
+    let other_pub_key = get_session_public_key(&other_secret);
 
     let shared_secret = get_shared_secret(secret, &other_pub_key);
     let other_shared_secret = get_shared_secret(other_secret, &pub_key);
@@ -36,15 +36,15 @@ fn try_generating_key_and_encrypting() {
 #[test]
 fn try_generating_key_and_encrypting_database() {
     use crate::{
-        aes_decrypt, aes_encrypt, get_ephemeral_public_key, get_ephemeral_secret,
-        get_shared_secret, AESCipher,
+        aes_decrypt, aes_encrypt, get_session_public_key, get_session_secret, get_shared_secret,
+        AESCipher,
     };
 
-    let secret = get_ephemeral_secret();
-    let pub_key = get_ephemeral_public_key(&secret);
+    let secret = get_session_secret();
+    let pub_key = get_session_public_key(&secret);
 
-    let other_secret = get_ephemeral_secret();
-    let other_pub_key = get_ephemeral_public_key(&other_secret);
+    let other_secret = get_session_secret();
+    let other_pub_key = get_session_public_key(&other_secret);
 
     let shared_secret = get_shared_secret(secret, &other_pub_key);
     let other_shared_secret = get_shared_secret(other_secret, &pub_key);

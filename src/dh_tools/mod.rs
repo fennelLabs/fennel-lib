@@ -2,13 +2,13 @@
 mod tests;
 
 use rand_core::OsRng;
-use x25519_dalek::{StaticSecret, PublicKey, SharedSecret};
+use x25519_dalek::{PublicKey, SharedSecret, StaticSecret};
 
-pub fn get_ephemeral_secret() -> StaticSecret {
+pub fn get_session_secret() -> StaticSecret {
     StaticSecret::new(OsRng)
 }
 
-pub fn get_ephemeral_public_key(secret: &StaticSecret) -> PublicKey {
+pub fn get_session_public_key(secret: &StaticSecret) -> PublicKey {
     PublicKey::from(secret)
 }
 
