@@ -35,7 +35,7 @@ impl AESCipher {
         AESCipher {
             encrypt_key: keys.0,
             decrypt_key: keys.1,
-            iv: generate_buffer(32),
+            iv: shared_secret.to_vec(),
         }
     }
 }
