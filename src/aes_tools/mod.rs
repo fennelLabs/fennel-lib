@@ -20,7 +20,7 @@ pub struct AESCipher {
 impl AESCipher {
     #[allow(unused)]
     fn new() -> AESCipher {
-        let keys = generate_keys();
+        let keys = generate_keys(&generate_buffer(32));
 
         AESCipher {
             encrypt_key: keys.0,
@@ -30,7 +30,7 @@ impl AESCipher {
     }
 
     pub fn new_from_shared_secret(shared_secret: &[u8; 32]) -> AESCipher {
-        let keys = generate_keys_from_shared_secret(shared_secret);
+        let keys = generate_keys(shared_secret);
 
         AESCipher {
             encrypt_key: keys.0,
@@ -38,6 +38,7 @@ impl AESCipher {
             iv: shared_secret.to_vec(),
         }
     }
+
 }
 
 trait Cipher {
@@ -55,16 +56,9 @@ impl Cipher for AESCipher {
     }
 }
 
-pub fn generate_keys() -> (AesKey, AesKey) {
-    let buf = generate_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
-    let e_aeskey = AesKey::new_encrypt(&buf).expect("failed to generate encrypt key");
-    let d_aeskey = AesKey::new_decrypt(&buf).expect("failed to generate decrypt key");
-    (e_aeskey, d_aeskey)
-}
-
-pub fn generate_keys_from_shared_secret(buf: &[u8; 32]) -> (AesKey, AesKey) {
-    let e_aeskey = AesKey::new_encrypt(buf).expect("failed to generate encrypt key");
-    let d_aeskey = AesKey::new_decrypt(buf).expect("failed to generate decrypt key");
+pub fn generate_keys(secret: &[u8]) -> (AesKey, AesKey) {
+    let e_aeskey = AesKey::new_encrypt(secret).expect("failed to generate encrypt key");
+    let d_aeskey = AesKey::new_decrypt(secret).expect("failed to generate decrypt key");
     (e_aeskey, d_aeskey)
 }
 
