@@ -29,7 +29,16 @@ impl AESCipher {
 
     #[allow(unused)]
     fn new() -> AESCipher {
-        AESCipher::create(&iv_helpers::generate_random_buffer(32)) // 128, 192, 256 bits or 16, 24, 32 bytes
+        let secret = iv_helpers::generate_random_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
+        AESCipher::create(&secret)
+    }
+
+    #[allow(unused)]
+    fn new_and_save_to_file<P: AsRef<std::path::Path>>(path: P) -> AESCipher {
+        let secret = iv_helpers::generate_random_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
+        let cipher = AESCipher::create(&secret);
+        key_management::save_to_file(path, secret);
+        cipher
     }
 
     pub fn new_from_shared_secret(shared_secret: &[u8; 32]) -> AESCipher {
