@@ -27,7 +27,7 @@ fn test_padding_returns_original_vector_when_multiple_of_16() {
 
 #[test]
 fn test_key_gen_without_panic() {
-    generate_keys(&generate_buffer(32));
+    AESCipher::new();
 }
 
 #[test]
