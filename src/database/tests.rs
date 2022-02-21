@@ -20,6 +20,7 @@ fn test_insert_and_retrieve_message() {
             id: [2; 4],
             fingerprint: [0; 16],
             public_key: [0; 1038],
+            shared_secret_key: [0; 32],
         },
     );
     assert_eq!(result.len(), 1);
@@ -34,6 +35,7 @@ fn test_insert_and_retrieve_identity() {
         id: [0; 4],
         fingerprint: [0; 16],
         public_key: [0; 1038],
+        shared_secret_key: [0; 32],
     };
     insert_identity(db, &identity).expect("failed identity insertion");
     let result: Identity = retrieve_identity(db_2, [0; 4]);
