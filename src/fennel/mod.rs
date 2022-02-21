@@ -1,4 +1,12 @@
-use subxt::{ClientBuilder, DefaultConfig, DefaultExtra};
+//! Fennel RPC Connection
+
+mod error;
+
+use subxt::{ClientBuilder, DefaultConfig, DefaultExtra, Client, Config};
+
+use self::error::Error;
+
+// use crate::database::*;
 
 /// To run this example, a local fennel node should be running.
 ///
@@ -15,20 +23,39 @@ use subxt::{ClientBuilder, DefaultConfig, DefaultExtra};
 #[subxt::subxt(runtime_metadata_path = "src/fennel/fennel-metadata.scale")]
 pub mod fennel {}
 
-async fn fetch_storage() -> Result<(), Box<dyn std::error::Error>> {
-    env_logger::init();
 
+pub struct TransactionHandler<C: Config> {
+    client: Client<C>
+}
+
+impl<C> TransactionHandler<C> where C: Config {
+    pub async fn new() -> Result<Self, Error> {
+        let client = ClientBuilder::new()
+            .build()
+            .await?;
+        
+        Ok(Self { client })
+    }
+}
+
+async fn fetch_storage() -> Result<(), Error> {
     let api = ClientBuilder::new()
         .build()
         .await?
         .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
 
-    let mut iter = api.storage().system().account_iter(None).await?;
-
+    // let mut iter = api.storage().system().account_iter(None).await?;
+/*
     while let Some((key, account)) = iter.next().await? {
         println!("{}: {}", hex::encode(key), account.data.free);
     }
+    */
+
     Ok(())
+}
+
+fn submit_ids() -> Result<(), Error> {
+    Ok(()) 
 }
 
 #[cfg(test)]
