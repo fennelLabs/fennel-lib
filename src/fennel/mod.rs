@@ -3,10 +3,9 @@
 mod error;
 
 use subxt::{ClientBuilder, DefaultConfig, DefaultExtra, Client, Config, PairSigner, sp_core::sr25519::Pair};
-use self::error::Error;
 
-use crate::Identity;
- use crate::database::FennelLocalDb;
+pub use self::error::Error;
+use crate::database::FennelLocalDb;
 
 type RawIdentity = [u8; 4];
 
@@ -81,6 +80,26 @@ impl TransactionHandler {
 
         Ok(())
     }
+}
+
+pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
+
+    let api = ClientBuilder::new()
+        .build()
+        .await?
+        .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+
+    let mut iter = api
+        .storage()
+        .identity_module()
+        .identity_list_iter(None)
+        .await?;
+
+    while let Some((key, identity)) = iter.next().await? {
+        println!("{}: {:?}", hex::encode(key), identity);
+    }
+    Ok(())
 }
 
 #[cfg(test)]

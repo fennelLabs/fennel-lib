@@ -8,7 +8,7 @@ use parking_lot::Mutex;
 use rocksdb::{ColumnFamilyDescriptor, DBPath, IteratorMode, Options, DB};
 use std::{fs, path::Path, sync::Arc};
 
-use error::Error;
+pub use error::Error;
 
 #[derive(Encode, Decode, Debug)]
 pub struct Identity {
@@ -41,15 +41,22 @@ pub struct FennelLocalDb {
 impl FennelLocalDb {
     pub fn new() -> Result<Self, Error> {
         // TODO: Accept a path in the future
-        let path = fs::create_dir_all("./_fennel_db")?;
+        // ensure we have this directory
+        fs::create_dir_all("./_fennel_db")?;
         let path = Path::new("./_fennel_db");
 
-        let opts = Options::default();
+        let mut opts = Options::default();
         opts.create_if_missing(true);
 
+        // done in two iterations because we cant return a reference from a closure
         let column_names: Vec<_> = (0..NUM_COLUMNS)
-            .map(|c| format!("col{}", c).as_str())
+            .map(|c| format!("col{}", c))
             .collect();
+        let column_names: Vec<&str> = column_names
+            .iter()
+            .map(|c| c.as_str())
+            .collect();
+
         let db = Self::open(&opts, path, column_names.as_slice())?;
 
         Ok(Self {
@@ -65,7 +72,7 @@ impl FennelLocalDb {
     ) -> Result<rocksdb::DB, Error> {
         // NOTE: Options can be optimized
         let cf_descriptors: Vec<_> = (0..NUM_COLUMNS)
-            .map(|i| ColumnFamilyDescriptor::new(column_names[i as usize], *opts))
+            .map(|i| ColumnFamilyDescriptor::new(column_names[i as usize], opts.clone()))
             .collect();
 
         let db = match DB::open_cf_descriptors(&opts, path.as_ref(), cf_descriptors) {

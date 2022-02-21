@@ -8,5 +8,5 @@ pub enum Error {
     #[error("something happened with the internal node connection")]
     Subxt(#[from] SubxtError),
     #[error(transparent)]
-    Db(#[from] crate::database::error::Error),
+    Db(#[from] crate::database::Error),
 }
