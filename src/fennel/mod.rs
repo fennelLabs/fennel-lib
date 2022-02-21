@@ -2,7 +2,9 @@
 
 mod error;
 
-use subxt::{ClientBuilder, DefaultConfig, DefaultExtra, Client, Config, PairSigner, sp_core::sr25519::Pair};
+use subxt::{
+    sp_core::sr25519::Pair, Client, ClientBuilder, Config, DefaultConfig, DefaultExtra, PairSigner,
+};
 
 pub use self::error::Error;
 use crate::database::FennelLocalDb;
@@ -28,10 +30,10 @@ type RuntimeApi = fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>
 
 pub struct TransactionHandler {
     runtime: RuntimeApi,
-    // FIXME:: its not the best to mix blocking ops (rocksdb gets) with async, since 
+    // FIXME:: its not the best to mix blocking ops (rocksdb gets) with async, since
     // long-running operations will most certainly block the async executor.
-    // however with our limited data (single gets/retrieves) this should be fast 
-    // enough that it is not noticeable. 
+    // however with our limited data (single gets/retrieves) this should be fast
+    // enough that it is not noticeable.
     // alternatively, the database struct could spawn all getes onto the executor as a blocking op
     db: FennelLocalDb,
 }
@@ -42,15 +44,15 @@ impl TransactionHandler {
             .build()
             .await?
             .to_runtime_api::<RuntimeApi>();
-        let db = FennelLocalDb::new()?;        
+        let db = FennelLocalDb::new()?;
 
         Ok(Self { runtime, db })
     }
-   
+
     /// submit an identity to the network
     pub async fn add_or_update(&self, id: RawIdentity, signer: Pair) -> Result<(), Error> {
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
-         
+
         // NOTE: identity module should probably be snake case, or just named `identity`
         // api
         Ok(())
@@ -59,7 +61,9 @@ impl TransactionHandler {
     pub async fn create_identity(&self, signer: Pair) -> Result<(), Error> {
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
 
-        let identity = self.runtime.tx()
+        let identity = self
+            .runtime
+            .tx()
             .identity_module()
             .create_identity()
             .sign_and_submit_then_watch(&signer)
@@ -68,7 +72,7 @@ impl TransactionHandler {
             // FIXME: Should be in error enum with GenericError
             .await
             .unwrap();
-         
+
         let identity_event =
             identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 

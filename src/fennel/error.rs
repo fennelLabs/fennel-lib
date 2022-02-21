@@ -1,7 +1,7 @@
 //! Error type for Fennel rpc connections
 
-use thiserror::Error;
 use subxt::BasicError as SubxtError;
+use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {

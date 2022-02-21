@@ -50,13 +50,8 @@ impl FennelLocalDb {
         opts.create_if_missing(true);
 
         // done in two iterations because we cant return a reference from a closure
-        let column_names: Vec<_> = (0..NUM_COLUMNS)
-            .map(|c| format!("col{}", c))
-            .collect();
-        let column_names: Vec<&str> = column_names
-            .iter()
-            .map(|c| c.as_str())
-            .collect();
+        let column_names: Vec<_> = (0..NUM_COLUMNS).map(|c| format!("col{}", c)).collect();
+        let column_names: Vec<&str> = column_names.iter().map(|c| c.as_str()).collect();
 
         let db = Self::open(&opts, path, column_names.as_slice())?;
 
