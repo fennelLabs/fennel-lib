@@ -15,7 +15,7 @@ use subxt::{ClientBuilder, DefaultConfig, DefaultExtra};
 #[subxt::subxt(runtime_metadata_path = "src/fennel/fennel-metadata.scale")]
 pub mod fennel {}
 
-async fn fetch_storage() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn fetch_storage() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
     let api = ClientBuilder::new()
@@ -27,6 +27,26 @@ async fn fetch_storage() -> Result<(), Box<dyn std::error::Error>> {
 
     while let Some((key, account)) = iter.next().await? {
         println!("{}: {}", hex::encode(key), account.data.free);
+    }
+    Ok(())
+}
+
+pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
+
+    let api = ClientBuilder::new()
+        .build()
+        .await?
+        .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+
+    let mut iter = api
+        .storage()
+        .identity_module()
+        .identity_list_iter(None)
+        .await?;
+
+    while let Some((key, identity)) = iter.next().await? {
+        println!("{}: {:?}", hex::encode(key), identity);
     }
     Ok(())
 }
