@@ -7,6 +7,7 @@ mod bench;
 #[cfg(test)]
 mod tests;
 
+mod key_management;
 mod padding;
 
 use padding::{pad, pad_remove};
@@ -18,27 +19,29 @@ pub struct AESCipher {
 }
 
 impl AESCipher {
-    #[allow(unused)]
-    fn new() -> AESCipher {
-        let keys = generate_keys(&generate_buffer(32));
+    fn create(secret: &[u8], iv: Vec<u8>) -> AESCipher {
+        let keys = generate_keys(secret);
 
         AESCipher {
             encrypt_key: keys.0,
             decrypt_key: keys.1,
-            iv: generate_buffer(32),
+            iv,
         }
+    }
+
+    #[allow(unused)]
+    fn new() -> AESCipher {
+        AESCipher::create(&generate_buffer(32), generate_buffer(32))
     }
 
     pub fn new_from_shared_secret(shared_secret: &[u8; 32]) -> AESCipher {
-        let keys = generate_keys(shared_secret);
-
-        AESCipher {
-            encrypt_key: keys.0,
-            decrypt_key: keys.1,
-            iv: shared_secret.to_vec(),
-        }
+        AESCipher::create(shared_secret, shared_secret.to_vec())
     }
 
+    pub fn from_file<P: AsRef<std::path::Path>>(path: P) -> AESCipher {
+        let secret = key_management::load_from_file(path);
+        AESCipher::create(&secret, secret.to_vec())
+    }
 }
 
 trait Cipher {
