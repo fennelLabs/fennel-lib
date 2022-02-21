@@ -78,7 +78,7 @@ fn aes_crypt(key: &AesKey, mut iv: Vec<u8>, input: Vec<u8>, mode: Mode) -> Vec<u
     output
 }
 
-fn generate_buffer(length: usize) -> Vec<u8> {
+pub fn generate_buffer(length: usize) -> Vec<u8> {
     let mut buf = vec![0; length]; // 128, 192, 256 bits or 16, 24, 32 bytes
     rand_bytes(&mut buf).unwrap();
     buf
