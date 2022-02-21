@@ -7,4 +7,6 @@ use subxt::BasicError as SubxtError;
 pub enum Error {
     #[error("something happened with the internal node connection")]
     Subxt(#[from] SubxtError),
+    #[error(transparent)]
+    Db(#[from] crate::database::error::Error),
 }

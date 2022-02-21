@@ -1,13 +1,14 @@
+mod error;
 #[cfg(test)]
 mod tests;
 
 use crate::rsa_tools::hash;
 use codec::{Decode, Encode};
-use rocksdb::Error;
-use rocksdb::IteratorMode;
-use rocksdb::DB;
-use std::sync::Arc;
-use std::sync::Mutex;
+use parking_lot::Mutex;
+use rocksdb::{ColumnFamilyDescriptor, DBPath, IteratorMode, Options, DB};
+use std::{fs, path::Path, sync::Arc};
+
+use error::Error;
 
 #[derive(Encode, Decode, Debug)]
 pub struct Identity {
@@ -26,59 +27,122 @@ pub struct Message {
     pub recipient_id: [u8; 4],
 }
 
-pub fn get_message_database_handle() -> Arc<Mutex<DB>> {
-    Arc::new(Mutex::new(DB::open_default("./message.db").unwrap()))
+pub(crate) const NUM_COLUMNS: u32 = 2;
+pub(crate) mod columns {
+    pub const MESSAGES: u32 = 0;
+    pub const IDENTITIES: u32 = 1;
 }
 
-pub fn get_identity_database_handle() -> Arc<Mutex<DB>> {
-    Arc::new(Mutex::new(DB::open_default("./identity.db").unwrap()))
+#[derive(Clone)]
+pub struct FennelLocalDb {
+    db: Arc<Mutex<DB>>,
 }
 
-pub fn insert_message(db_lock: Arc<Mutex<DB>>, message: Message) -> Result<(), Error> {
-    let db = db_lock.lock().unwrap();
-    let message_bytes = message.encode();
-    let m: Vec<u8> = message
-        .recipient_id
-        .iter()
-        .cloned()
-        .chain(hash(&message_bytes))
-        .collect();
-    db.put(m, message_bytes).unwrap();
-    Ok(())
-}
+impl FennelLocalDb {
+    pub fn new() -> Result<Self, Error> {
+        // TODO: Accept a path in the future
+        let path = fs::create_dir_all("./_fennel_db")?;
+        let path = Path::new("./_fennel_db");
 
-pub fn insert_message_list(
-    messages_db: Arc<Mutex<DB>>,
-    messages_list: Vec<Message>,
-) -> Result<(), Error> {
-    for message in messages_list {
-        let messages_db_clone = Arc::clone(&messages_db);
-        insert_message(messages_db_clone, message).unwrap();
+        let opts = Options::default();
+        opts.create_if_missing(true);
+
+        let column_names: Vec<_> = (0..NUM_COLUMNS)
+            .map(|c| format!("col{}", c).as_str())
+            .collect();
+        let db = Self::open(&opts, path, column_names.as_slice())?;
+
+        Ok(Self {
+            db: Arc::new(Mutex::new(db)),
+        })
     }
-    Ok(())
-}
 
-/// Retrieve all messages for id. This is INCREDIBLY inefficient. We'll need to retool this.
-pub fn retrieve_messages(db_lock: Arc<Mutex<DB>>, identity: Identity) -> Vec<Message> {
-    let db = db_lock.lock().unwrap();
-    let mut message_list: Vec<Message> = Vec::new();
-    for (key, value) in db.iterator(IteratorMode::Start) {
-        if key[0..4] == identity.id {
-            message_list.push(Decode::decode(&mut &(*value)).unwrap());
+    /// Internal api to open a database.
+    fn open<P: AsRef<Path>>(
+        opts: &Options,
+        path: P,
+        column_names: &[&str],
+    ) -> Result<rocksdb::DB, Error> {
+        // NOTE: Options can be optimized
+        let cf_descriptors: Vec<_> = (0..NUM_COLUMNS)
+            .map(|i| ColumnFamilyDescriptor::new(column_names[i as usize], *opts))
+            .collect();
+
+        let db = match DB::open_cf_descriptors(&opts, path.as_ref(), cf_descriptors) {
+            Err(_) => {
+                // retry and create CFs
+                match DB::open_cf(&opts, path.as_ref(), &[] as &[&str]) {
+                    Ok(mut db) => {
+                        for (i, name) in column_names.iter().enumerate() {
+                            let _ = db.create_cf(name, &opts)?;
+                        }
+                        Ok(db)
+                    }
+                    err => err,
+                }
+            }
+            ok => ok,
+        };
+        Ok(db?)
+    }
+
+    fn insert_message(&self, message: Message) -> Result<(), Error> {
+        let db = self.db.lock();
+        let message_bytes = message.encode();
+        let m: Vec<u8> = message
+            .recipient_id
+            .iter()
+            .cloned()
+            .chain(hash(&message_bytes))
+            .collect();
+        let cf = db
+            .cf_handle(&cf(&columns::MESSAGES))
+            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+        db.put_cf(&cf, m, message_bytes)?;
+        Ok(())
+    }
+
+    pub fn insert_message_list(&self, messages_list: Vec<Message>) -> Result<(), Error> {
+        let db = self.db.lock();
+        for message in messages_list {
+            self.insert_message(message)?;
         }
+        Ok(())
     }
-    message_list
+    /// Retrieve all messages for id. This is INCREDIBLY inefficient. We'll need to retool this.
+    pub fn retrieve_messages(&self, identity: Identity) -> Result<Vec<Message>, Error> {
+        let db = self.db.lock();
+        let mut message_list: Vec<Message> = Vec::new();
+        let cf = db
+            .cf_handle(&cf(&columns::MESSAGES))
+            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+        for (key, value) in db.iterator_cf(&cf, IteratorMode::Start) {
+            if key[0..4] == identity.id {
+                message_list.push(Decode::decode(&mut &(*value))?);
+            }
+        }
+        Ok(message_list)
+    }
+
+    pub fn insert_identity(&self, identity: &Identity) -> Result<(), Error> {
+        let db = self.db.lock();
+        let cf = db
+            .cf_handle(&cf(&columns::IDENTITIES))
+            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+        db.put_cf(&cf, identity.id, identity.encode())?;
+        Ok(())
+    }
+
+    pub fn retrieve_identity(&self, id: [u8; 4]) -> Result<Identity, Error> {
+        let db = self.db.lock();
+        let cf = db
+            .cf_handle(&cf(&columns::IDENTITIES))
+            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+        let value = db.get_cf(&cf, id)?.expect("Not present in database");
+        Decode::decode(&mut &*value).map_err(Into::into)
+    }
 }
 
-pub fn insert_identity(db_lock: Arc<Mutex<DB>>, identity: &Identity) -> Result<(), Error> {
-    let db = db_lock.lock().unwrap();
-    db.put::<_, Vec<_>>(identity.id, identity.encode()).unwrap();
-    Ok(())
-}
-
-pub fn retrieve_identity(db_lock: Arc<Mutex<DB>>, id: [u8; 4]) -> Identity {
-    let db = db_lock.lock().unwrap();
-    let return_value = db.get(id).expect("failed to retrieve identity");
-    let value = return_value.unwrap();
-    Decode::decode(&mut &*value).unwrap()
+fn cf(col: &u32) -> String {
+    format!("cf{}", col)
 }
