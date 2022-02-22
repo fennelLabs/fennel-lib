@@ -1,6 +1,4 @@
-use std::sync::Arc;
-
-use crate::{get_identity_database_handle, insert_identity, retrieve_identity, Identity};
+use crate::{FennelLocalDb, Identity};
 
 #[cfg(test)]
 #[test]
@@ -51,16 +49,15 @@ fn try_generating_key_and_encrypting_database() {
 
     assert_eq!(shared_secret.as_bytes(), other_shared_secret.as_bytes());
 
-    let identity_db = get_identity_database_handle();
-    let identity_db_clone = Arc::clone(&identity_db);
+    let identity_db = FennelLocalDb::new().unwrap();
     let identity = Identity {
         id: [0; 4],
         fingerprint: [0; 16],
         public_key: [0; 1038],
         shared_secret_key: *shared_secret.as_bytes(),
     };
-    insert_identity(identity_db, &identity).unwrap();
-    let retrieved_identity = retrieve_identity(identity_db_clone, [0; 4]);
+    identity_db.insert_identity(&identity).unwrap();
+    let retrieved_identity = identity_db.retrieve_identity([0; 4]).unwrap();
     let shared_secret_from_database = retrieved_identity.shared_secret_key;
 
     let cipher: AESCipher = AESCipher::new_from_shared_secret(&shared_secret_from_database);

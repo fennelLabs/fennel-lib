@@ -105,15 +105,3 @@ pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
     }
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn test_fetch() {
-        fetch_storage()
-            .await
-            .expect("Storage should have been fetched");
-    }
-}
