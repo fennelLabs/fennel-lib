@@ -5,3 +5,4 @@ This repository houses various pieces of functionality used across Fennel Labs' 
 # Dependencies
 
 - [openssl on windows](https://github.com/fennelLabs/fennel-lib/issues/1)
+- [llvm on windows](https://community.chocolatey.org/packages/llvm)
