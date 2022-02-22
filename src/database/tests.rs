@@ -12,15 +12,16 @@ fn test_insert_and_retrieve_message() {
         public_key: [0; 1038],
         recipient_id: [2; 4],
     };
-    db.insert_message(message_sent).expect("failed message insertion");
-    let result: Vec<Message> = db.retrieve_messages(
-        Identity {
+    db.insert_message(message_sent)
+        .expect("failed message insertion");
+    let result: Vec<Message> = db
+        .retrieve_messages(Identity {
             id: [2; 4],
             fingerprint: [0; 16],
             public_key: [0; 1038],
             shared_secret_key: [0; 32],
-        },
-    ).unwrap();
+        })
+        .unwrap();
     assert_eq!(result.len(), 1);
     assert_eq!([0; 1024], result[0].message);
 }
@@ -34,7 +35,8 @@ fn test_insert_and_retrieve_identity() {
         public_key: [0; 1038],
         shared_secret_key: [0; 32],
     };
-    db.insert_identity(&identity).expect("failed identity insertion");
+    db.insert_identity(&identity)
+        .expect("failed identity insertion");
     let result: Identity = db.retrieve_identity([0; 4]).unwrap();
     assert_eq!(identity.id, result.id);
     assert_eq!(identity.fingerprint, result.fingerprint);
