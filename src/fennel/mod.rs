@@ -51,7 +51,11 @@ impl TransactionHandler {
         let identity_db = get_identity_database_handle();
         let messages_db = get_message_database_handle();
 
-        Ok(Self { runtime, identity_db, messages_db })
+        Ok(Self {
+            runtime,
+            identity_db,
+            messages_db,
+        })
     }
 
     /// submit an identity to the network
