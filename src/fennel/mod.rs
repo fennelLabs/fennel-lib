@@ -103,7 +103,12 @@ impl TransactionHandler {
         Ok(())
     }
 
-    pub async fn announce_public_key(&self, signer: Pair) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn announce_public_key(
+        &self,
+        signer: Pair,
+        fingerprint: Vec<u8>,
+        location: Vec<u8>,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         env_logger::init();
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
 
@@ -111,7 +116,7 @@ impl TransactionHandler {
             .runtime
             .tx()
             .keystore_module()
-            .announce_key()
+            .announce_key(fingerprint, location)
             .sign_and_submit_then_watch(&signer)
             .await?
             .wait_for_finalized_success()
