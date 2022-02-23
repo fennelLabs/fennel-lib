@@ -2,8 +2,6 @@
 
 mod error;
 
-use std::fmt::Result;
-
 use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
 pub use self::error::Error;
@@ -85,7 +83,7 @@ impl TransactionHandler {
         Ok(())
     }
 
-    pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn fetch_identities(&self) -> Result<(), Box<dyn std::error::Error>> {
         env_logger::init();
 
         let api = ClientBuilder::new()
@@ -105,7 +103,7 @@ impl TransactionHandler {
         Ok(())
     }
 
-    pub async fn announce_public_key() -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn announce_public_key(&self, signer: Pair) -> Result<(), Box<dyn std::error::Error>> {
         env_logger::init();
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
 
