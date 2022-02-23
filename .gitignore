@@ -2,6 +2,7 @@
 Cargo.lock
 
 identity.db
+_fennel_db
 message.db
 
 Private.key

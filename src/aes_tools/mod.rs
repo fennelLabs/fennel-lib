@@ -12,6 +12,7 @@ mod padding;
 
 use padding::{pad, pad_remove};
 
+/// Represents encryption and decryption resources.
 pub struct AESCipher {
     pub encrypt_key: AesKey,
     pub decrypt_key: AesKey,
@@ -27,12 +28,14 @@ impl AESCipher {
         }
     }
 
+    /// Generates a random AES cipher.
     #[allow(unused)]
     fn new() -> AESCipher {
         let secret = iv_helpers::generate_random_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
         AESCipher::create(&secret)
     }
 
+    /// Generates a random AES cipher and commits to disk.
     #[allow(unused)]
     fn new_and_save_to_file<P: AsRef<std::path::Path>>(path: P) -> AESCipher {
         let secret = iv_helpers::generate_random_buffer(32); // 128, 192, 256 bits or 16, 24, 32 bytes
@@ -41,10 +44,12 @@ impl AESCipher {
         cipher
     }
 
+    /// Generates an AES cipher from a known shared secret.
     pub fn new_from_shared_secret(shared_secret: &[u8; 32]) -> AESCipher {
         AESCipher::create(shared_secret)
     }
 
+    /// Reads an AES cipher in from disk.
     pub fn from_file<P: AsRef<std::path::Path>>(path: P) -> AESCipher {
         let secret = key_management::load_from_file(path);
         AESCipher::create(&secret)

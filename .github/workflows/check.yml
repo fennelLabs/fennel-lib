@@ -43,4 +43,4 @@ jobs:
 
       - name: Test Build
         run: >
-          cargo test
+          cargo test -- --test-threads 1 

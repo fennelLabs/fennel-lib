@@ -96,6 +96,7 @@ pub fn import_public_key_from_binary(
     Ok(public_key)
 }
 
+/// Export a public key to network-usable bytes.
 #[allow(unused)]
 pub fn export_public_key_to_binary(public_key: &RsaPublicKey) -> Result<[u8; 1038], Error> {
     let public_key_binary = RsaPublicKey::to_pkcs1_der(public_key).unwrap();

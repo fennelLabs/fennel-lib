@@ -27,14 +27,17 @@ pub struct Message {
     pub recipient_id: [u8; 4],
 }
 
+/// Grab a mutex-wrapped message database handle.
 pub fn get_message_database_handle() -> Arc<Mutex<DB>> {
     Arc::new(Mutex::new(DB::open_default("./message.db").unwrap()))
 }
 
+/// Grab a mutex-wrapped database identity handle.
 pub fn get_identity_database_handle() -> Arc<Mutex<DB>> {
     Arc::new(Mutex::new(DB::open_default("./identity.db").unwrap()))
 }
 
+/// Submit a single message. Used to send a single message.
 pub fn insert_message(db_lock: Arc<Mutex<DB>>, message: Message) -> Result<(), Error> {
     let db = db_lock.lock().unwrap();
     let message_bytes = message.encode();
@@ -48,6 +51,7 @@ pub fn insert_message(db_lock: Arc<Mutex<DB>>, message: Message) -> Result<(), E
     Ok(())
 }
 
+/// Insert a full list of retrieved messages. Used to download remote messages.
 pub fn insert_message_list(
     messages_db: Arc<Mutex<DB>>,
     messages_list: Vec<Message>,
@@ -71,12 +75,14 @@ pub fn retrieve_messages(db_lock: Arc<Mutex<DB>>, identity: Identity) -> Vec<Mes
     message_list
 }
 
+/// Commit a new identity to the local database.
 pub fn insert_identity(db_lock: Arc<Mutex<DB>>, identity: &Identity) -> Result<(), Error> {
     let db = db_lock.lock().unwrap();
     db.put::<_, Vec<_>>(identity.id, identity.encode()).unwrap();
     Ok(())
 }
 
+/// Retrieve an identity from the local database by id array.
 pub fn retrieve_identity(db_lock: Arc<Mutex<DB>>, id: [u8; 4]) -> Identity {
     let db = db_lock.lock().unwrap();
     let return_value = db.get(id).expect("failed to retrieve identity");
