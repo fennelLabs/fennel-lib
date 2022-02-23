@@ -100,7 +100,7 @@ impl FennelLocalDb {
             .collect();
         let cf = db
             .cf_handle(&cf(&columns::MESSAGES))
-            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+            .ok_or(Error::CfHandle(columns::MESSAGES))?;
         db.put_cf(&cf, m, message_bytes)?;
         Ok(())
     }
@@ -117,7 +117,7 @@ impl FennelLocalDb {
         let mut message_list: Vec<Message> = Vec::new();
         let cf = db
             .cf_handle(&cf(&columns::MESSAGES))
-            .ok_or(Error::CfHandle(columns::IDENTITIES))?;
+            .ok_or(Error::CfHandle(columns::MESSAGES))?;
         for (key, value) in db.iterator_cf(&cf, IteratorMode::Start) {
             if key[0..4] == identity.id {
                 message_list.push(Decode::decode(&mut &(*value))?);
