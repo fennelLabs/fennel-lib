@@ -2,9 +2,9 @@
 
 mod error;
 
-use subxt::{
-    sp_core::sr25519::Pair, Client, ClientBuilder, Config, DefaultConfig, DefaultExtra, PairSigner,
-};
+use std::fmt::Result;
+
+use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
 pub use self::error::Error;
 use crate::database::FennelLocalDb;
@@ -84,24 +84,71 @@ impl TransactionHandler {
 
         Ok(())
     }
-}
 
-pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
-    env_logger::init();
+    pub async fn fetch_identities() -> Result<(), Box<dyn std::error::Error>> {
+        env_logger::init();
 
-    let api = ClientBuilder::new()
-        .build()
-        .await?
-        .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+        let api = ClientBuilder::new()
+            .build()
+            .await?
+            .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
 
-    let mut iter = api
-        .storage()
-        .identity_module()
-        .identity_list_iter(None)
-        .await?;
+        let mut iter = api
+            .storage()
+            .identity_module()
+            .identity_list_iter(None)
+            .await?;
 
-    while let Some((key, identity)) = iter.next().await? {
-        println!("{}: {:?}", hex::encode(key), identity);
+        while let Some((key, identity)) = iter.next().await? {
+            println!("{}: {:?}", hex::encode(key), identity);
+        }
+        Ok(())
     }
-    Ok(())
+
+    pub async fn announce_public_key() -> Result<(), Box<dyn std::error::Error>> {
+        env_logger::init();
+        let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
+
+        let identity = self
+            .runtime
+            .tx()
+            .keystore_module()
+            .announce_key()
+            .sign_and_submit_then_watch(&signer)
+            .await?
+            .wait_for_finalized_success()
+            // FIXME: Should be in error enum with GenericError
+            .await
+            .unwrap();
+
+        let identity_event =
+            identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+
+        if let Some(event) = identity_event {
+            println!("Identity Create success: {event:?}");
+        } else {
+            println!("Failed to find identity_module::Transfer Event");
+        }
+        Ok(())
+    }
+
+    pub async fn fetch_public_keys() -> Result<(), Box<dyn std::error::Error>> {
+        env_logger::init();
+
+        let api = ClientBuilder::new()
+            .build()
+            .await?
+            .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+
+        let mut iter = api
+            .storage()
+            .keystore_module()
+            .issued_keys_iter(None)
+            .await?;
+
+        while let Some((key, public_key)) = iter.next().await? {
+            println!("{}: {:?}", hex::encode(key), public_key);
+        }
+        Ok(())
+    }
 }

@@ -5,7 +5,7 @@ mod tests;
 use crate::rsa_tools::hash;
 use codec::{Decode, Encode};
 use parking_lot::Mutex;
-use rocksdb::{ColumnFamilyDescriptor, DBPath, IteratorMode, Options, DB};
+use rocksdb::{ColumnFamilyDescriptor, IteratorMode, Options, DB};
 use std::{fs, path::Path, sync::Arc};
 
 pub use error::Error;
@@ -76,7 +76,7 @@ impl FennelLocalDb {
                 // retry and create CFs
                 match DB::open_cf(&opts, path.as_ref(), &[] as &[&str]) {
                     Ok(mut db) => {
-                        for (i, name) in column_names.iter().enumerate() {
+                        for (_, name) in column_names.iter().enumerate() {
                             let _ = db.create_cf(name, &opts)?;
                         }
                         Ok(db)
@@ -106,7 +106,6 @@ impl FennelLocalDb {
     }
 
     pub fn insert_message_list(&self, messages_list: Vec<Message>) -> Result<(), Error> {
-        let db = self.db.lock();
         for message in messages_list {
             self.insert_message(message)?;
         }

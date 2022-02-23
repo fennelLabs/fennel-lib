@@ -1,5 +1,4 @@
 use crate::database::*;
-use std::sync::Arc;
 
 #[test]
 fn test_insert_and_retrieve_message() {
