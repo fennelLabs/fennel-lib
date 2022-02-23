@@ -4,27 +4,6 @@ use crate::rsa_tools::*;
 use test::Bencher;
 
 #[bench]
-fn bench_generate_2048(b: &mut Bencher) {
-    b.iter(|| {
-        generate_keypair(2048);
-    });
-}
-
-#[bench]
-fn bench_generate_4096(b: &mut Bencher) {
-    b.iter(|| {
-        generate_keypair(4096);
-    });
-}
-
-#[bench]
-fn bench_generate_8192(b: &mut Bencher) {
-    b.iter(|| {
-        generate_keypair(8192);
-    });
-}
-
-#[bench]
 fn bench_encrypt(b: &mut Bencher) {
     let test = b"this is test text";
     let (_, public_key) = generate_keypair(2048);
