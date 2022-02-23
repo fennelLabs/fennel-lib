@@ -2,10 +2,14 @@
 
 mod error;
 
+use std::sync::{Arc, Mutex};
+
+use rocksdb::DB;
 use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
+use crate::{get_identity_database_handle, get_message_database_handle};
+
 pub use self::error::Error;
-use crate::database::FennelLocalDb;
 
 type RawIdentity = [u8; 4];
 
@@ -33,29 +37,33 @@ pub struct TransactionHandler {
     // however with our limited data (single gets/retrieves) this should be fast
     // enough that it is not noticeable.
     // alternatively, the database struct could spawn all getes onto the executor as a blocking op
-    db: FennelLocalDb,
+    identity_db: Arc<Mutex<DB>>,
+    messages_db: Arc<Mutex<DB>>,
 }
 
 impl TransactionHandler {
+    /// Set up a new transaction handler with all needed resources.
     pub async fn new() -> Result<Self, Error> {
         let runtime = ClientBuilder::new()
             .build()
             .await?
             .to_runtime_api::<RuntimeApi>();
-        let db = FennelLocalDb::new()?;
+        let identity_db = get_identity_database_handle();
+        let messages_db = get_message_database_handle();
 
-        Ok(Self { runtime, db })
+        Ok(Self { runtime, identity_db, messages_db })
     }
 
     /// submit an identity to the network
-    pub async fn add_or_update(&self, id: RawIdentity, signer: Pair) -> Result<(), Error> {
-        let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
+    // pub async fn add_or_update(&self, id: RawIdentity, signer: Pair) -> Result<(), Error> {
+    //     let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
 
-        // NOTE: identity module should probably be snake case, or just named `identity`
-        // api
-        Ok(())
-    }
+    //     // NOTE: identity module should probably be snake case, or just named `identity`
+    //     // api
+    //     Ok(())
+    // }
 
+    /// Submit a new identity to the Fennel network.
     pub async fn create_identity(&self, signer: Pair) -> Result<(), Error> {
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
 
@@ -83,6 +91,7 @@ impl TransactionHandler {
         Ok(())
     }
 
+    /// Retrieve the full list of identities from Fennel Protocol.
     pub async fn fetch_identities(&self) -> Result<(), Box<dyn std::error::Error>> {
         env_logger::init();
 
@@ -103,6 +112,7 @@ impl TransactionHandler {
         Ok(())
     }
 
+    /// Upload a public key to Fennel Protocol.
     pub async fn announce_public_key(
         &self,
         signer: Pair,
@@ -135,6 +145,7 @@ impl TransactionHandler {
         Ok(())
     }
 
+    /// Retrieve all known public keys from Fennel Protocol.
     pub async fn fetch_public_keys() -> Result<(), Box<dyn std::error::Error>> {
         env_logger::init();
 

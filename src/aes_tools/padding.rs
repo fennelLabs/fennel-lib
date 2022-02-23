@@ -17,10 +17,12 @@ pub fn pad(data: &[u8]) -> Vec<u8> {
     buffer
 }
 
+/// Calculates the size of an AES-encryptable bytestring.
 fn calculate_resize(size: usize) -> usize {
     size + (PAD_BASE - size % PAD_BASE)
 }
 
+/// Checks whether a message bytestring is a valid size.
 fn is_valid_size(data: &[u8]) -> bool {
     data.len() % PAD_BASE == 0
 }
