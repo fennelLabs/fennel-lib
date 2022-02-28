@@ -8,3 +8,4 @@ message.db
 Private.key
 Public.key
 test.txt
+.DS_Store
