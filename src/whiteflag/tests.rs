@@ -1,7 +1,9 @@
+use crate::WhiteflagMessage;
+
 #[cfg(test)]
 #[test]
 fn test_create_new_message() {
-    let message = WhiteflagMessage::new("S");
+    let mut message = WhiteflagMessage::new("S".to_string());
     assert_eq!(message.message_type, "S");
     assert!(message.is_valid());
 
@@ -18,24 +20,21 @@ fn test_create_new_message() {
         message.message_code
     );
 
-    assert!(message.set("EncryptionIndicator", "1"));
-    assert!(!message.set("EncryptionIndicator", "2"));
-    assert!(!message.set("ObjectType", "1"));
+    assert!(message.set_encryption_indicator("1".to_string()));
+    assert!(!message.set_encryption_indicator("2".to_string()));
+    assert!(!message.set_object_type("1".to_string()));
 
     /* Verify body fields */
-    assert!(message.set("SubjectCode", "10"));
-    assert!(!message.set("SubjectCode", "20"));
-    assert!(message.set("ObjectType", "21"));
-    assert!(!message.set("ObjectType", "22"));
-    assert!(!message.set("NoField", "00"));
+    assert!(message.set_subject_code("10".to_string()));
+    assert!(!message.set_subject_code("20".to_string()));
+    assert!(message.set_object_type("21".to_string()));
+    assert!(!message.set_object_type("22".to_string()));
 
     /* Verify metadata */
-
-    use crate::WhiteflagMessage;
-    assertEquals(null, message.addMetadata("transactionHash", "a1b2c3"));
-    assertEquals("a1b2c3", message.addMetadata("transactionHash", "d4e5f6"));
-    assertEquals(null, message.addMetadata("originatorAddress", "abc123"));
-    assertEquals("abc123", message.getMetadata("originatorAddress"));
+    assert_eq!(None, message.set_transaction_hash("a1b2c3".to_string()));
+    assert_eq!("a1b2c3", message.set_transaction_hash("d4e5f6".to_string()).unwrap());
+    assert_eq!(None, message.set_originator_address("abc123".to_string()));
+    assert_eq!("abc123", message.get_originator_address());
 }
 
 #[test]
