@@ -97,7 +97,8 @@ impl WhiteflagMessage {
             self.subject_code = arg;
             return true;
         }
-        return false;}
+        return false;
+    }
 
     pub fn get_object_type(&self) -> String {
         self.object_type.clone()
@@ -107,7 +108,8 @@ impl WhiteflagMessage {
             self.object_type = arg;
             return true;
         }
-        return false;}
+        return false;
+    }
 
     pub fn get_transaction_hash(&self) -> String {
         self.transaction_hash.clone()
