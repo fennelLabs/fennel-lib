@@ -13,7 +13,6 @@ fn test_create_new_message() {
 
     assert!(message.set_encryption_indicator("1".to_string()));
     assert!(!message.set_encryption_indicator("2".to_string()));
-    assert!(!message.set_object_type("1".to_string()));
 
     /* Verify body fields */
     assert!(message.set_subject_code("10".to_string()));

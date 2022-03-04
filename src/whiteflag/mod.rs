@@ -36,7 +36,7 @@ impl WhiteflagMessage {
             duress_indictor: "".to_string(),
             encryption_indicator: "".to_string(),
             object_type: "".to_string(),
-            subject_code: message_code,
+            subject_code: "".to_string(),
             reference_indicator: "".to_string(),
             referenced_message: "".to_string(),
             crypto_data_type: "".to_string(),
@@ -49,27 +49,27 @@ impl WhiteflagMessage {
     }
 
     pub fn is_valid(&self) -> bool {
-        false
+        self.message_code == self.message_type && self.prefix != "" && self.version == "1"
     }
 
     pub fn compile_auth_message(field_values: Vec<&str>) -> Option<WhiteflagMessage> {
         let message = WhiteflagMessage {
             prefix: field_values[0].to_string(),
             version: field_values[1].to_string(),
-            message_code: field_values[2].to_string(),
-            message_type: field_values[3].to_string(),
-            duress_indictor: field_values[4].to_string(),
-            encryption_indicator: field_values[5].to_string(),
-            object_type: field_values[6].to_string(),
-            subject_code: field_values[7].to_string(),
-            reference_indicator: field_values[8].to_string(),
-            referenced_message: field_values[9].to_string(),
-            crypto_data_type: field_values[10].to_string(),
-            crypto_data: field_values[11].to_string(),
-            transaction_hash: field_values[12].to_string(),
-            originator_address: field_values[13].to_string(),
-            verification_method: field_values[14].to_string(),
-            verification_data: field_values[15].to_string(),
+            message_code: field_values[4].to_string(),
+            message_type: "A".to_string(),
+            duress_indictor: field_values[3].to_string(),
+            encryption_indicator: field_values[2].to_string(),
+            object_type: "".to_string(),
+            subject_code: "".to_string(),
+            reference_indicator: field_values[5].to_string(),
+            referenced_message: field_values[6].to_string(),
+            crypto_data_type: "".to_string(),
+            crypto_data: "".to_string(),
+            transaction_hash: "".to_string(),
+            originator_address: "".to_string(),
+            verification_method: field_values[7].to_string(),
+            verification_data: field_values[8].to_string(),
         };
         if message.is_valid() {
             return Some(message);
