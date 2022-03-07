@@ -25,6 +25,7 @@ pub struct Message {
     pub signature: [u8; 1024],
     pub public_key: [u8; 1038],
     pub recipient_id: [u8; 4],
+    pub message_type: [u8; 1],
 }
 
 /// Grab a mutex-wrapped message database handle.

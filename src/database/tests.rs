@@ -12,6 +12,7 @@ fn test_insert_and_retrieve_message() {
         signature: [0; 1024],
         public_key: [0; 1038],
         recipient_id: [2; 4],
+        message_type: [0; 1],
     };
     insert_message(db, message_sent).expect("failed message insertion");
     let result: Vec<Message> = retrieve_messages(
