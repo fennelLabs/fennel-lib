@@ -30,12 +30,12 @@ pub struct Message {
 
 /// Grab a mutex-wrapped message database handle.
 pub fn get_message_database_handle() -> Arc<Mutex<DB>> {
-    Arc::new(Mutex::new(DB::open_default("./message.db").unwrap()))
+    Arc::new(Mutex::new(DB::open_default("./messagetest.db").unwrap()))
 }
 
 /// Grab a mutex-wrapped database identity handle.
 pub fn get_identity_database_handle() -> Arc<Mutex<DB>> {
-    Arc::new(Mutex::new(DB::open_default("./identity.db").unwrap()))
+    Arc::new(Mutex::new(DB::open_default("./identitytest.db").unwrap()))
 }
 
 /// Submit a single message. Used to send a single message.
