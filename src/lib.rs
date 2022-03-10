@@ -11,8 +11,8 @@ use codec::{Decode, Encode};
 pub use crate::aes_tools::*;
 pub use crate::database::*;
 pub use crate::dh_tools::*;
-pub use crate::rsa_tools::*;
 pub use crate::fennel::*;
+pub use crate::rsa_tools::*;
 
 #[derive(Copy, Clone, Encode, Decode, Debug)]
 pub struct FennelServerPacket {
