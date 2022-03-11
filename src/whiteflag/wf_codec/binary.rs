@@ -19,3 +19,20 @@ pub fn encodeBIN(binary_str: String) -> Vec<u8> {
 
     buffer
 }
+
+pub fn decodeBIN(buffer: Vec<u8>, bit_length: usize) -> String {
+    let mut data: Vec<char> = Vec::new();
+
+    for bit_index in 0..bit_length {
+        let byte_cursor: usize = bit_index / BYTE;
+        let bit_position: usize = bit_index % BYTE;
+
+        if (buffer[byte_cursor] >> (BYTE - bit_position - 1) & 1) == 1 {
+            data.push('1');
+        } else {
+            data.push('0');
+        }
+    }
+
+    data.into_iter().collect() //to lower?
+}
