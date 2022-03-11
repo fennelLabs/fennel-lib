@@ -1,12 +1,6 @@
-const HEXPATTERN: &'static str = "^[a-fA-F0-9]*$";
-const BINPREFIX: &'static str = "0b";
-const HEXPREFIX: &'static str = "0x";
-const BINRADIX: u8 = 2;
-const HEXRADIX: u8 = 16;
-const BYTE: u8 = 8;
-const OCTET: u8 = 8;
-const QUADBIT: u8 = 4;
-const BIT: u8 = 1;
+mod codec;
+
+use codec::constants::*;
 
 //https://github.com/WhiteflagProtocol/whiteflag-java/blob/57db4b6963a4a7913afdeb596e7ce11d46d9d93b/src/main/java/org/whiteflagprotocol/java/core/WfBinaryBuffer.java#L299
 pub fn to_hex(data: Vec<u32>) -> String {
