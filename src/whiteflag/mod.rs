@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests;
 
+mod wf_codec;
+
 #[derive(Clone)]
 pub struct WhiteflagMessage {
     prefix: String,
