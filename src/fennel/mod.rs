@@ -5,7 +5,7 @@ mod error;
 use std::sync::{Arc, Mutex};
 
 use rocksdb::DB;
-use sp_keyring::AccountKeyring;
+
 use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
 use crate::{get_identity_database_handle, get_message_database_handle};
