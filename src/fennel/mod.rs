@@ -45,16 +45,16 @@ impl TransactionHandler {
     /// Set up a new transaction handler with all needed resources.
     pub async fn new() -> Result<Self, Error> {
         println!("Instantiate TransactionHandler");
-        let runtime = ClientBuilder::new()
-            .set_url(String::from("wss://localhost:9944"))
-            .build()
-            .await?
-            .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+        //let runtime = ClientBuilder::new()
+        //    .set_url(String::from("wss://localhost:9944"))
+        //    .build()
+        //    .await?
+        //    .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
         //let identity_db = get_identity_database_handle();
         //let messages_db = get_message_database_handle();
 
         Ok(Self {
-            runtime,
+            //runtime,
             //identity_db,
             //messages_db,
         })
