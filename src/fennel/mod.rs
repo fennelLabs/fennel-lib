@@ -37,8 +37,8 @@ pub struct TransactionHandler {
     // however with our limited data (single gets/retrieves) this should be fast
     // enough that it is not noticeable.
     // alternatively, the database struct could spawn all getes onto the executor as a blocking op
-    identity_db: Arc<Mutex<DB>>,
-    messages_db: Arc<Mutex<DB>>,
+    //identity_db: Arc<Mutex<DB>>,
+    //messages_db: Arc<Mutex<DB>>,
 }
 
 impl TransactionHandler {
