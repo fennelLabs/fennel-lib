@@ -4,10 +4,10 @@ mod error;
 
 use std::sync::{Arc, Mutex};
 
+use crate::{get_identity_database_handle, get_message_database_handle};
 use rocksdb::DB;
 use sp_keyring::AccountKeyring;
 use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
-use crate::{get_identity_database_handle, get_message_database_handle};
 
 pub use self::error::Error;
 
@@ -79,22 +79,23 @@ impl TransactionHandler {
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
         let identity = self
-           .runtime
-           .tx()
-           .identity_module()
-           .create_identity()
-           .sign_and_submit_then_watch(&signer)
-           .await?
-           .wait_for_finalized_success()
-           .await.unwrap();
+            .runtime
+            .tx()
+            .identity_module()
+            .create_identity()
+            .sign_and_submit_then_watch(&signer)
+            .await?
+            .wait_for_finalized_success()
+            .await
+            .unwrap();
 
         let identity_event =
-           identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+            identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
-       if let Some(event) = identity_event {
-           println!("Identity Create success: {event:?}");
-       } else {
-           println!("Failed to find identity_module::Transfer Event");
+        if let Some(event) = identity_event {
+            println!("Identity Create success: {event:?}");
+        } else {
+            println!("Failed to find identity_module::Transfer Event");
         }
 
         Ok(())
