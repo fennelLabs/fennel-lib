@@ -72,8 +72,9 @@ impl TransactionHandler {
     /// Submit a new identity to the Fennel network.
     pub async fn create_identity(&self, pair: Pair) -> Result<(), Error> {
         //let signer = PairSigner::new(AccountKeyring::Alice.pair());
-        println!("Submit a new identity to the Fennel network.");
+        log::debug!("Submit a new identity to the Fennel network.");
         env_logger::init();
+
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
         let identity = self
@@ -92,8 +93,8 @@ impl TransactionHandler {
         
 
 
-        //let identity_event =
-        //    identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+        let identity_event =
+            identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
    //     if let Some(event) = identity_event {
      //       println!("Identity Create success: {event:?}");
