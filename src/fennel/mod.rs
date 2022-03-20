@@ -46,7 +46,7 @@ impl TransactionHandler {
     pub async fn new() -> Result<Self, Error> {
         println!("Instantiate TransactionHandler");
         let runtime = ClientBuilder::new()
-            .set_url(String::from("ws://localhost:9944"))
+            .set_url(String::from("http://localhost:9933"))
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
@@ -77,17 +77,17 @@ impl TransactionHandler {
 
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
-        let identity = self
-            .runtime
-            .tx()
-            .identity_module()
-            .create_identity()
-            .sign_and_submit_then_watch(&signer)
+        //let identity = self
+        //    .runtime
+        //    .tx()
+        //    .identity_module()
+        //    .create_identity()
+        //    .sign_and_submit_then_watch(&signer)
             //.sign_and_submit(&signer)
-            .await?
-            .wait_for_finalized_success()
+        //    .await?
+        //    .wait_for_finalized_success()
             // FIXME: Should be in error enum with GenericError
-            .await.unwrap();
+        //    .await.unwrap();
 
         //let identity_event =
         //    identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
