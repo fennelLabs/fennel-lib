@@ -44,6 +44,7 @@ pub struct TransactionHandler {
 impl TransactionHandler {
     /// Set up a new transaction handler with all needed resources.
     pub async fn new() -> Result<Self, Error> {
+        println!("Instantiate TransactionHandler");
         let runtime = ClientBuilder::new()
             .build()
             .await?
@@ -68,9 +69,10 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-    pub async fn create_identity(&self) -> Result<(), Error> {
-        let signer = PairSigner::new(AccountKeyring::Alice.pair());
-        //let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
+    pub async fn create_identity(&self, pair: Pair) -> Result<(), Error> {
+        //let signer = PairSigner::new(AccountKeyring::Alice.pair());
+        println!("Submit a new identity to the Fennel network.");
+        let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
         let identity = self
             .runtime
