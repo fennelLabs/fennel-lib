@@ -46,7 +46,7 @@ impl TransactionHandler {
     pub async fn new() -> Result<Self, Error> {
         println!("Instantiate TransactionHandler");
         let runtime = ClientBuilder::new()
-            .set_url(String::from("http://localhost:9933"))
+            .set_url(String::from("wss://localhost:9944"))
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
@@ -72,7 +72,8 @@ impl TransactionHandler {
     /// Submit a new identity to the Fennel network.
     pub async fn create_identity(&self, pair: Pair) -> Result<(), Error> {
         //let signer = PairSigner::new(AccountKeyring::Alice.pair());
-        log::debug!("Submit a new identity to the Fennel network.");
+        //This never actually prints
+        println!("Submit a new identity to the Fennel network.");
         env_logger::init();
 
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
