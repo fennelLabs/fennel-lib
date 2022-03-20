@@ -86,8 +86,7 @@ impl TransactionHandler {
             .await?
             .wait_for_finalized_success()
             // FIXME: Should be in error enum with GenericError
-            .await;
-            //.unwrap();
+            .await.unwrap();
 
    
         
