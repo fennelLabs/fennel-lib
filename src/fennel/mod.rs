@@ -78,26 +78,24 @@ impl TransactionHandler {
 
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
-        //let identity = self
-        //    .runtime
-        //    .tx()
-        //    .identity_module()
-        //    .create_identity()
-        //    .sign_and_submit_then_watch(&signer)
-            //.sign_and_submit(&signer)
-        //    .await?
-        //    .wait_for_finalized_success()
-            // FIXME: Should be in error enum with GenericError
-        //    .await.unwrap();
+        let identity = self
+           .runtime
+           .tx()
+           .identity_module()
+           .create_identity()
+           .sign_and_submit_then_watch(&signer)
+           .await?
+           .wait_for_finalized_success()
+           .await.unwrap();
 
-        //let identity_event =
-        //    identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+        let identity_event =
+           identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
-   //     if let Some(event) = identity_event {
-     //       println!("Identity Create success: {event:?}");
-       // } else {
-         //   println!("Failed to find identity_module::Transfer Event");
-        //}
+       if let Some(event) = identity_event {
+           println!("Identity Create success: {event:?}");
+       } else {
+           println!("Failed to find identity_module::Transfer Event");
+        }
 
         Ok(())
     }
