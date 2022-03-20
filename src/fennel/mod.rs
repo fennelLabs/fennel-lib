@@ -48,7 +48,7 @@ impl TransactionHandler {
         let runtime = ClientBuilder::new()
             .build()
             .await?
-            .to_runtime_api::<RuntimeApi>();
+            .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
         let identity_db = get_identity_database_handle();
         let messages_db = get_message_database_handle();
 
@@ -81,20 +81,25 @@ impl TransactionHandler {
             .identity_module()
             .create_identity()
             .sign_and_submit_then_watch(&signer)
+            //.sign_and_submit(&signer)
             .await?
             .wait_for_finalized_success()
             // FIXME: Should be in error enum with GenericError
-            .await
-            .unwrap();
+            .await;
+            //.unwrap();
 
-        let identity_event =
-            identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+   
+        
 
-        if let Some(event) = identity_event {
-            println!("Identity Create success: {event:?}");
-        } else {
-            println!("Failed to find identity_module::Transfer Event");
-        }
+
+        //let identity_event =
+        //    identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+
+   //     if let Some(event) = identity_event {
+     //       println!("Identity Create success: {event:?}");
+       // } else {
+         //   println!("Failed to find identity_module::Transfer Event");
+        //}
 
         Ok(())
     }
