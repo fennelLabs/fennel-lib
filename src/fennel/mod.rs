@@ -50,13 +50,13 @@ impl TransactionHandler {
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
-        let identity_db = get_identity_database_handle();
-        let messages_db = get_message_database_handle();
+        //let identity_db = get_identity_database_handle();
+        //let messages_db = get_message_database_handle();
 
         Ok(Self {
             runtime,
-            identity_db,
-            messages_db,
+            //identity_db,
+            //messages_db,
         })
     }
 
@@ -89,8 +89,8 @@ impl TransactionHandler {
             // FIXME: Should be in error enum with GenericError
             .await.unwrap();
 
-        let identity_event =
-            identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
+        //let identity_event =
+        //    identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
    //     if let Some(event) = identity_event {
      //       println!("Identity Create success: {event:?}");
