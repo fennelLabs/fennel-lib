@@ -46,7 +46,7 @@ impl TransactionHandler {
     pub async fn new() -> Result<Self, Error> {
         println!("Instantiate TransactionHandler");
         let runtime = ClientBuilder::new()
-            .set_url("ws://localhost:9944")
+            .set_url(String::from("ws://localhost:9944"))
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
