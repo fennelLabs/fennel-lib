@@ -3,8 +3,9 @@ use super::constants::BYTE;
 /**
  * Calculates the number of bytes required to hold the given number of bits
  */
-pub fn byte_length(bit_length: usize) -> usize {
-    (bit_length / BYTE) + (if (bit_length % BYTE) > 0 { 1 } else { 0 })
+pub fn byte_length(bit_length: isize) -> isize {
+    let i_BYTE = BYTE as isize;
+    (bit_length / i_BYTE ) + (if (bit_length % i_BYTE) > 0 { 1 } else { 0 })
 }
 
 /**
@@ -20,18 +21,18 @@ pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
 
     let (byte_length, clear_bits) = match is_positive {
         true => {
-            let length = byte_length(u_bit_length);
-            if length > buffer.len() {
-                return buffer[0..length].to_vec();
+            let length = byte_length(bit_length);
+            if length > buffer.len() as isize {
+                return buffer[0..length as usize].to_vec();
             }
-            (length, BYTE - (u_bit_length % BYTE))
+            (length as usize, BYTE - (u_bit_length % BYTE))
         }
         false => {
-            let length = buffer.len() - (u_bit_length / BYTE);
+            let length: isize = buffer.len() as isize - (-bit_length / (BYTE as isize));
             if length < 1 {
                 return vec![0];
             }
-            (length, u_bit_length)
+            (length as usize, u_bit_length)
         }
     };
 
@@ -79,14 +80,15 @@ pub fn shift_left(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
     }
 
     let mask: u8 = 0xFF << (BYTE - modulate);
-    let length = buffer.len() + 1;
+    let length = buffer.len();
     let mut new_buffer = vec![0; length];
 
     for i in 0..length {
-        let b = buffer[i];
-        new_buffer[i] = (0xFF & b) << modulate;
-        new_buffer[i] |= (0xFF & b & mask) >> (BYTE - modulate);
+        new_buffer[i] = (0xFF & buffer[i]) << modulate;
+        if i < length - 1 {
+            new_buffer[i] |= (0xFF & buffer[i + 1] & mask) >> (BYTE - modulate);
+        }
     }
 
-    crop_bits(new_buffer, -1 * (shift % BYTE) as isize)
+    crop_bits(new_buffer, -1 * ((shift % BYTE) as isize))
 }
