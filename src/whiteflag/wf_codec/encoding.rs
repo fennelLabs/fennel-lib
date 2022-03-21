@@ -1,6 +1,7 @@
-use super::binary::encode_binary;
+use super::binary::{decode_binary, encode_binary};
+use super::common::shift_left;
 use super::constants::*;
-use super::hexadecimal::encode_bdx;
+use super::hexadecimal::{decode_bdx, encode_bdx};
 use super::latlong::encode_latlong;
 
 //https://github.com/WhiteflagProtocol/whiteflag-java/blob/57db4b6963a4a7913afdeb596e7ce11d46d9d93b/src/main/java/org/whiteflagprotocol/java/core/WfBinaryBuffer.java#L299
@@ -130,6 +131,53 @@ impl Encoding {
             EncodingKind::LAT | EncodingKind::LONG => encode_latlong(value),
             _ => vec![0],
         }
+    }
+
+    fn decode(&self, buffer: Vec<u8>, bit_length: usize) -> String {
+        let mut s = String::new();
+
+        match &self.kind {
+            EncodingKind::UTF8 => {
+                return String::from_utf8(buffer).expect("utf8 error");
+            }
+            EncodingKind::BIN => {
+                return decode_binary(buffer, bit_length);
+            }
+            EncodingKind::DEC | EncodingKind::HEX => {
+                return decode_bdx(buffer, bit_length);
+            }
+            EncodingKind::DATETIME => {
+                s.push_str(decode_bdx(buffer, bit_length).as_str());
+
+                s.insert(4, '-');
+                s.insert(7, '-');
+                s.insert(10, 'T');
+                s.insert(13, ':');
+                s.insert(16, ':');
+                s.insert(19, 'Z');
+            }
+            EncodingKind::DURATION => {
+                s.push_str(decode_bdx(buffer, bit_length).as_str());
+
+                s.insert(0, 'P');
+                s.insert(3, 'D');
+                s.insert(6, 'H');
+                s.insert(9, 'M');
+            }
+            EncodingKind::LAT | EncodingKind::LONG => {
+                let sign = if ((buffer[0] >> (BYTE - 1)) & 1) == 1 {
+                    '+'
+                } else {
+                    '-'
+                };
+
+                s.push(sign);
+                s.push_str(decode_bdx(shift_left(buffer, 1), bit_length - 1).as_str());
+                s.insert(s.len() - 5, '.');
+            }
+        }
+
+        s
     }
 }
 

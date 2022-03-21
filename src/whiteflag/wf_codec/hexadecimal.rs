@@ -29,13 +29,13 @@ fn from_hex_digit(data: u8) -> char {
 }
 
 /// Decodes a binary buffer into a (hexa)decimal string
-pub fn decode_bdx(buffer: Vec<u8>, bit_length: u8) -> String {
+pub fn decode_bdx(buffer: Vec<u8>, bit_length: usize) -> String {
     let mut hexadecimal_string: Vec<char> = Vec::new();
 
     for bit_index in (0..bit_length).step_by(BYTE) {
         let byte_cursor = bit_index as usize / BYTE;
         hexadecimal_string.push(from_hex_digit((buffer[byte_cursor] >> QUADBIT) & 0xF));
-        if (bit_index + (QUADBIT as u8)) < bit_length {
+        if (bit_index + QUADBIT) < bit_length {
             hexadecimal_string.push(from_hex_digit(buffer[byte_cursor] & 0xF));
         }
     }
