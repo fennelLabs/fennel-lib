@@ -1,7 +1,7 @@
 use super::constants::{BYTE, HEXRADIX, QUADBIT};
 
 /// Encodes a (hexa)decimal string into a binary buffer
-pub fn encode_bdx(mut data: Vec<char>) -> Vec<u32> {
+pub fn encode_bdx(mut data: Vec<char>) -> Vec<u8> {
     if data.len() % 2 == 1 {
         data.push('0');
     }
@@ -10,26 +10,25 @@ pub fn encode_bdx(mut data: Vec<char>) -> Vec<u32> {
     let mut buffer = vec![0; input_length / 2];
 
     for i in (0..input_length).step_by(2) {
-        let digit0: u32 = to_hex_digit(data.get(i));
-        let digit1: u32 = to_hex_digit(data.get(i + 1));
+        let digit0: u8 = to_hex_digit(data.get(i));
+        let digit1: u8 = to_hex_digit(data.get(i + 1));
         buffer[i / 2] = (digit0 << QUADBIT) + digit1;
     }
 
     buffer
 }
 
-fn to_hex_digit(data: Option<&char>) -> u32 {
-    data.expect("out of bounds")
-        .to_digit(HEXRADIX as u32)
+fn to_hex_digit(data: Option<&char>) -> u8 {
+    u8::from_str_radix(&data.expect("out of bounds").to_string(), HEXRADIX as u32)
         .expect("failed to convert to digit")
 }
 
-fn from_hex_digit(data: u32) -> char {
-    std::char::from_digit(data, HEXRADIX as u32).expect("failed to convert to char")
+fn from_hex_digit(data: u8) -> char {
+    std::char::from_digit(data as u32, HEXRADIX as u32).expect("failed to convert to char")
 }
 
 /// Decodes a binary buffer into a (hexa)decimal string
-pub fn decode_bdx(buffer: Vec<u32>, bit_length: u8) -> String {
+pub fn decode_bdx(buffer: Vec<u8>, bit_length: u8) -> String {
     let mut hexadecimal_string: Vec<char> = Vec::new();
 
     for bit_index in (0..bit_length).step_by(BYTE) {
