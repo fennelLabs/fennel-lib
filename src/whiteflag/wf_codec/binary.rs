@@ -1,6 +1,6 @@
 use super::constants::BYTE;
 
-pub fn encodeBIN(binary_str: String) -> Vec<u8> {
+pub fn encode_binary(binary_str: String) -> Vec<u8> {
     let bit_length: usize = binary_str.len();
     let byte_length: usize = (bit_length / BYTE)
         + (match bit_length % BYTE == 0 {
@@ -20,7 +20,7 @@ pub fn encodeBIN(binary_str: String) -> Vec<u8> {
     buffer
 }
 
-pub fn decodeBIN(buffer: Vec<u8>, bit_length: usize) -> String {
+pub fn decode_binary(buffer: Vec<u8>, bit_length: usize) -> String {
     let mut data: Vec<char> = Vec::new();
 
     for bit_index in 0..bit_length {
