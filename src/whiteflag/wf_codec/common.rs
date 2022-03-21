@@ -5,7 +5,7 @@ use super::constants::BYTE;
  */
 pub fn byte_length(bit_length: isize) -> isize {
     let i_BYTE = BYTE as isize;
-    (bit_length / i_BYTE ) + (if (bit_length % i_BYTE) > 0 { 1 } else { 0 })
+    (bit_length / i_BYTE) + (if (bit_length % i_BYTE) > 0 { 1 } else { 0 })
 }
 
 /**
@@ -28,7 +28,7 @@ pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
             (length as usize, BYTE - (u_bit_length % BYTE))
         }
         false => {
-            let length: isize = buffer.len() as isize - (-bit_length / (BYTE as isize));
+            let length: isize = buffer.len() as isize + (bit_length / (BYTE as isize));
             if length < 1 {
                 return vec![0];
             }
@@ -49,8 +49,12 @@ pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
 /**
  * Shifts bits in a byte array to the right modulo 8
  */
-pub fn shift_right(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
-    let modulate: usize = shift % BYTE;
+pub fn shift_right(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
+    if shift < 0 {
+        return shift_left(buffer, -shift);
+    }
+
+    let modulate: usize = shift as usize % BYTE;
 
     if modulate == 0 {
         return buffer;
@@ -72,8 +76,12 @@ pub fn shift_right(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
 /**
  * Shifts bits in a byte array to the left modulo 8
  */
-pub fn shift_left(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
-    let modulate: usize = shift % BYTE;
+pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
+    if shift < 0 {
+        return shift_right(buffer, -shift);
+    }
+
+    let modulate: usize = shift as usize % BYTE;
 
     if modulate == 0 {
         return buffer;
@@ -90,5 +98,5 @@ pub fn shift_left(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
         }
     }
 
-    crop_bits(new_buffer, -1 * ((shift % BYTE) as isize))
+    crop_bits(new_buffer, -1 * (shift % BYTE as isize))
 }

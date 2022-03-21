@@ -20,9 +20,9 @@ fn test_shift_right_0() {
 fn test_shift_right_1() {
     let original: Vec<u8> = vec![0x53, 0x7D];
     let expected: Vec<u8> = vec![0x0A, 0x6F, 0xA0];
-    let shifted_bytes = common::shift_right(original.clone(), 3);
 
-    assert_array_eq(expected, shifted_bytes);
+    assert_array_eq(expected.clone(), common::shift_right(original.clone(), 3));
+    assert_array_eq(expected.clone(), common::shift_left(original.clone(), -3));
 }
 
 #[test]
@@ -38,9 +38,9 @@ fn test_shift_right_2() {
 fn test_shift_right_3() {
     let original: Vec<u8> = vec![0xE6, 0x38, 0x6D, 0x84];
     let expected: Vec<u8> = vec![0x0E, 0x63, 0x86, 0xD8, 0x40];
-    let shifted_bytes = common::shift_right(original.clone(), 12);
 
-    assert_array_eq(expected, shifted_bytes);
+    assert_array_eq(expected.clone(), common::shift_right(original.clone(), 12));
+    assert_array_eq(expected.clone(), common::shift_left(original.clone(), -12));
 }
 
 #[test]
@@ -55,9 +55,9 @@ fn test_shift_left_0() {
 fn test_shift_left_1() {
     let original: Vec<u8> = vec![0x53, 0x7D];
     let expected: Vec<u8> = vec![0x9B, 0xE8];
-    let shifted_bytes = common::shift_left(original.clone(), 3);
 
-    assert_array_eq(expected, shifted_bytes);
+    assert_array_eq(expected.clone(), common::shift_left(original.clone(), 3));
+    assert_array_eq(expected.clone(), common::shift_right(original.clone(), -11));
 }
 
 #[test]
