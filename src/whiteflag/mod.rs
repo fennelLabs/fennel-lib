@@ -3,6 +3,8 @@ mod tests;
 
 mod wf_codec;
 
+pub use wf_codec::*;
+
 #[derive(Clone)]
 pub struct WhiteflagMessage {
     prefix: String,

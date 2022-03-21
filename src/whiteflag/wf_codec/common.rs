@@ -56,11 +56,11 @@ pub fn shift_right(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
     }
 
     let mask: u8 = 0xFF >> (BYTE - modulate);
-    let length = buffer.len();
-    let mut new_buffer = Vec::<u8>::with_capacity(length + 1);
+    let length = buffer.len() + 1;
+    let mut new_buffer = vec![0; length]; //Vec::<u8>::with_capacity(length);
 
     for i in (1..length).rev() {
-        let b = buffer[i - 1];
+        let b = &buffer[i - 1];
         new_buffer[i] |= (0xFF & b & mask) << (BYTE - modulate);
         new_buffer[i - 1] = (0xFF & b) >> modulate;
     }
@@ -79,8 +79,8 @@ pub fn shift_left(buffer: Vec<u8>, shift: usize) -> Vec<u8> {
     }
 
     let mask: u8 = 0xFF << (BYTE - modulate);
-    let length = buffer.len();
-    let mut new_buffer = Vec::<u8>::with_capacity(length + 1);
+    let length = buffer.len() + 1;
+    let mut new_buffer = vec![0; length];
 
     for i in 0..length {
         let b = buffer[i];
