@@ -1,6 +1,6 @@
+use super::common::{crop_bits, shift_right};
 use super::constants::QUADBIT;
 use super::hexadecimal::encode_bdx;
-use super::common::{shift_right, crop_bits};
 
 /**
  * Encodes a datum string into binary buffer
