@@ -1,7 +1,8 @@
 use super::constants::{BYTE, HEXRADIX, QUADBIT};
 
 /// Encodes a (hexa)decimal string into a binary buffer
-pub fn encode_bdx(mut data: Vec<char>) -> Vec<u8> {
+pub fn encode_bdx(raw_input_str: String) -> Vec<u8> {
+    let mut data: Vec<char> = raw_input_str.chars().collect();
     if data.len() % 2 == 1 {
         data.push('0');
     }
