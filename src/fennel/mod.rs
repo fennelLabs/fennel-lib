@@ -98,6 +98,7 @@ impl TransactionHandler {
             match event {
                 fennel::identity_module::events::IdentityCreated(a, b) => {
                     println!("{}", a);
+                    return Ok(a);
                 }
             }
             //println!("Identity Create success: {event:?}");
