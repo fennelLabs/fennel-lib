@@ -50,8 +50,10 @@ impl TransactionHandler {
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
-        //let identity_db = get_identity_database_handle();
-        //let messages_db = get_message_database_handle();
+            //Maybe we shouldn't couple
+            //database functionality here
+            //let identity_db = get_identity_database_handle();
+            //let messages_db = get_message_database_handle();
 
         Ok(Self {
             runtime,
@@ -70,9 +72,9 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-    pub async fn create_identity(&self, pair: Pair) -> Result<(), Error> {
-        //let signer = PairSigner::new(AccountKeyring::Alice.pair());
-        //This never actually prints
+    //pub async fn create_identity(&self, pair: Pair) -> Result<fennel::identity_module::events::IdentityCreated, Error> {
+        pub async fn create_identity(&self, pair: Pair) -> Result<u32, Error> {
+       
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
 
@@ -93,12 +95,19 @@ impl TransactionHandler {
             identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
         if let Some(event) = identity_event {
-            println!("Identity Create success: {event:?}");
+            match event {
+                fennel::identity_module::events::IdentityCreated(a, b) => {
+                    println!("{}", a);
+                }
+            }
+            //println!("Identity Create success: {event:?}");
         } else {
             println!("Failed to find identity_module::Transfer Event");
         }
 
-        Ok(())
+        Ok(0)
+
+        
     }
 
     /// Retrieve the full list of identities from Fennel Protocol.
