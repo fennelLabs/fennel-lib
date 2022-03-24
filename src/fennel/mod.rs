@@ -72,7 +72,7 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-        pub async fn create_identity(&self, pair: Pair) -> Result<subxt::sp_runtime::AccountId32, Box<dyn std::error::Error>> {
+        pub async fn create_identity(&self, pair: Pair) -> Result<subxt::sp_runtime::AccountId32, Box<dyn Error>> {
        
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
