@@ -97,7 +97,7 @@ impl TransactionHandler {
             match event {
                 fennel::identity_module::events::IdentityCreated(a, b) => {
                     println!("Fennel Protocol Identity successfully created.");
-                    return Ok(a);
+                    return Ok(b);
                 }
             } 
         } else {
