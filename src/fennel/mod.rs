@@ -72,7 +72,7 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-        pub async fn create_identity(&self, pair: Pair) -> Result<subxt::sp_runtime::AccountId32, Box<dyn std::error::Error>> {
+        pub async fn create_identity(&self, pair: Pair) -> Result<u32, Box<dyn std::error::Error>> {
        
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
@@ -97,13 +97,14 @@ impl TransactionHandler {
             match event {
                 fennel::identity_module::events::IdentityCreated(a, b) => {
                     println!("Fennel Protocol Identity successfully created.");
-                    Ok(b)
+                    return Ok(a);
                 }
             } 
         } else {
             println!("Failed to find identity_module::Transfer Event");
-            Ok()
         }
+
+        Ok(0)
 
     }
 
