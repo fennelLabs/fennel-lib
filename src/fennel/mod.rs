@@ -102,7 +102,7 @@ impl TransactionHandler {
             } 
         } else {
             println!("Failed to find identity_module::Transfer Event");
-            ()
+            Ok(())
         }
     }
 
