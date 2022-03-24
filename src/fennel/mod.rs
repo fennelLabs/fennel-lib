@@ -72,7 +72,6 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-    //pub async fn create_identity(&self, pair: Pair) -> Result<fennel::identity_module::events::IdentityCreated, Error> {
         pub async fn create_identity(&self, pair: Pair) -> Result<u32, Error> {
        
         println!("Submit a new identity to the Fennel network.");
@@ -97,18 +96,14 @@ impl TransactionHandler {
         if let Some(event) = identity_event {
             match event {
                 fennel::identity_module::events::IdentityCreated(a, b) => {
-                    println!("{}", a);
+                    println!("Fennel Protocol Identity successfully created.");
                     return Ok(a);
                 }
-            }
-            //println!("Identity Create success: {event:?}");
+            } 
         } else {
             println!("Failed to find identity_module::Transfer Event");
         }
-
-        Ok(0)
-
-        
+        Ok(0)     
     }
 
     /// Retrieve the full list of identities from Fennel Protocol.
