@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use crate::{get_identity_database_handle, get_message_database_handle};
 use rocksdb::DB;
 use sp_keyring::AccountKeyring;
-use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
+use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner, Error};
 
 pub use self::error::Error;
 
@@ -72,7 +72,7 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-        pub async fn create_identity(&self, pair: Pair) -> Result<subxt::sp_runtime::AccountId32, Error> {
+        pub async fn create_identity(&self, pair: Pair) -> Result<subxt::sp_runtime::AccountId32, ()> {
        
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
@@ -102,8 +102,8 @@ impl TransactionHandler {
             } 
         } else {
             println!("Failed to find identity_module::Transfer Event");
+            ()
         }
-        Ok(0)     
     }
 
     /// Retrieve the full list of identities from Fennel Protocol.
