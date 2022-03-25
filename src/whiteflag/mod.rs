@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests;
 
-mod wf_codec;
-
-pub use wf_codec::*;
+pub mod wf_codec;
+pub mod wf_core;
 
 #[derive(Clone)]
 pub struct WhiteflagMessage {

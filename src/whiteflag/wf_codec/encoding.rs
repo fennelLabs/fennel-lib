@@ -32,10 +32,10 @@ fn convert_byte_to_hex(byte: u32) -> [char; 2] {
 pub fn encode() {}
 
 pub struct Encoding {
-    charset: &'static str,
-    bit_length: usize,
-    byte_length: Option<u8>,
-    kind: EncodingKind,
+    pub charset: &'static str,
+    pub bit_length: usize,
+    pub byte_length: Option<u8>,
+    pub kind: EncodingKind,
 }
 
 pub enum EncodingKind {
@@ -50,62 +50,6 @@ pub enum EncodingKind {
 }
 
 impl Encoding {
-    pub const BIN: Encoding = Encoding {
-        charset: "[01]",
-        bit_length: BIT,
-        byte_length: None,
-        kind: EncodingKind::BIN,
-    };
-
-    pub const DEC: Encoding = Encoding {
-        charset: "[0-9]",
-        bit_length: QUADBIT,
-        byte_length: None,
-        kind: EncodingKind::DEC,
-    };
-
-    pub const HEX: Encoding = Encoding {
-        charset: "[a-fA-F0-9]",
-        bit_length: QUADBIT,
-        byte_length: None,
-        kind: EncodingKind::HEX,
-    };
-
-    pub const UTF8: Encoding = Encoding {
-        charset: r"[\u0000-\u007F]",
-        bit_length: OCTET,
-        byte_length: None,
-        kind: EncodingKind::UTF8,
-    };
-
-    pub const DATETIME: Encoding = Encoding {
-        charset: "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z",
-        bit_length: 56,
-        byte_length: Some(20),
-        kind: EncodingKind::DATETIME,
-    };
-
-    pub const DURATION: Encoding = Encoding {
-        charset: "P[0-9]{2}D[0-9]{2}H[0-9]{2}M",
-        bit_length: 24,
-        byte_length: Some(10),
-        kind: EncodingKind::DURATION,
-    };
-
-    pub const LAT: Encoding = Encoding {
-        charset: "[+\\-][0-9]{2}\\.[0-9]{5}",
-        bit_length: 29,
-        byte_length: Some(9),
-        kind: EncodingKind::LAT,
-    };
-
-    pub const LONG: Encoding = Encoding {
-        charset: "[+\\-][0-9]{3}\\.[0-9]{5}",
-        bit_length: 33,
-        byte_length: Some(10),
-        kind: EncodingKind::LONG,
-    };
-
     fn new(
         charset: &'static str,
         bit_length: usize,
@@ -180,6 +124,62 @@ impl Encoding {
         s
     }
 }
+
+pub const BIN: Encoding = Encoding {
+    charset: "[01]",
+    bit_length: BIT,
+    byte_length: None,
+    kind: EncodingKind::BIN,
+};
+
+pub const DEC: Encoding = Encoding {
+    charset: "[0-9]",
+    bit_length: QUADBIT,
+    byte_length: None,
+    kind: EncodingKind::DEC,
+};
+
+pub const HEX: Encoding = Encoding {
+    charset: "[a-fA-F0-9]",
+    bit_length: QUADBIT,
+    byte_length: None,
+    kind: EncodingKind::HEX,
+};
+
+pub const UTF8: Encoding = Encoding {
+    charset: r"[\u0000-\u007F]",
+    bit_length: OCTET,
+    byte_length: None,
+    kind: EncodingKind::UTF8,
+};
+
+pub const DATETIME: Encoding = Encoding {
+    charset: "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z",
+    bit_length: 56,
+    byte_length: Some(20),
+    kind: EncodingKind::DATETIME,
+};
+
+pub const DURATION: Encoding = Encoding {
+    charset: "P[0-9]{2}D[0-9]{2}H[0-9]{2}M",
+    bit_length: 24,
+    byte_length: Some(10),
+    kind: EncodingKind::DURATION,
+};
+
+pub const LAT: Encoding = Encoding {
+    charset: "[+\\-][0-9]{2}\\.[0-9]{5}",
+    bit_length: 29,
+    byte_length: Some(9),
+    kind: EncodingKind::LAT,
+};
+
+pub const LONG: Encoding = Encoding {
+    charset: "[+\\-][0-9]{3}\\.[0-9]{5}",
+    bit_length: 33,
+    byte_length: Some(10),
+    kind: EncodingKind::LONG,
+};
 
 /* protected final WfBinaryBuffer encode() throws WfCoreException {
     WfBinaryBuffer buffer = WfBinaryBuffer.create();
