@@ -1,4 +1,4 @@
-use crate::whiteflag::*;
+use crate::whiteflag::wf_codec::*;
 
 fn assert_array_eq<T: PartialEq + std::fmt::Debug>(l: Vec<T>, r: Vec<T>) {
     let success = l.iter().eq(r.iter());
