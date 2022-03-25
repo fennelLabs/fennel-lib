@@ -6,7 +6,7 @@ pub struct Field {
     pattern: Regex,
     encoding: Encoding,
     start_byte: usize,
-    end_byte: usize,
+    end_byte: isize,
     value: Option<String>,
 }
 
@@ -16,7 +16,7 @@ impl Field {
         pattern: Option<Regex>,
         encoding: Encoding,
         start_byte: usize,
-        end_byte: usize,
+        end_byte: isize,
     ) -> Field {
         Field {
             name: String::from(name),
