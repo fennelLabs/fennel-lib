@@ -50,10 +50,10 @@ impl TransactionHandler {
             .build()
             .await?
             .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
-            //Maybe we shouldn't couple
-            //database functionality here
-            //let identity_db = get_identity_database_handle();
-            //let messages_db = get_message_database_handle();
+        //Maybe we shouldn't couple
+        //database functionality here
+        //let identity_db = get_identity_database_handle();
+        //let messages_db = get_message_database_handle();
 
         Ok(Self {
             runtime,
@@ -72,10 +72,10 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-        pub async fn create_identity(&self, pair: Pair) -> Result<u32, Box<dyn std::error::Error>> {
-       
+    pub async fn create_identity(&self, pair: Pair) -> Result<Vec<u32>, Box<dyn std::error::Error>> {
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
+        let mut vec: Vec<u32> = Vec::new();
 
         let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
@@ -97,15 +97,14 @@ impl TransactionHandler {
             match event {
                 fennel::identity_module::events::IdentityCreated(a, b) => {
                     println!("Fennel Protocol Identity successfully created.");
-                    return Ok(a);
+                    vec.push(a);
+                    return Ok(vec);
                 }
-            } 
+            }
         } else {
             println!("Failed to find identity_module::Transfer Event");
         }
-
-        Ok(0)
-
+        Ok(vec)
     }
 
     /// Retrieve the full list of identities from Fennel Protocol.
