@@ -1,6 +1,7 @@
-use crate::whiteflag::wf_codec::encoding::*;
+use super::wf_codec::encoding::*;
 use regex::Regex;
 
+#[derive(Clone)]
 pub struct Field {
     name: String,
     pattern: Regex,

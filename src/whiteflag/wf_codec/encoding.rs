@@ -31,6 +31,7 @@ fn convert_byte_to_hex(byte: u32) -> [char; 2] {
 
 pub fn encode() {}
 
+#[derive(Clone)]
 pub struct Encoding {
     pub charset: &'static str,
     pub bit_length: usize,
@@ -38,6 +39,7 @@ pub struct Encoding {
     pub kind: EncodingKind,
 }
 
+#[derive(Clone)]
 pub enum EncodingKind {
     BIN,
     DEC,
