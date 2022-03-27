@@ -72,7 +72,10 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-    pub async fn create_identity(&self, pair: Pair) -> Result<Vec<u32>, Box<dyn std::error::Error>> {
+    pub async fn create_identity(
+        &self,
+        pair: Pair,
+    ) -> Result<Vec<u32>, Box<dyn std::error::Error>> {
         println!("Submit a new identity to the Fennel network.");
         env_logger::init();
         let mut vec: Vec<u32> = Vec::new();
