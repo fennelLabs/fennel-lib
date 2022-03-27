@@ -2,8 +2,6 @@ use openssl::aes::{aes_ige, AesKey};
 use openssl::symm::Mode;
 
 #[cfg(test)]
-mod bench;
-#[cfg(test)]
 mod tests;
 
 mod iv_helpers;

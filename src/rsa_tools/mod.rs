@@ -1,6 +1,4 @@
 #[cfg(test)]
-mod bench;
-#[cfg(test)]
 mod tests;
 
 use rand::rngs::OsRng;
