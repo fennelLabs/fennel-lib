@@ -1,5 +1,3 @@
-#![feature(test)]
-
 pub mod aes_tools;
 pub mod database;
 pub mod dh_tools;
