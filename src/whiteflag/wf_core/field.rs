@@ -29,7 +29,44 @@ impl Field {
         }
     }
 
-    /* fn is_valid(&self) {
-        &self.pattern.is_match("")
+    /**
+     * Sets the value of the message field if not already set
+     * @param data the data representing the field value
+     * @return TRUE if field value is set, FALSE if field already set or data is invalid
+     */
+    pub fn set(&mut self, data: String) -> bool {
+        /* Cannot set value twice */
+        if self.is_set() {
+            return false;
+        }
+
+        /* Set if data is valid */
+        if self.pattern.is_match(&data) {
+            self.value = Some(data);
+            return true;
+        }
+
+        false
+    }
+
+    /* fn is_valid(&self, data: &str) -> bool {
+        self.pattern.is_match(data)
     } */
+
+    /**
+     * Checks if the message field value has been set. Field is considered set if it contains a valid value.
+     * @return TRUE if the field has been set, else FALSE
+     */
+    pub fn is_set(&self) -> bool {
+        self.is_valid()
+    }
+
+    /**
+     * Checks if the message field contains a valid value
+     * @return TRUE if the field contains a valid value, else FALSE
+     */
+    pub fn is_valid(&self) -> bool {
+        let value = self.value.as_ref().unwrap();
+        self.pattern.is_match(value)
+    }
 }
