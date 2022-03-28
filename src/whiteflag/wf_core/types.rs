@@ -1,12 +1,12 @@
 use super::definitions::*;
-use super::field::Field;
+use super::field::FieldDefinition;
 
 struct MessageSegment {
-    fields: Vec<Field>,
+    fields: Vec<FieldDefinition>,
 }
 
 impl MessageSegment {
-    pub fn from(fields: Vec<Field>) -> MessageSegment {
+    pub fn from(fields: Vec<FieldDefinition>) -> MessageSegment {
         MessageSegment { fields: fields }
     }
 }
@@ -19,14 +19,14 @@ struct MessageType {
 
 impl MessageType {
     fn from_code(code: &char) -> MessageType {
-        let body: Vec<Field> = match code {
+        let body: Vec<FieldDefinition> = match code {
             'A' => authentication_body_fields().to_vec(),
             'K' => crypto_body_fields().to_vec(),
             'T' => test_body_fields().to_vec(),
             'R' => resource_body_fields().to_vec(),
             'F' => freetext_body_fields().to_vec(),
             'P' | 'E' | 'D' | 'S' | 'I' | 'M' | 'Q' => sign_signal_body_fields().to_vec(),
-            _ => Vec::<Field>::new(),
+            _ => Vec::<FieldDefinition>::new(),
         };
 
         MessageType {
