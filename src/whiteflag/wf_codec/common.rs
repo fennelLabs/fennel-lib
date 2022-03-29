@@ -98,5 +98,5 @@ pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
         }
     }
 
-    crop_bits(new_buffer, -1 * (shift % BYTE as isize))
+    crop_bits(new_buffer, -(shift % BYTE as isize))
 }

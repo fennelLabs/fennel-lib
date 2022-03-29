@@ -17,7 +17,7 @@ pub fn compile(data: Vec<String>) {
     header.set_all(data, 0);
 
     let message_code = match &header.get(&FIELD_MESSAGETYPE) {
-        Some(x) => x.chars().nth(0),
+        Some(x) => x.chars().next(),
         _ => None,
     };
 
