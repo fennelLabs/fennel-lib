@@ -4,10 +4,10 @@ mod error;
 
 use std::sync::{Arc, Mutex};
 
-use rocksdb::DB;
-use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
-
 use crate::{get_identity_database_handle, get_message_database_handle};
+use rocksdb::DB;
+use sp_keyring::AccountKeyring;
+use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
 pub use self::error::Error;
 
@@ -37,24 +37,28 @@ pub struct TransactionHandler {
     // however with our limited data (single gets/retrieves) this should be fast
     // enough that it is not noticeable.
     // alternatively, the database struct could spawn all getes onto the executor as a blocking op
-    identity_db: Arc<Mutex<DB>>,
-    messages_db: Arc<Mutex<DB>>,
+    //identity_db: Arc<Mutex<DB>>,
+    //messages_db: Arc<Mutex<DB>>,
 }
 
 impl TransactionHandler {
     /// Set up a new transaction handler with all needed resources.
     pub async fn new() -> Result<Self, Error> {
+        println!("Instantiate TransactionHandler");
         let runtime = ClientBuilder::new()
+            .set_url(String::from("ws://127.0.0.1:9944"))
             .build()
             .await?
-            .to_runtime_api::<RuntimeApi>();
-        let identity_db = get_identity_database_handle();
-        let messages_db = get_message_database_handle();
+            .to_runtime_api::<fennel::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
+        //Maybe we shouldn't couple
+        //database functionality here
+        //let identity_db = get_identity_database_handle();
+        //let messages_db = get_message_database_handle();
 
         Ok(Self {
             runtime,
-            identity_db,
-            messages_db,
+            //identity_db,
+            //messages_db,
         })
     }
 
@@ -68,8 +72,15 @@ impl TransactionHandler {
     // }
 
     /// Submit a new identity to the Fennel network.
-    pub async fn create_identity(&self, signer: Pair) -> Result<(), Error> {
-        let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(signer);
+    pub async fn create_identity(
+        &self,
+        pair: Pair,
+    ) -> Result<Vec<u32>, Box<dyn std::error::Error>> {
+        println!("Submit a new identity to the Fennel network.");
+        env_logger::init();
+        let mut vec: Vec<u32> = Vec::new();
+
+        let signer = PairSigner::<DefaultConfig, DefaultExtra<DefaultConfig>, _>::new(pair);
 
         let identity = self
             .runtime
@@ -79,7 +90,6 @@ impl TransactionHandler {
             .sign_and_submit_then_watch(&signer)
             .await?
             .wait_for_finalized_success()
-            // FIXME: Should be in error enum with GenericError
             .await
             .unwrap();
 
@@ -87,12 +97,17 @@ impl TransactionHandler {
             identity.find_first_event::<fennel::identity_module::events::IdentityCreated>()?;
 
         if let Some(event) = identity_event {
-            println!("Identity Create success: {event:?}");
+            match event {
+                fennel::identity_module::events::IdentityCreated(a, b) => {
+                    println!("Fennel Protocol Identity successfully created.");
+                    vec.push(a);
+                    return Ok(vec);
+                }
+            }
         } else {
             println!("Failed to find identity_module::Transfer Event");
         }
-
-        Ok(())
+        Ok(vec)
     }
 
     /// Retrieve the full list of identities from Fennel Protocol.

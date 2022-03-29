@@ -2,11 +2,10 @@
 
 This repository houses various pieces of functionality used across Fennel Labs' Rust-based projects.
 
-# Testing
-To avoid testing thread issues with the shared database files, run tests with the following command:
-```
-cargo test -- --test-threads 1
-```
+To run tests, run
+```bash
+$ ./scripts/setup.sh
+$ ./scripts/build-test.sh
 
 # Dependencies
 Prior to testing, you'll need to install OpenSSL and LLVM, as well as assorted other dependencies on Linux.

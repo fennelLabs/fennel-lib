@@ -1,5 +1,3 @@
-#![feature(test)]
-
 pub mod aes_tools;
 pub mod database;
 pub mod dh_tools;
@@ -11,6 +9,7 @@ use codec::{Decode, Encode};
 pub use crate::aes_tools::*;
 pub use crate::database::*;
 pub use crate::dh_tools::*;
+pub use crate::fennel::*;
 pub use crate::rsa_tools::*;
 
 /// The FennelServerPacket struct is used for carrying formatted messages between the server and client.
