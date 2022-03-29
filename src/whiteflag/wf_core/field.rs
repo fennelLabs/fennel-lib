@@ -64,8 +64,8 @@ impl Field {
         Ok(())
     }
 
-    pub fn get(self) -> Option<String> {
-        self.value
+    pub fn get(&self) -> &Option<String> {
+        &self.value
     }
 
     /**
