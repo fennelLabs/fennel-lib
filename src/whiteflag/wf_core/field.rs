@@ -1,60 +1,71 @@
-use super::wf_codec::encoding::*;
+use super::{
+    error::{WhiteflagError, WhiteflagResult},
+    wf_codec::encoding::*,
+};
 use regex::Regex;
 
 #[derive(Clone)]
-pub struct FieldDefinition {
-    name: String,
+pub struct Field {
+    pub name: String,
     pattern: Regex,
     encoding: Encoding,
     start_byte: usize,
     end_byte: isize,
+    value: Option<String>,
 }
 
-pub struct Field {
-    definition: FieldDefinition,
-    value: String,
-}
-
-impl FieldDefinition {
+impl Field {
     pub fn new(
         name: &str,
         pattern: Option<Regex>,
         encoding: Encoding,
         start_byte: usize,
         end_byte: isize,
-    ) -> FieldDefinition {
-        FieldDefinition {
+    ) -> Field {
+        Field {
             name: String::from(name),
             pattern: pattern.expect("invalid regular expression pattern"),
             encoding,
             start_byte,
             end_byte,
+            value: None,
         }
     }
-}
 
-#[derive(Debug)]
-pub enum FieldError {
-    PatternDoesNotMatch,
-}
+    pub fn get_minimum_starting_position(&self) -> usize {
+        if self.end_byte < 0 {
+            return self.start_byte;
+        }
 
-pub type FieldResult = Result<Field, FieldError>;
+        self.end_byte as usize
+    }
 
-impl Field {
+    /* pub fn get(&self, data: Vec<String>) -> WhiteflagResult<String> {
+        if data.len() < self.get_minimum_starting_position() {
+            return Err(WhiteflagError::InvalidLength);
+        }
+
+        data[self.start_byte..self.end_byte as usize]
+            .first()
+            .ok_or(WhiteflagError::InvalidLength)
+    } */
+
     /**
      * Sets the value of the message field if not already set
      * @param data the data representing the field value
      * @return TRUE if field value is set, FALSE if field already set or data is invalid
      */
-    pub fn set(definition: FieldDefinition, data: String) -> FieldResult {
-        if !definition.pattern.is_match(&data) {
-            return Err(FieldError::PatternDoesNotMatch);
+    pub fn set(&self, data: String) -> WhiteflagResult<()> {
+        if !self.pattern.is_match(&data) {
+            return Err(WhiteflagError::InvalidPattern);
         }
 
-        Ok(Field {
-            definition,
-            value: data,
-        })
+        self.value = Some(data);
+        Ok(())
+    }
+
+    pub fn get(&self) -> Option<String> {
+        self.value
     }
 
     /**
@@ -70,6 +81,10 @@ impl Field {
      * @return TRUE if the field contains a valid value, else FALSE
      */
     pub fn is_valid(&self) -> bool {
-        self.definition.pattern.is_match(&self.value)
+        let value = match &self.value {
+            Some(x) => x,
+            None => return false,
+        };
+        self.pattern.is_match(value)
     }
 }

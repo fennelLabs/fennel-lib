@@ -1,37 +1,28 @@
 use super::definitions::*;
-use super::field::FieldDefinition;
+use super::field::Field;
+use super::segment::MessageSegment;
 
-struct MessageSegment {
-    fields: Vec<FieldDefinition>,
-}
-
-impl MessageSegment {
-    pub fn from(fields: Vec<FieldDefinition>) -> MessageSegment {
-        MessageSegment { fields: fields }
-    }
-}
-
-struct MessageType {
+pub struct MessageType {
     message_code: char,
     headers: MessageSegment,
     body: MessageSegment,
 }
 
 impl MessageType {
-    fn from_code(code: &char) -> MessageType {
-        let body: Vec<FieldDefinition> = match code {
+    pub fn from_code(code: &char) -> MessageType {
+        let body: Vec<Field> = match code {
             'A' => authentication_body_fields().to_vec(),
             'K' => crypto_body_fields().to_vec(),
             'T' => test_body_fields().to_vec(),
             'R' => resource_body_fields().to_vec(),
             'F' => freetext_body_fields().to_vec(),
             'P' | 'E' | 'D' | 'S' | 'I' | 'M' | 'Q' => sign_signal_body_fields().to_vec(),
-            _ => Vec::<FieldDefinition>::new(),
+            _ => Vec::<Field>::new(),
         };
 
         MessageType {
             message_code: *code,
-            headers: MessageSegment::from(generic_header_fields().to_vec()),
+            headers: MessageSegment::generic_header_segment(),
             body: MessageSegment::from(body),
         }
     }
