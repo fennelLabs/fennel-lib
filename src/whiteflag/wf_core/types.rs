@@ -9,6 +9,11 @@ pub struct MessageType {
 }
 
 impl MessageType {
+    pub fn from_code_option(code: Option<&char>) -> MessageType {
+        let c = code.unwrap_or(&' ');
+        Self::from_code(c)
+    }
+
     pub fn from_code(code: &char) -> MessageType {
         let body: Vec<Field> = match code {
             'A' => authentication_body_fields().to_vec(),
