@@ -55,7 +55,7 @@ impl Field {
      * @param data the data representing the field value
      * @return TRUE if field value is set, FALSE if field already set or data is invalid
      */
-    pub fn set(&self, data: String) -> WhiteflagResult<()> {
+    pub fn set(&mut self, data: String) -> WhiteflagResult<()> {
         if !self.pattern.is_match(&data) {
             return Err(WhiteflagError::InvalidPattern);
         }
@@ -64,7 +64,7 @@ impl Field {
         Ok(())
     }
 
-    pub fn get(&self) -> Option<String> {
+    pub fn get(self) -> Option<String> {
         self.value
     }
 

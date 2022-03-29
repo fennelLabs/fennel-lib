@@ -23,13 +23,13 @@ impl MessageSegment {
      * @return TRUE if the data was valid and all field values are set
      * @throws WfCoreException if the provided data is invalid
      */
-    pub fn set_all(&mut self, data: Vec<String>, start_index: usize) {
+    pub fn set_all(self, data: Vec<String>, start_index: usize) {
         /* int nItems = data.length - startIndex;
         if (nItems < fields.length) {
             throw new WfCoreException("Message segment has " + fields.length + " fields, but received " + nItems + " items in array", null);
         } */
         let mut index = start_index;
-        for field in &self.fields {
+        for mut field in self.fields {
             let value = &data[index];
             field.set(value.to_owned());
             index += 1;
@@ -43,15 +43,11 @@ impl MessageSegment {
      * @param fieldname the name of the requested field
      * @return the field value, or NULL if field does not exist
      */
-    pub fn get(&self, field_name: String) -> Option<String> {
-        let field: &Field = self
-            .fields
+    pub fn get(self, field_name: String) -> Option<String> {
+        self.fields
             .into_iter()
-            .filter(|f| f.name == field_name)
-            .collect::<Vec<Field>>()
-            .first()?;
-
-        field.get()
+            .find(|f| f.name == field_name)?
+            .get()
     }
 
     /* public final Boolean setAll(final String[] data, final int startIndex) throws WfCoreException {
