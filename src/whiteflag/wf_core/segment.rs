@@ -2,6 +2,7 @@ use super::definitions::generic_header_fields;
 use super::error::WhiteflagResult;
 use super::field::Field;
 
+#[derive(Clone)]
 pub struct MessageSegment {
     fields: Vec<Field>,
 }
@@ -23,7 +24,7 @@ impl MessageSegment {
      * @return TRUE if the data was valid and all field values are set
      * @throws WfCoreException if the provided data is invalid
      */
-    pub fn set_all(&mut self, data: Vec<String>, start_index: usize) {
+    pub fn set_all(&mut self, data: &Vec<String>, start_index: usize) {
         /* int nItems = data.length - startIndex;
         if (nItems < fields.length) {
             throw new WfCoreException("Message segment has " + fields.length + " fields, but received " + nItems + " items in array", null);
@@ -69,4 +70,8 @@ impl MessageSegment {
         }
         return this.isValid();
     } */
+
+    pub fn get_number_of_fields(&self) -> usize {
+        self.fields.len()
+    }
 }

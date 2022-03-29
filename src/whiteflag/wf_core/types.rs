@@ -4,8 +4,8 @@ use super::segment::MessageSegment;
 
 pub struct MessageType {
     message_code: char,
-    headers: MessageSegment,
-    body: MessageSegment,
+    pub headers: MessageSegment,
+    pub body: MessageSegment,
 }
 
 impl MessageType {
