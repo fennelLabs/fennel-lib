@@ -2,16 +2,9 @@
 
 mod error;
 
-use std::sync::{Arc, Mutex};
-
-use crate::{get_identity_database_handle, get_message_database_handle};
-use rocksdb::DB;
-use sp_keyring::AccountKeyring;
 use subxt::{sp_core::sr25519::Pair, ClientBuilder, DefaultConfig, DefaultExtra, PairSigner};
 
 pub use self::error::Error;
-
-type RawIdentity = [u8; 4];
 
 /// To run this example, a local fennel node should be running.
 ///
@@ -98,7 +91,7 @@ impl TransactionHandler {
 
         if let Some(event) = identity_event {
             match event {
-                fennel::identity_module::events::IdentityCreated(a, b) => {
+                fennel::identity_module::events::IdentityCreated(a, _) => {
                     println!("Fennel Protocol Identity successfully created.");
                     vec.push(a);
                     return Ok(vec);
