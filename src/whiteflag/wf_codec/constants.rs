@@ -1,6 +1,6 @@
-pub const HEXPATTERN: &'static str = "^[a-fA-F0-9]*$";
-pub const BINPREFIX: &'static str = "0b";
-pub const HEXPREFIX: &'static str = "0x";
+pub const HEXPATTERN: &str = "^[a-fA-F0-9]*$";
+pub const BINPREFIX: &str = "0b";
+pub const HEXPREFIX: &str = "0x";
 pub const BINRADIX: usize = 2;
 pub const HEXRADIX: usize = 16;
 pub const BYTE: usize = 8;
