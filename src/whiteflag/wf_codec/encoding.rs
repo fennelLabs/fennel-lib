@@ -65,20 +65,20 @@ impl Encoding {
         }
     }
 
-    fn encode(&self, value: String) -> Vec<u8> {
+    pub fn encode<T: AsRef<str>>(&self, value: T) -> Vec<u8> {
         match &self.kind {
-            EncodingKind::UTF8 => value.as_bytes().to_vec(),
+            EncodingKind::UTF8 => value.as_ref().as_bytes().to_vec(),
             EncodingKind::BIN => encode_binary(value),
             EncodingKind::DEC | EncodingKind::HEX => encode_bdx(value),
             EncodingKind::DATETIME | EncodingKind::DURATION => {
-                encode_bdx(value.replace("[\\-+:.A-Z]", ""))
+                encode_bdx(value.as_ref().replace("[\\-+:.A-Z]", ""))
             }
             EncodingKind::LAT | EncodingKind::LONG => encode_latlong(value),
             _ => vec![0],
         }
     }
 
-    fn decode(&self, buffer: Vec<u8>, bit_length: usize) -> String {
+    pub fn decode(&self, buffer: Vec<u8>, bit_length: usize) -> String {
         let mut s = String::new();
 
         match &self.kind {
@@ -123,6 +123,22 @@ impl Encoding {
         }
 
         s
+    }
+
+    pub fn is_fixed_length(&self) -> bool {
+        self.byte_length != None
+    }
+
+    /**
+     * Returns the bit length of a field for a given encoding and unencoded field byte length
+     * @param byteLength the number of bytes in the unencoded field
+     * @return the number of bits in a compressed encoded field
+     */
+    pub fn bit_length(&self, byte_length: usize) -> usize {
+        if self.is_fixed_length() {
+            return self.bit_length;
+        }
+        byte_length * self.bit_length
     }
 }
 

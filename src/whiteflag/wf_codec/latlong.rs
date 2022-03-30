@@ -5,7 +5,8 @@ use super::hexadecimal::encode_bdx;
 /**
  * Encodes a datum string into binary buffer
  */
-pub fn encode_latlong(input: String) -> Vec<u8> {
+pub fn encode_latlong<T: AsRef<str>>(data: T) -> Vec<u8> {
+    let input = data.as_ref();
     let cleaned_input = input.replace("[\\-+:.A-Z]", "");
     let length = &cleaned_input.len();
     let mut buffer = encode_bdx(cleaned_input);

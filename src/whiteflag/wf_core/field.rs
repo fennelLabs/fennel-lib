@@ -9,8 +9,8 @@ pub struct Field {
     pub name: String,
     pattern: Regex,
     encoding: Encoding,
-    start_byte: usize,
-    end_byte: isize,
+    pub start_byte: usize,
+    pub end_byte: isize,
     value: Option<String>,
 }
 
@@ -86,5 +86,36 @@ impl Field {
             None => return false,
         };
         self.pattern.is_match(value)
+    }
+
+    pub fn encode(&self) -> Option<Vec<u8>> {
+        match &self.value {
+            Some(x) => Some(self.encoding.encode(x)),
+            None => None,
+        }
+    }
+
+    pub fn decode(&mut self, data: Vec<u8>) -> String {
+        let s = self.encoding.decode(data, self.bit_length());
+        self.value = Some(s.clone());
+        s
+    }
+
+    /**
+     * Gets the bit length of the encoded field
+     * @return the bit length of the compressed encoded field value
+     */
+    pub fn bit_length(&self) -> usize {
+        if self.end_byte < 0 {
+            if let Some(v) = &self.value {
+                return self.encoding.bit_length(v.len());
+            } else {
+                return 0;
+            }
+        }
+
+        return self
+            .encoding
+            .bit_length(self.end_byte as usize - self.start_byte);
     }
 }
