@@ -5,6 +5,6 @@ pub mod creator;
 pub mod definitions;
 pub mod error;
 pub mod field;
-//pub mod message;
+pub mod message;
 pub mod segment;
 pub mod types;
