@@ -100,3 +100,86 @@ pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
 
     crop_bits(new_buffer, -(shift % BYTE as isize))
 }
+
+/**
+ * Appends the specified number of bits from a bytes array to the binary buffer
+ * @param byteArray the byte array with the bits to be appended
+ * @param nBits the number of bits to be appended from the byte array
+ * @return this binary buffer
+ * @throws IllegalStateException if the buffer is marked complete and cannot be altered
+ */
+/* pub fn append_bits(mut data: Vec<u8>, n_bits: usize) -> Vec<u8> {
+    /* Check number of bits */
+    let number_of_bits = data.len() * BYTE;
+    if n_bits > number_of_bits {
+        n_bits = number_of_bits;
+    }
+
+    /* Add bits to the end of the buffer */
+    data = concatinate_bits(this.buffer, this.length, byteArray, n_bits);
+    //this.length += n_bits;
+
+    data
+} */
+
+/**
+ * Concatinates two bitsets
+ * @param byte_array_1 byte array containing the first bitset
+ * @param n_bits_1 number of bits in the first bitset, i.e. which bits to take from the first byte array
+ * @param byte_array_2 byte array containing the second bitset
+ * @param n_bits_2 number of bits in the second bitset, i.e. which bits to take from the second byte array
+ * @return a new byte array with the concatinated bits
+ */
+pub fn concatinate_bits(
+    byte_array_1: Vec<u8>,
+    mut n_bits_1: usize,
+    byte_array_2: Vec<u8>,
+    mut n_bits_2: usize,
+) -> Vec<u8> {
+    /* Check number of bits */
+    if n_bits_1 > (byte_array_1.len() * BYTE) {
+        n_bits_1 = byte_array_1.len() * BYTE;
+    }
+
+    if n_bits_2 > (byte_array_2.len() * BYTE) {
+        n_bits_2 = byte_array_2.len() * BYTE;
+    }
+
+    /* Calculate parameters */
+    let shift = n_bits_1 % BYTE;
+    let free_bits = if shift == 0 { 0 } else { BYTE - shift };
+    let byte_length_1 = (n_bits_1 / BYTE) + (if free_bits == 0 { 0 } else { 1 });
+    let bit_length = n_bits_1 + n_bits_2;
+    let byte_length = byte_length(bit_length as isize) as usize;
+
+    /* Prepare byte arrays */
+    let byte_array_2_shift = shift_right(byte_array_2, shift as isize);
+    let mut new_byte_array = vec![0; byte_length as usize];
+
+    /* Concatination */
+    let mut byte_cursor = 0;
+    let mut start_byte_2 = 0;
+    if byte_length_1 != 0 {
+        /* Add first byte array */
+        for byte_index in 0..byte_length_1 {
+            byte_cursor = byte_index;
+            new_byte_array[byte_cursor] = byte_array_1[byte_index];
+        }
+
+        /* Add overlapping byte from second byte array*/
+        if free_bits > 0 {
+            new_byte_array[byte_cursor] |= byte_array_2_shift[0];
+            start_byte_2 = 1;
+        }
+        byte_cursor += 1;
+    }
+    /* Add the rest of the second byte array */
+    let end_byte_2 = start_byte_2 + byte_length - byte_cursor;
+
+    for byte_index in start_byte_2..end_byte_2 {
+        new_byte_array[byte_cursor] = byte_array_2_shift[byte_index];
+        byte_cursor += 1;
+    }
+
+    return crop_bits(new_byte_array, bit_length as isize);
+}

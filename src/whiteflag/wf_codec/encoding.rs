@@ -5,16 +5,15 @@ use super::hexadecimal::{decode_bdx, encode_bdx};
 use super::latlong::encode_latlong;
 
 //https://github.com/WhiteflagProtocol/whiteflag-java/blob/57db4b6963a4a7913afdeb596e7ce11d46d9d93b/src/main/java/org/whiteflagprotocol/java/core/WfBinaryBuffer.java#L299
-pub fn to_hex(data: Vec<u32>) -> String {
-    //let hex: Vec<char> = vec![];
+pub fn to_hex(data: &Vec<u8>) -> String {
     data.iter().flat_map(|b| convert_byte_to_hex(*b)).collect()
-    //from_digit(num: u32, radix: u32)
-    //hex.into_iter().collect()
 }
 
-fn convert_byte_to_hex(byte: u32) -> [char; 2] {
-    let c1 = std::char::from_digit(byte, HEXRADIX as u32).expect("encoding failed");
-    let c2 = std::char::from_digit(byte, HEXRADIX as u32).expect("encoding failed");
+fn convert_byte_to_hex(byte: u8) -> [char; 2] {
+    let byte_u32 = byte as u32;
+    let c1 = std::char::from_digit((byte_u32 >> QUADBIT) & 0xF, HEXRADIX as u32)
+        .expect("encoding failed");
+    let c2 = std::char::from_digit(byte_u32 & 0xF, HEXRADIX as u32).expect("encoding failed");
     [c1, c2]
 }
 

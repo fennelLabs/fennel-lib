@@ -1,4 +1,6 @@
-use crate::whiteflag::wf_codec::*;
+use crate::{
+    wf_codec::common::concatinate_bits, wf_codec::{encoding::to_hex, constants::BYTE}, whiteflag::wf_codec::*,
+};
 
 fn assert_array_eq<T: PartialEq + std::fmt::Debug>(l: Vec<T>, r: Vec<T>) {
     let success = l.iter().eq(r.iter());
@@ -85,4 +87,30 @@ fn test_shift_left_4() {
     let shifted_bytes = common::shift_left(original.clone(), 4);
 
     assert_array_eq(expected, shifted_bytes);
+}
+
+#[test]
+fn test_append_bits_1() {
+    let byte_array_1: Vec<u8> = vec![0xE6, 0x38, 0x87]; // 1110 0110 | 0011 1000 | 1000 0111
+    let byte_array_2: Vec<u8> = vec![0x6E, 0x7f]; // 0110 1110 | 0111 1111
+    let mut begin: Vec<u8> = vec![];
+
+    assert_eq!(begin.len(), 0, "Binary buffer length should be 0 bits");
+
+    begin = concatinate_bits(begin, 0, byte_array_1, 22); // 1110 0110 | 0011 1000 | 1000 01(00)
+    assert_eq!(begin.len(), 3);
+
+    assert_eq!(
+        "e63884",
+        to_hex(&begin),
+        "Byte array 1 should have been correctly added to the binary buffer"
+    );
+
+    begin = concatinate_bits(begin, 22, byte_array_2, 13); // 1110 0110 | 0011 1000 | 1000 0101 | 1011 1001 | 1110 0000
+    assert_eq!(begin.len(), 5);
+    assert_eq!(
+        "e63885b9e0",
+        to_hex(&begin),
+        "Byte array 2 should have been correctly added to the binary buffer"
+    );
 }
