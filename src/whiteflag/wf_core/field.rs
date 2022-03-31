@@ -7,7 +7,7 @@ use regex::Regex;
 #[derive(Clone)]
 pub struct Field {
     pub name: String,
-    pattern: Regex,
+    pattern: Option<Regex>,
     encoding: Encoding,
     pub start_byte: usize,
     pub end_byte: isize,
@@ -24,7 +24,7 @@ impl Field {
     ) -> Field {
         Field {
             name: String::from(name),
-            pattern: pattern.expect(&format!("invalid regular expression pattern: {}", name)),
+            pattern, //: pattern.expect(&format!("invalid regular expression pattern: {}", name)),
             encoding,
             start_byte,
             end_byte,
@@ -56,7 +56,7 @@ impl Field {
      * @return TRUE if field value is set, FALSE if field already set or data is invalid
      */
     pub fn set<T: AsRef<str> + Into<String>>(&mut self, data: T) -> WhiteflagResult<()> {
-        if !self.pattern.is_match(data.as_ref()) {
+        if !self.is_valid(&Some(data.as_ref())) {
             return Err(WhiteflagError::InvalidPattern);
         }
 
@@ -73,19 +73,23 @@ impl Field {
      * @return TRUE if the field has been set, else FALSE
      */
     pub fn is_set(&self) -> bool {
-        self.is_valid()
+        self.is_valid(&self.value)
     }
 
     /**
      * Checks if the message field contains a valid value
      * @return TRUE if the field contains a valid value, else FALSE
      */
-    pub fn is_valid(&self) -> bool {
-        let value = match &self.value {
+    pub fn is_valid<T: AsRef<str>>(&self, data: &Option<T>) -> bool {
+        let value = match data {
             Some(x) => x,
             None => return false,
         };
-        self.pattern.is_match(value)
+
+        match self.pattern.as_ref() {
+            Some(re) => re.is_match(value.as_ref()),
+            None => true,
+        }
     }
 
     pub fn encode(&self) -> Option<Vec<u8>> {
@@ -102,20 +106,26 @@ impl Field {
     }
 
     /**
-     * Gets the bit length of the encoded field
-     * @return the bit length of the compressed encoded field value
+     * Gets the byte length of the unencoded field value
+     * @return the byte length of the unencoded field value
      */
-    pub fn bit_length(&self) -> usize {
+    pub fn byte_length(&self) -> usize {
         if self.end_byte < 0 {
             if let Some(v) = &self.value {
-                return self.encoding.bit_length(v.len());
+                return v.len();
             } else {
                 return 0;
             }
         }
 
-        return self
-            .encoding
-            .bit_length(self.end_byte as usize - self.start_byte);
+        return self.end_byte as usize - self.start_byte;
+    }
+
+    /**
+     * Gets the bit length of the encoded field
+     * @return the bit length of the compressed encoded field value
+     */
+    pub fn bit_length(&self) -> usize {
+        return self.encoding.bit_length(self.byte_length());
     }
 }
