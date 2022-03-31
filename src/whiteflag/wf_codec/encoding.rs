@@ -91,7 +91,7 @@ impl Encoding {
                 };
 
                 s.push(sign);
-                s.push_str(decode_bdx(shift_left(buffer, 1), bit_length - 1).as_str());
+                s.push_str(decode_bdx(shift_left(&buffer, 1), bit_length - 1).as_str());
                 s.insert(s.len() - 5, '.');
             }
         }

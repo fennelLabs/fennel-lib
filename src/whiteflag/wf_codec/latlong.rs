@@ -12,11 +12,11 @@ pub fn encode_latlong<T: AsRef<str>>(data: T) -> Vec<u8> {
     let mut buffer = encode_bdx(cleaned_input);
 
     if &input[0..1] == "-" {
-        buffer = shift_right(buffer, 1);
+        buffer = shift_right(&buffer, 1);
     }
 
     if &input[0..1] == "+" {
-        buffer = shift_right(buffer, 1);
+        buffer = shift_right(&buffer, 1);
         buffer[0] |= 0x80;
     }
 

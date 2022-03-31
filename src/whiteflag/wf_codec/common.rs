@@ -86,7 +86,7 @@ pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
 /**
  * Shifts bits in a byte array to the right modulo 8
  */
-pub fn shift_right(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
+pub fn shift_right(buffer: &[u8], shift: isize) -> Vec<u8> {
     if shift < 0 {
         return shift_left(buffer, -shift);
     }
@@ -94,12 +94,12 @@ pub fn shift_right(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
     let modulate: usize = shift as usize % BYTE;
 
     if modulate == 0 {
-        return buffer;
+        return buffer.to_vec();
     }
 
     let mask: u8 = 0xFF >> (BYTE - modulate);
     let length = buffer.len() + 1;
-    let mut new_buffer = vec![0; length]; //Vec::<u8>::with_capacity(length);
+    let mut new_buffer = vec![0; length];
 
     for i in (1..length).rev() {
         let b = &buffer[i - 1];
@@ -113,7 +113,7 @@ pub fn shift_right(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
 /**
  * Shifts bits in a byte array to the left modulo 8
  */
-pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
+pub fn shift_left(buffer: &[u8], shift: isize) -> Vec<u8> {
     if shift < 0 {
         return shift_right(buffer, -shift);
     }
@@ -121,7 +121,7 @@ pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
     let modulate: usize = shift as usize % BYTE;
 
     if modulate == 0 {
-        return buffer;
+        return buffer.to_vec();
     }
 
     let mask: u8 = 0xFF << (BYTE - modulate);
@@ -145,18 +145,18 @@ pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
  * @return this binary buffer
  * @throws IllegalStateException if the buffer is marked complete and cannot be altered
  */
-/* pub fn append_bits(mut data: Vec<u8>, n_bits: usize) -> Vec<u8> {
+/* pub fn append_bits(mut buffer: &[u8], data_to_append: Vec<u8>, n_bits: usize) -> Vec<u8> {
     /* Check number of bits */
-    let number_of_bits = data.len() * BYTE;
-    if n_bits > number_of_bits {
-        n_bits = number_of_bits;
+    let max_number_of_bits = data_to_append.len() * BYTE;
+    if n_bits > max_number_of_bits {
+        n_bits = max_number_of_bits;
     }
 
     /* Add bits to the end of the buffer */
-    data = concatinate_bits(this.buffer, this.length, byteArray, n_bits);
+    buffer = &concatinate_bits(&buffer, buffer.len(), &data_to_append, n_bits);
     //this.length += n_bits;
 
-    data
+    buffer.to_vec()
 } */
 
 /**
@@ -168,9 +168,9 @@ pub fn shift_left(buffer: Vec<u8>, shift: isize) -> Vec<u8> {
  * @return a new byte array with the concatinated bits
  */
 pub fn concatinate_bits(
-    byte_array_1: Vec<u8>,
+    byte_array_1: &[u8],
     mut n_bits_1: usize,
-    byte_array_2: Vec<u8>,
+    byte_array_2: &[u8],
     mut n_bits_2: usize,
 ) -> Vec<u8> {
     /* Check number of bits */
@@ -190,7 +190,7 @@ pub fn concatinate_bits(
     let byte_length = byte_length(bit_length as isize) as usize;
 
     /* Prepare byte arrays */
-    let byte_array_2_shift = shift_right(byte_array_2, shift as isize);
+    let byte_array_2_shift = shift_right(&byte_array_2, shift as isize);
     let mut new_byte_array = vec![0; byte_length as usize];
 
     /* Concatination */
