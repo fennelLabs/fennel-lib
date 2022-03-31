@@ -1,4 +1,5 @@
 use super::{segment::MessageSegment, types::MessageType};
+use super::wf_codec::common::{crop_bits, append_bits};
 
 pub struct BasicMessage {
     message_type: MessageType,
@@ -20,12 +21,15 @@ impl BasicMessage {
     }
 
     pub fn encode(&self) -> (Vec<u8>, usize) {
-        let (mut header_buffer, mut header_len) = self.header.encode();
-        let (mut body_buffer, body_len) = self.body.encode();
+        let mut buffer: Vec<u8> = vec![];
+        let mut len = 0;
 
-        header_buffer.append(&mut body_buffer);
-        header_len += body_len;
+        let (header_buffer, header_len) = self.header.encode();
+        let (body_buffer, body_len) = self.body.encode();
 
-        (header_buffer, header_len)
+        (buffer, len) = append_bits(&buffer, len, &header_buffer, header_len);
+        (buffer, len) = append_bits(&buffer, len, &body_buffer, body_len);
+
+        (buffer, len)
     }
 }

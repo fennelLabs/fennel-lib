@@ -145,19 +145,18 @@ pub fn shift_left(buffer: &[u8], shift: isize) -> Vec<u8> {
  * @return this binary buffer
  * @throws IllegalStateException if the buffer is marked complete and cannot be altered
  */
-/* pub fn append_bits(mut buffer: &[u8], data_to_append: Vec<u8>, n_bits: usize) -> Vec<u8> {
+pub fn append_bits(buffer_1: &[u8], len_1: usize, buffer_2: &[u8], mut len_2: usize) -> (Vec<u8>, usize) {
     /* Check number of bits */
-    let max_number_of_bits = data_to_append.len() * BYTE;
-    if n_bits > max_number_of_bits {
-        n_bits = max_number_of_bits;
+    let max_number_of_bits = buffer_2.len() * BYTE;
+    if len_2 > max_number_of_bits {
+        len_2 = max_number_of_bits;
     }
 
     /* Add bits to the end of the buffer */
-    buffer = &concatinate_bits(&buffer, buffer.len(), &data_to_append, n_bits);
-    //this.length += n_bits;
+    let new_buffer = concatinate_bits(&buffer_1, len_1, &buffer_2, len_2);
 
-    buffer.to_vec()
-} */
+    (new_buffer, len_1 + len_2)
+}
 
 /**
  * Concatinates two bitsets
