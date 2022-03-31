@@ -121,3 +121,11 @@ fn removes_invalid_hex_characters() {
     let input = common::remove_all_invalid_hex_characters("-i-... HELLO::am::WORLD +val+:.id");
     assert_eq!(input, "i am valid");
 }
+
+#[test]
+fn remove_hexadecimal_prefix() {
+    let input_1 = common::remove_hexadecimal_prefix("0xf2sa0xasd");
+    let input_2 = common::remove_hexadecimal_prefix("f2sa0xasd");
+    assert_eq!(input_1, "f2sa0xasd");
+    assert_eq!(input_2, "f2sa0xasd");
+}

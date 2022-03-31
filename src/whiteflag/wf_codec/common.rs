@@ -18,7 +18,7 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
  * the equivalent to WfBinaryBuffer.convertToByteArray in whiteflag java
  */
 pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> Vec<u8> {
-    hex::decode(data.as_ref()).unwrap()
+    hex::decode(remove_hexadecimal_prefix(data.as_ref())).unwrap()
 }
 
 /**
@@ -27,6 +27,14 @@ pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> Vec<u8> {
 pub fn remove_all_invalid_hex_characters<T: AsRef<str>>(data: T) -> String {
     let re = regex::Regex::new("[-+:.A-Z]").unwrap();
     re.replace_all(data.as_ref(), "").to_string()
+}
+
+pub fn remove_hexadecimal_prefix(data: &str) -> &str {
+    if data.starts_with("0x") {
+        return &data[2..];
+    }
+
+    data
 }
 
 /**
