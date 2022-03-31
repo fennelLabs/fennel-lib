@@ -14,6 +14,14 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
 }
 
 /**
+ * decodes a hexadecimal string into a buffer
+ * the equivalent to WfBinaryBuffer.convertToByteArray in whiteflag java
+ */
+pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> Vec<u8> {
+    hex::decode(data.as_ref()).unwrap()
+}
+
+/**
  * removes characters from string that are invalid in hexadecimal format
  */
 pub fn remove_all_invalid_hex_characters<T: AsRef<str>>(data: T) -> String {

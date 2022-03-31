@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use super::wf_codec;
 
 pub mod basic_message;
