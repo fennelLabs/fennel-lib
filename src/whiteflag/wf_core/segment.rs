@@ -1,6 +1,7 @@
 use super::definitions::generic_header_fields;
 use super::error::WhiteflagResult;
 use super::field::Field;
+use super::wf_codec::constants::BYTE;
 
 #[derive(Clone)]
 pub struct MessageSegment {
@@ -77,23 +78,26 @@ impl MessageSegment {
 
     /**
      * Encodes this message segment
-     * @return a binary buffer with the binary encoded message segment
+     * @return a binary buffer with the binary encoded message segment and its bit length
      * @throws WfCoreException if the message cannot be encoded
      */
-    pub fn encode(&self) -> Vec<u8> {
+    pub fn encode(&self) -> (Vec<u8>, usize) {
         let mut buffer: Vec<u8> = vec![];
+        let mut len = buffer.len();
         //let cursor = self.fields[0].start_byte;
         for field in &self.fields {
-            let len = buffer.len();
+            let field_length = field.bit_length();
             buffer = super::wf_codec::common::concatinate_bits(
                 buffer,
                 len,
                 field.encode().expect("field had no value"),
-                field.bit_length(),
+                field_length,
             );
+
+            len += field_length;
         }
 
-        buffer
+        (buffer, len)
     }
     /* @SuppressWarnings("java:S1192")
     protected final WfBinaryBuffer encode() throws WfCoreException {

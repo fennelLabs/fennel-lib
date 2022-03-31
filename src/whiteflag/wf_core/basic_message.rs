@@ -19,9 +19,13 @@ impl BasicMessage {
         }
     }
 
-    pub fn encode(&self) -> Vec<u8> {
-        let mut buffer = self.header.encode();
-        buffer.append(&mut self.body.encode());
-        buffer
+    pub fn encode(&self) -> (Vec<u8>, usize) {
+        let (mut header_buffer, mut header_len) = self.header.encode();
+        let (mut body_buffer, body_len) = self.body.encode();
+
+        header_buffer.append(&mut body_buffer);
+        header_len += body_len;
+
+        (header_buffer, header_len)
     }
 }
