@@ -7,7 +7,7 @@ pub fn encode_binary<T: AsRef<str>>(binary_str: T) -> Vec<u8> {
             true => 0,
             false => 1,
         });
-    let mut buffer = Vec::<u8>::with_capacity(byte_length);
+    let mut buffer = vec![0; byte_length];
 
     for bit_index in 0..bit_length {
         if binary_str
