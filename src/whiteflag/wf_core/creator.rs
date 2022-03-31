@@ -9,7 +9,7 @@ pub const FIELD_VERSION: &str = "Version";
 pub const FIELD_MESSAGETYPE: &str = "MessageCode";
 pub const FIELD_TESTMESSAGETYPE: &str = "PseudoMessageCode";
 
-pub fn compile(data: Vec<String>) -> BasicMessage {
+pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
     let mut header: MessageSegment = MessageSegment::generic_header_segment();
     header.set_all(&data, 0);
 

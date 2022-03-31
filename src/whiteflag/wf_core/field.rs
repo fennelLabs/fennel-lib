@@ -24,7 +24,7 @@ impl Field {
     ) -> Field {
         Field {
             name: String::from(name),
-            pattern: pattern.expect("invalid regular expression pattern"),
+            pattern: pattern.expect(&format!("invalid regular expression pattern: {}", name)),
             encoding,
             start_byte,
             end_byte,
@@ -55,12 +55,12 @@ impl Field {
      * @param data the data representing the field value
      * @return TRUE if field value is set, FALSE if field already set or data is invalid
      */
-    pub fn set(&mut self, data: String) -> WhiteflagResult<()> {
-        if !self.pattern.is_match(&data) {
+    pub fn set<T: AsRef<str> + Into<String>>(&mut self, data: T) -> WhiteflagResult<()> {
+        if !self.pattern.is_match(data.as_ref()) {
             return Err(WhiteflagError::InvalidPattern);
         }
 
-        self.value = Some(data);
+        self.value = Some(data.into());
         Ok(())
     }
 

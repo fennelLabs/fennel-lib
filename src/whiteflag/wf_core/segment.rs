@@ -24,7 +24,7 @@ impl MessageSegment {
      * @return TRUE if the data was valid and all field values are set
      * @throws WfCoreException if the provided data is invalid
      */
-    pub fn set_all(&mut self, data: &Vec<String>, start_index: usize) {
+    pub fn set_all<T: AsRef<str> + Into<String>>(&mut self, data: &Vec<T>, start_index: usize) {
         /* int nItems = data.length - startIndex;
         if (nItems < fields.length) {
             throw new WfCoreException("Message segment has " + fields.length + " fields, but received " + nItems + " items in array", null);
@@ -32,7 +32,7 @@ impl MessageSegment {
         let mut index = start_index;
         for field in &mut self.fields {
             let value = &data[index];
-            field.set(value.to_owned());
+            field.set(value.as_ref());
             index += 1;
         }
 
@@ -74,4 +74,39 @@ impl MessageSegment {
     pub fn get_number_of_fields(&self) -> usize {
         self.fields.len()
     }
+
+    /**
+     * Encodes this message segment
+     * @return a binary buffer with the binary encoded message segment
+     * @throws WfCoreException if the message cannot be encoded
+     */
+    pub fn encode(&self) -> Vec<u8> {
+        let mut buffer: Vec<u8> = vec![];
+        //let cursor = self.fields[0].start_byte;
+        for field in &self.fields {
+            let len = buffer.len();
+            buffer = super::wf_codec::common::concatinate_bits(
+                buffer,
+                len,
+                field.encode().expect("field had no value"),
+                field.bit_length(),
+            );
+        }
+
+        buffer
+    }
+    /* @SuppressWarnings("java:S1192")
+    protected final WfBinaryBuffer encode() throws WfCoreException {
+        WfBinaryBuffer buffer = WfBinaryBuffer.create();
+        int byteCursor = fields[0].startByte;
+        for (WfMessageField field : fields) {
+            if (field.startByte != byteCursor) {
+                throw new WfCoreException("Invalid field order while encoding: did not expect field " + field.debugInfo() + " at byte " + byteCursor, null);
+            }
+            //buffer.addMessageField(field);
+            buffer.appendBits(field.encode(), field.bitLength());
+            byteCursor = field.endByte;
+        }
+        return buffer;
+    } */
 }
