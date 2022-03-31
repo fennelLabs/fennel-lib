@@ -1,4 +1,4 @@
-use super::common::{crop_bits, shift_right};
+use super::common::{crop_bits, shift_right, remove_all_invalid_hex_characters};
 use super::constants::QUADBIT;
 use super::hexadecimal::encode_bdx;
 
@@ -7,7 +7,7 @@ use super::hexadecimal::encode_bdx;
  */
 pub fn encode_latlong<T: AsRef<str>>(data: T) -> Vec<u8> {
     let input = data.as_ref();
-    let cleaned_input = input.replace("[\\-+:.A-Z]", "");
+    let cleaned_input =  remove_all_invalid_hex_characters(input);
     let length = &cleaned_input.len();
     let mut buffer = encode_bdx(cleaned_input);
 

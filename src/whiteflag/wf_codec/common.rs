@@ -1,6 +1,14 @@
 use super::constants::BYTE;
 
 /**
+ * removes characters from string that are invalid in hexadecimal format
+ */
+pub fn remove_all_invalid_hex_characters<T: AsRef<str>>(data: T) -> String {
+    let re = regex::Regex::new("[-+:.A-Z]").unwrap();
+    re.replace_all(data.as_ref(), "").to_string()
+}
+
+/**
  * Calculates the number of bytes required to hold the given number of bits
  */
 pub fn byte_length(bit_length: isize) -> isize {

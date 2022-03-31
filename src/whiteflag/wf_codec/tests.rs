@@ -1,5 +1,7 @@
 use crate::{
-    wf_codec::common::concatinate_bits, wf_codec::{encoding::to_hex, constants::BYTE}, whiteflag::wf_codec::*,
+    wf_codec::common::concatinate_bits,
+    wf_codec::{encoding::to_hex},
+    whiteflag::wf_codec::*,
 };
 
 fn assert_array_eq<T: PartialEq + std::fmt::Debug>(l: Vec<T>, r: Vec<T>) {
@@ -113,4 +115,10 @@ fn test_append_bits_1() {
         to_hex(&begin),
         "Byte array 2 should have been correctly added to the binary buffer"
     );
+}
+
+#[test]
+fn removes_invalid_hex_characters() {
+    let input = common::remove_all_invalid_hex_characters("-i- HELLO::am::WORLD +val+:.id");
+    assert_eq!(input, "i am valid");
 }
