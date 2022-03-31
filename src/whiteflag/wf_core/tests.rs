@@ -1,6 +1,9 @@
 use super::{
     field::Field,
-    wf_codec::{common::{to_hex, decode_from_hexadecimal}, encoding::{UTF8}},
+    wf_codec::{
+        common::{decode_from_hexadecimal, to_hex},
+        encoding::*,
+    },
 };
 
 const FIELDNAME: &str = "TESTFIELD";
@@ -45,49 +48,49 @@ fn utf_decoding() {
     );
 }
 
+#[test]
+fn bin_encoding_1() {
+    let mut field = Field::new(FIELDNAME, None, BIN, 0, 8);
+    field.set("10111011").unwrap();
+
+    assert_eq!(
+        "bb",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Binary field should be correctly binary encoded"
+    );
+    assert_eq!(
+        8,
+        field.byte_length(),
+        "Unencoded Binary field should be 8 bytes"
+    );
+    assert_eq!(
+        8,
+        field.bit_length(),
+        "Encoded Binary field should be 8 bits"
+    );
+}
+
+#[test]
+fn bin_decoding_1() {
+    let mut field = Field::new(FIELDNAME, None, BIN, 1, 7);
+    let buffer = decode_from_hexadecimal("aa");
+    let result = "101010";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Binary field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Binary decoded field value should be correctly set"
+    );
+}
+
 /*
-/**
- * Tests compressed binary decoding of UTF-8 field
- */
-@Test
-public void testUtfDecoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, UTF8, 0, -1);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("5746");
-    final String result = "WF";
 
-    /* Verify */
-    assertEquals("", result, field.decode(byteArray));
-    assertEquals("", result, field.get());
-}
-/**
- * Tests compressed binary encoding of Binary field
- */
-@Test
-public void testBinEncoding1() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, BIN, 0, 8);
-    field.set("10111011");
 
-    /* Verify */
-    assertEquals("Binary field should be correctly binary encoded", "bb", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Binary field should be 8 bytes", 8, field.byteLength());
-    assertEquals("Encoded Binary field should be 8 bits", 8, field.bitLength());
-}
-/**
- * Tests compressed binary decoding of Binary field
- */
-@Test
-public void testBinDecoding1() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, BIN, 1, 7);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("aa");
-    final String result = "101010";
-
-    /* Verify */
-    assertEquals("Binary field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Binary decoded field value should be correctly set", result, field.get());
-}
 /**
  * Tests compressed binary encoding of Binary field
  */
