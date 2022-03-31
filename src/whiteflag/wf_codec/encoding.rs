@@ -17,19 +17,6 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
     [c1, c2]
 }
 
-/* public static final String convertToHexString(final byte[] byteArray) {
-    StringBuilder hexstr = new StringBuilder();
-    for (int byteIndex = 0; byteIndex < byteArray.length; byteIndex++) {
-        char[] hexDigits = new char[2];
-        hexDigits[0] = Character.forDigit((byteArray[byteIndex] >> QUADBIT) & 0xF, HEXRADIX);
-        hexDigits[1] = Character.forDigit((byteArray[byteIndex] & 0xF), HEXRADIX);
-        hexstr.append(new String(hexDigits));
-    }
-    return hexstr.toString().toLowerCase();
-} */
-
-pub fn encode() {}
-
 #[derive(Clone)]
 pub struct Encoding {
     pub charset: &'static str,
