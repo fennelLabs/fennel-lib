@@ -1,6 +1,7 @@
 use super::basic_message::BasicMessage;
 use super::segment::MessageSegment;
 use super::types::MessageType;
+use super::wf_codec::common::decode_from_hexadecimal;
 
 pub const PREFIX: &str = "WF";
 pub const PROTOCOL_VERSION: &str = "1";
@@ -13,12 +14,7 @@ pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
     let mut header: MessageSegment = MessageSegment::generic_header_segment();
     header.set_all(&data, 0);
 
-    let message_code = match header.get(&FIELD_MESSAGETYPE) {
-        Some(x) => x.chars().next(),
-        _ => None,
-    };
-
-    let message_type = MessageType::from_code_option(message_code.as_ref());
+    let message_type = get_message_type(&header);
     let body_start_index = header.get_number_of_fields();
     let mut body = message_type.body.clone();
 
@@ -26,4 +22,65 @@ pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
 
     body.set_all(&data, body_start_index);
     BasicMessage::new(message_type, header, body)
+}
+
+/**
+ * Decodes an encoded Whiteflag message and creates a new Whiteflag base message object
+ * @since 1.1
+ * @param msgBuffer a buffer with the compressed binary encoded message
+ * @return this message creator
+ * @throws WfCoreException if the encoded message is invalid
+ */
+/* pub fn decode<T: AsRef<str>>(message: T) -> BasicMessage {
+    let buffer = decode_from_hexadecimal(message);
+    let bit_cursor = 0;
+    let next_field = 0;
+
+    let mut header: MessageSegment = MessageSegment::generic_header_segment();
+    //decode
+
+    let message_type = get_message_type(&header);
+} */
+
+/* public final WfMessageCreator decode(final WfBinaryBuffer msgBuffer) throws WfCoreException {
+    /* Keep track of fields and bit position */
+    int bitCursor = 0;
+    int nextField = 0;
+
+    /* Decode message header, and determine message type */
+    header = new WfMessageSegment(messageType.getHeaderFields());
+    header.decode(msgBuffer, bitCursor, nextField);
+    bitCursor += header.bitLength();
+    messageType = WfMessageType.fromCode(header.get(FIELD_MESSAGETYPE));
+
+    /* Decode message body and add fields as required for certain message types */
+    body = new WfMessageSegment(messageType.getBodyFields());
+    body.decode(msgBuffer, bitCursor, nextField);
+    nextField = body.getNoFields();
+    bitCursor += body.bitLength();
+    switch (messageType) {
+        case T:
+            /* Determine pseudo message type and extend test message body with pseudo message body */
+            final WfMessageType pseudoMessageType = WfMessageType.fromCode(body.get(FIELD_TESTMESSAGETYPE));
+            body.append(new WfMessageSegment(pseudoMessageType.getBodyFields()));
+            break;
+        case Q:
+            /* Extend request message body with request fields (calculated from remaining bits) */
+            final int nRequestObjects = (msgBuffer.bitLength() - bitCursor) / 16;   // One request object requires 2 fields of 8 bits
+            body.append(new WfMessageSegment(messageType.createRequestFields(nRequestObjects)));
+            break;
+        default:
+            break;
+    }
+    body.decode(msgBuffer, bitCursor, nextField);
+    return this;
+} */
+
+fn get_message_type(header: &MessageSegment) -> MessageType {
+    let message_code = match header.get(&FIELD_MESSAGETYPE) {
+        Some(x) => x.chars().next(),
+        _ => None,
+    };
+
+    MessageType::from_code_option(message_code.as_ref())
 }
