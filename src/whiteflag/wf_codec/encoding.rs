@@ -1,5 +1,5 @@
 use super::binary::{decode_binary, encode_binary};
-use super::common::shift_left;
+use super::common::{remove_all_invalid_hex_characters, shift_left};
 use super::constants::*;
 use super::hexadecimal::{decode_bdx, encode_bdx};
 use super::latlong::encode_latlong;
@@ -65,13 +65,13 @@ impl Encoding {
         }
     }
 
-    pub fn encode<T: AsRef<str>>(&self, value: T) -> Vec<u8> {
+    pub fn encode<T: AsRef<str> + std::fmt::Display>(&self, value: T) -> Vec<u8> {
         match &self.kind {
             EncodingKind::UTF8 => value.as_ref().as_bytes().to_vec(),
             EncodingKind::BIN => encode_binary(value),
             EncodingKind::DEC | EncodingKind::HEX => encode_bdx(value),
             EncodingKind::DATETIME | EncodingKind::DURATION => {
-                encode_bdx(value.as_ref().replace("[\\-+:.A-Z]", ""))
+                encode_bdx(remove_all_invalid_hex_characters(value))
             }
             EncodingKind::LAT | EncodingKind::LONG => encode_latlong(value),
             _ => vec![0],
