@@ -16,7 +16,7 @@ pub enum FieldKind {
 pub fn message_code() -> Field {
     Field::new(
         "MessageCode",
-        Regex::new("(?=A|K|T|P|E|S|D|I|M|Q|R|F)^[A-Z]{1}$").ok(),
+        Regex::new("^[A-Z]{1}$").ok(), //"(?=A|K|T|P|E|S|D|I|M|Q|R|F)^[A-Z]{1}$"
         UTF8,
         5,
         6,
@@ -26,10 +26,10 @@ pub fn message_code() -> Field {
 pub fn generic_header_fields() -> [Field; 7] {
     [
         Field::new("Prefix", Regex::new("^WF$").ok(), UTF8, 0, 2),
-        Field::new("Version", Regex::new("(?=1)^[A-Z0-9]{1}$").ok(), UTF8, 2, 3),
+        Field::new("Version", Regex::new("^[A-Z0-9]{1}$").ok(), UTF8, 2, 3), //"(?=1)^[A-Z0-9]{1}$"
         Field::new(
             "EncryptionIndicator",
-            Regex::new("(?=0|1|2)^[A-Z0-9]{1}$").ok(),
+            Regex::new("^[A-Z0-9]{1}$").ok(), //"(?=0|1|2)^[A-Z0-9]{1}$"
             UTF8,
             3,
             4,
@@ -39,7 +39,7 @@ pub fn generic_header_fields() -> [Field; 7] {
         Field::new(
             "ReferenceIndicator",
             Regex::new(
-                ["(?=0|1|2|3|4|5|6|7|8|9)^", HEX.charset, "{1}$"]
+                ["^", HEX.charset, "{1}$"] //"(?=0|1|2|3|4|5|6|7|8|9)^", HEX.charset, "{1}$"
                     .concat()
                     .as_str(),
             )
