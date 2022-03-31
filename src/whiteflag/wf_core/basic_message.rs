@@ -18,4 +18,10 @@ impl BasicMessage {
             body,
         }
     }
+
+    pub fn encode(&self) -> Vec<u8> {
+        let mut buffer = self.header.encode();
+        buffer.append(&mut self.body.encode());
+        buffer
+    }
 }

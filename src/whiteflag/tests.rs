@@ -1,3 +1,4 @@
+use super::wf_core::creator::compile;
 use crate::whiteflag::wf_core::message::WhiteflagMessage;
 
 #[cfg(test)]
@@ -68,7 +69,7 @@ fn test_deserialize_auth_message() {}
 #[test]
 fn test_decode_auth_message() {}
 
-/* #[test]
+#[test]
 fn text_decode_hex_message() {
     let message_encoded: String = "57463130a6a1f7da7067d41891592131a12a60c9053b4eb0aefe6263385da9f5b789421e1d7401009841882148a800000114c1e596006f04c050eca6420084".to_string();
     let field_values = vec![
@@ -89,7 +90,11 @@ fn text_decode_hex_message() {
         "3210",
         "042",
     ];
-    let message = WhiteflagMessage::compile_auth_message(field_values.clone()).unwrap();
-
-    assert_eq!(message_encoded, message.encode().toHexString()); //, "Encoding should be correct"
-} */
+    //let message = WhiteflagMessage::compile_auth_message(field_values.clone()).unwrap();
+    let basic_message = compile(field_values);
+    assert_eq!(
+        message_encoded,
+        super::wf_codec::encoding::to_hex(&basic_message.encode()),
+        "Encoding should be correct"
+    );
+}
