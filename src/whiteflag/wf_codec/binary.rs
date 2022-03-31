@@ -26,7 +26,7 @@ pub fn encode_binary<T: AsRef<str>>(binary_str: T) -> Vec<u8> {
     buffer
 }
 
-pub fn decode_binary(buffer: Vec<u8>, bit_length: usize) -> String {
+pub fn decode_binary(buffer: &[u8], bit_length: usize) -> String {
     let mut data: Vec<char> = Vec::new();
 
     for bit_index in 0..bit_length {

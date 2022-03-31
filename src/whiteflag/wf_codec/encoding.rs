@@ -60,7 +60,7 @@ impl Encoding {
                 return String::from_utf8(buffer).expect("utf8 error");
             }
             EncodingKind::BIN => {
-                return decode_binary(buffer, bit_length);
+                return decode_binary(&buffer, bit_length);
             }
             EncodingKind::DEC | EncodingKind::HEX => {
                 return decode_bdx(buffer, bit_length);
