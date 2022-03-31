@@ -1,5 +1,5 @@
 use crate::{
-    wf_codec::common::concatinate_bits, wf_codec::encoding::to_hex, whiteflag::wf_codec::*,
+    wf_codec::common::{to_hex, concatinate_bits}, whiteflag::wf_codec::*,
 };
 
 fn assert_array_eq<T: PartialEq + std::fmt::Debug>(l: Vec<T>, r: Vec<T>) {

@@ -94,7 +94,7 @@ fn text_decode_hex_message() {
     let basic_message = compile(field_values);
     assert_eq!(
         message_encoded,
-        super::wf_codec::encoding::to_hex(&basic_message.encode()),
+        super::wf_codec::common::to_hex(&basic_message.encode()),
         "Encoding should be correct"
     );
 }
