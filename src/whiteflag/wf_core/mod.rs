@@ -1,5 +1,8 @@
 #[cfg(test)]
-mod tests;
+mod field_tests;
+
+#[cfg(test)]
+mod message_tests;
 
 use super::wf_codec;
 
