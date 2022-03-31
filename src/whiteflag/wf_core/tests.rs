@@ -88,230 +88,318 @@ fn bin_decoding_1() {
     );
 }
 
-/*
+#[test]
+fn bin_encoding_2() {
+    let mut field = Field::new(FIELDNAME, None, BIN, 4, 5);
+    field.set("1").unwrap();
 
-
-/**
- * Tests compressed binary encoding of Binary field
- */
-@Test
-public void testBinEncoding2() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, BIN, 4, 5);
-    field.set("1");
-
-    /* Verify */
-    assertEquals("Binary field should be correctly binary encoded", "80", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Binary field should be 1 bytes", 1, field.byteLength());
-    assertEquals("Encoded Binary field should be 1 bits", 1, field.bitLength());
+    assert_eq!(
+        "80",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Binary field should be correctly binary encoded"
+    );
+    assert_eq!(
+        1,
+        field.byte_length(),
+        "Unencoded Binary field should be 1 bytes"
+    );
+    assert_eq!(
+        1,
+        field.bit_length(),
+        "Encoded Binary field should be 1 bits"
+    );
 }
-/**
- * Tests compressed binary decoding of Binary field
- */
-@Test
-public void testBinDecoding2A() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, BIN, 4, 5);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("80");
-    final String result = "1";
 
-    /* Verify */
-    assertEquals("Binary field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Binary decoded field value should be correctly set", result, field.get());
+#[test]
+fn bin_decoding_2A() {
+    let mut field = Field::new(FIELDNAME, None, BIN, 4, 5);
+    let buffer = decode_from_hexadecimal("80");
+    let result = "1";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Binary field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Binary decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary decoding of Binary field
- */
-@Test
-public void testBinDecoding2B() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, BIN, 2, 3);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("7f");
-    final String result = "0";
 
-    /* Verify */
-    assertEquals("Binary field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Binary decoded field value should be correctly set", result, field.get());
+#[test]
+fn bin_decoding_2B() {
+    let mut field = Field::new(FIELDNAME, None, BIN, 2, 3);
+    let buffer = decode_from_hexadecimal("7f");
+    let result = "0";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Binary field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Binary decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of Decimal field
- */
-@Test
-public void testDecEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DEC, 0, 3);
-    field.set("1230");
 
-    /* Verify */
-    assertEquals("Decimal field should be correctly binary encoded", "1230", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Decimal field should be 3 bytes", 3, field.byteLength());
-    assertEquals("Encoded Decimal field should be 12 bits", 12, field.bitLength());
+#[test]
+fn dec_encoding() {
+    let mut field = Field::new(FIELDNAME, None, DEC, 0, 3);
+    field.set("1230").unwrap();
+
+    assert_eq!(
+        "1230",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Decimal field should be correctly binary encoded"
+    );
+    assert_eq!(
+        3,
+        field.byte_length(),
+        "Unencoded Decimal field should be 3 bytes"
+    );
+    assert_eq!(
+        12,
+        field.bit_length(),
+        "Encoded Decimal field should be 12 bits"
+    );
 }
-/**
- * Tests decoding of Decimal field
- */
-@Test
-public void testDecDecoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DEC, 0, 3);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("1234");
-    final String result = "123";
 
-    /* Verify */
-    assertEquals("Decimal field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Decimal decoded field value should be correctly set", result, field.get());
+#[test]
+fn dec_decoding() {
+    let mut field = Field::new(FIELDNAME, None, DEC, 0, 3);
+    let buffer = decode_from_hexadecimal("1234");
+    let result = "123";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Decimal field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Decimal decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of Hexadecimal field
- */
-@Test
-public void testHexEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, HEX, 0, 2);
-    field.set("3f");
 
-    /* Verify */
-    assertEquals("Hexadecimal field should be correctly binary encoded", "3f", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Hexadecimal field should be 2 bytes", 2, field.byteLength());
-    assertEquals("Encoded Hexadecimal field should be 8 bits", 8, field.bitLength());
+#[test]
+fn hex_encoding() {
+    let mut field = Field::new(FIELDNAME, None, HEX, 0, 2);
+    field.set("3f").unwrap();
+
+    assert_eq!(
+        "3f",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Hexadecimal field should be correctly binary encoded"
+    );
+    assert_eq!(
+        2,
+        field.byte_length(),
+        "Unencoded Hexadecimal field should be 2 bytes"
+    );
+    assert_eq!(
+        8,
+        field.bit_length(),
+        "Encoded Hexadecimal field should be 8 bits"
+    );
 }
-/**
- * Tests decoding of Hexadecimal field
- */
-@Test
-public void testHexDecoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, HEX, 0, 2);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("0x3f");
-    final String result = "3f";
 
-    /* Verify */
-    assertEquals("Hexadecimal field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Hexadecimal decoded field value should be correctly set", result, field.get());
+#[test]
+fn hex_decoding() {
+    let mut field = Field::new(FIELDNAME, None, HEX, 0, 2);
+    let buffer = decode_from_hexadecimal("0x3f");
+    let result = "3f";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Hexadecimal field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Hexadecimal decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of DateTime datum field
- */
-@Test
-public void testDateTimeEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DATETIME, 0, -1);
-    field.set("2020-07-01T21:42:23Z");
 
-    /* Verify */
-    assertEquals("DateTime field should be correctly binary encoded", "20200701214223", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded DateTime field should be 20 bytes", 20, field.byteLength());
-    assertEquals("Encoded DateTime field should be 56 bits", 56, field.bitLength());
+#[test]
+fn datetime_encoding() {
+    let mut field = Field::new(FIELDNAME, None, DATETIME, 0, -1);
+    field.set("2020-07-01T21:42:23Z").unwrap();
+
+    assert_eq!(
+        "20200701214223",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "DateTime field should be correctly binary encoded"
+    );
+    assert_eq!(
+        20,
+        field.byte_length(),
+        "Unencoded DateTime field should be 20 bytes"
+    );
+    assert_eq!(
+        56,
+        field.bit_length(),
+        "Encoded DateTime field should be 56 bits"
+    );
 }
-/**
- * Tests compressed binary encoding of DateTime datum field
- */
-@Test
-public void testDateTimeDecoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DATETIME, 0, -1);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("20200701214223");
-    final String result = "2020-07-01T21:42:23Z";
 
-    /* Verify */
-    assertEquals("DateTime field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("DateTime decoded field value should be correctly set", result, field.get());
+#[test]
+fn datetime_decoding() {
+    let mut field = Field::new(FIELDNAME, None, DATETIME, 0, -1);
+    let buffer = decode_from_hexadecimal("20200701214223");
+    let result = "2020-07-01T21:42:23Z";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "DateTime field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "DateTime decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of Duration datum field
- */
-@Test
-public void testDurationEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DURATION, 0, 10);
-    field.set("P24D11H30M");
 
-    /* Verify */
-    assertEquals("Duration field should be correctly binary encoded", "241130", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Duration field should be 10 bytes", 10, field.byteLength());
-    assertEquals("Encoded Duration field should be 24 bits", 24, field.bitLength());
+#[test]
+fn duration_encoding() {
+    let mut field = Field::new(FIELDNAME, None, DURATION, 0, 10);
+    field.set("P24D11H30M").unwrap();
+
+    assert_eq!(
+        "241130",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Duration field should be correctly binary encoded"
+    );
+    assert_eq!(
+        10,
+        field.byte_length(),
+        "Unencoded Duration field should be 10 bytes"
+    );
+    assert_eq!(
+        24,
+        field.bit_length(),
+        "Encoded Duration field should be 24 bits"
+    );
 }
-/**
- * Tests compressed binary encoding of Duration field
- */
-@Test
-public void testDurationDecoding() throws WfCoreException {
-    /* Test function */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, DURATION, 0, 10);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("241130");
-    final String result = "P24D11H30M";
 
-    /* Verify */
-    assertEquals("Duration field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Duration decoded field value should be correctly set", result, field.get());
+#[test]
+fn duration_decoding() {
+    let mut field = Field::new(FIELDNAME, None, DURATION, 0, 10);
+    let buffer = decode_from_hexadecimal("241130");
+    let result = "P24D11H30M";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Duration field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Duration decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of Latitude datum field
- */
-@Test
-public void testLatitudeEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, LAT, 0, 9);
-    field.set("+23.34244"); // 1001 0001 1001 1010 0001 0010 0010 0000
 
-    /* Verify */
-    assertEquals("Latitude field should be correctly binary encoded", "919a1220", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Latitude field should be 9 bytes", 9, field.byteLength());
-    assertEquals("Encoded Latitude field should be 29 bits", 29, field.bitLength());
+#[test]
+fn latitude_encoding() {
+    let mut field = Field::new(FIELDNAME, None, LAT, 0, 9);
+    field.set("+23.34244").unwrap(); // 1001 0001 1001 1010 0001 0010 0010 0000
+
+    assert_eq!(
+        "919a1220",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Latitude field should be correctly binary encoded"
+    );
+    assert_eq!(
+        9,
+        field.byte_length(),
+        "Unencoded Latitude field should be 9 bytes"
+    );
+    assert_eq!(
+        29,
+        field.bit_length(),
+        "Encoded Latitude field should be 29 bits"
+    );
 }
-/**
- * Tests compressed binary encoding of Latitude datum field
- */
-@Test
-public void testLatitudeDecoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, LAT, 0, 9);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("919a1220");
-    final String result = "+23.34244";
 
-    /* Verify */
-    assertEquals("Latitude field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Latitude decoded field value should be correctly set", result, field.get());
+#[test]
+fn latitude_decoding() {
+    let mut field = Field::new(FIELDNAME, None, LAT, 0, 9);
+    let buffer = decode_from_hexadecimal("919a1220");
+    let result = "+23.34244";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Latitude field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Latitude decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of Longitude datum field
- */
-@Test
-public void testLongitudeEncoding() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, LONG, 0, 10);
-    field.set("-163.34245");   // 0000 1011 0001 1001 1010 0001 0010 0010 1000
 
-    /* Verify */
-    assertEquals("Longitude field should be correctly binary encoded", "0b19a12280", WfBinaryBuffer.convertToHexString(field.encode()));
-    assertEquals("Unencoded Longitude field should be 9 bytes", 10, field.byteLength());
-    assertEquals("Encoded Longitude field should be 29 bits", 33, field.bitLength());
+#[test]
+fn longitude_encoding() {
+    let mut field = Field::new(FIELDNAME, None, LONG, 0, 10);
+    field.set("-163.34245").unwrap(); // 0000 1011 0001 1001 1010 0001 0010 0010 1000
+
+    assert_eq!(
+        "0b19a12280",
+        to_hex(&field.encode().expect("tried encoding empty field")),
+        "Longitude field should be correctly binary encoded"
+    );
+    assert_eq!(
+        10,
+        field.byte_length(),
+        "Unencoded Longitude field should be 10 bytes"
+    );
+    assert_eq!(
+        33,
+        field.bit_length(),
+        "Encoded Longitude field should be 33 bits"
+    );
 }
-/**
- * Tests compressed binary encoding of longitude datum field
- */
-@Test
-public void testLongitudeDecoding1() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, LONG, 0, 10);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("8b19a12380");
-    final String result = "+163.34247";
 
-    /* Verify */
-    assertEquals("Longitude field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Longitude decoded field value should be correctly set", result, field.get());
+#[test]
+fn longitude_decoding_1() {
+    let mut field = Field::new(FIELDNAME, None, LONG, 0, 10);
+    let buffer = decode_from_hexadecimal("8b19a12380");
+    let result = "+163.34247";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Longitude field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Longitude decoded field value should be correctly set"
+    );
 }
-/**
- * Tests compressed binary encoding of longitude datum field
- */
-@Test
-public void testLongitudeDecoding2() throws WfCoreException {
-    /* Setup */
-    WfMessageField field = WfMessageField.define(FIELDNAME, null, LONG, 0, 10);
-    byte[] byteArray = WfBinaryBuffer.convertToByteArray("0319a12380");
-    final String result = "-063.34247";
 
-    /* Verify */
-    assertEquals("Longitude field should be correctly decoded", result, field.decode(byteArray));
-    assertEquals("Longitude decoded field value should be correctly set", result, field.get());
-} */
+#[test]
+fn longitude_decoding_2() {
+    let mut field = Field::new(FIELDNAME, None, LONG, 0, 10);
+    let buffer = decode_from_hexadecimal("0319a12380");
+    let result = "-063.34247";
+
+    assert_eq!(
+        result,
+        field.decode(buffer),
+        "Longitude field should be correctly decoded"
+    );
+    assert_eq!(
+        result,
+        field.get().as_ref().expect("no value was set"),
+        "Longitude decoded field value should be correctly set"
+    );
+}
