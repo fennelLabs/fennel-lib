@@ -60,7 +60,10 @@ fn test_shift_left_1() {
     let expected: Vec<u8> = vec![0x9B, 0xE8];
 
     assert_array_eq(expected.clone(), common::shift_left(&original.clone(), 3));
-    assert_array_eq(expected.clone(), common::shift_right(&original.clone(), -11));
+    assert_array_eq(
+        expected.clone(),
+        common::shift_right(&original.clone(), -11),
+    );
 }
 
 #[test]

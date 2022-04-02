@@ -14,11 +14,13 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
 }
 
 /**
- * decodes a hexadecimal string into a buffer
+ * decodes a hexadecimal string into a buffer and includes bit_length
  * the equivalent to WfBinaryBuffer.convertToByteArray in whiteflag java
  */
-pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> Vec<u8> {
-    hex::decode(remove_hexadecimal_prefix(data.as_ref())).unwrap()
+pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> (Vec<u8>, usize) {
+    let buffer = hex::decode(remove_hexadecimal_prefix(data.as_ref())).unwrap();
+    let bit_length = buffer.len() & BYTE;
+    (buffer, bit_length)
 }
 
 /**
@@ -139,13 +141,66 @@ pub fn shift_left(buffer: &[u8], shift: isize) -> Vec<u8> {
 }
 
 /**
+ * Returns a byte array with a subset of the bits in the buffer
+ * @param startBit the first bit of the subset to extract
+ * @param bitLength the length of the subset, i.e. the number of bits to extract
+ * @return a byte array with the extracted bits
+ */
+pub fn extract_bits(
+    buffer: &[u8],
+    buffer_bit_length: usize,
+    start_bit: usize,
+    mut bit_length: usize,
+) -> Vec<u8> {
+    if bit_length > (buffer_bit_length - start_bit) {
+        bit_length = buffer_bit_length - start_bit;
+    }
+
+    let start_byte = start_bit / BYTE;
+    let byte_length = byte_length(bit_length as isize) as usize;
+    let shift = start_bit % BYTE;
+    let mask = 0xFF << (BYTE - shift);
+
+    let mut new_byte_array: Vec<u8> = vec![0; byte_length];
+    if shift == 0 {
+        /* Faster loop if no shift needed */
+        for byte_index in 0..byte_length {
+            new_byte_array[byte_index] = buffer[start_byte + byte_index];
+        }
+    } else {
+        /* Loop through bytes to shift */
+        for byte_index in 0..byte_length {
+            new_byte_array[byte_index] = (0xFF & buffer[start_byte + byte_index]) << shift;
+        }
+
+        let end_byte = if byte_length < (buffer.len() - start_byte) {
+            byte_length
+        } else {
+            byte_length - 1
+        };
+
+        for byte_index in 0..end_byte {
+            new_byte_array[byte_index] |=
+                (0xFF & buffer[start_byte + byte_index + 1] & mask) >> (BYTE - shift);
+        }
+    }
+
+    crop_bits(new_byte_array, bit_length as isize)
+}
+
+/**
  * Appends the specified number of bits from a bytes array to the binary buffer
  * @param byteArray the byte array with the bits to be appended
  * @param nBits the number of bits to be appended from the byte array
  * @return this binary buffer
  * @throws IllegalStateException if the buffer is marked complete and cannot be altered
  */
-pub fn append_bits(buffer_1: &[u8], len_1: usize, buffer_2: &[u8], mut len_2: usize) -> (Vec<u8>, usize) {
+pub fn append_bits(
+    buffer_1: &[u8],
+    len_1: usize,
+    buffer_2: &[u8],
+    mut len_2: usize,
+) -> (Vec<u8>, usize) {
     /* Check number of bits */
     let max_number_of_bits = buffer_2.len() * BYTE;
     if len_2 > max_number_of_bits {

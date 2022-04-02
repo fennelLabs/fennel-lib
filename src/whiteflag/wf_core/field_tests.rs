@@ -33,7 +33,7 @@ fn utf_encoding() {
 #[test]
 fn utf_decoding() {
     let mut field = Field::new(FIELDNAME, None, UTF8, 0, -1);
-    let buffer = decode_from_hexadecimal("5746");
+    let (buffer, _) = decode_from_hexadecimal("5746");
     let result = "WF";
 
     assert_eq!(
@@ -73,7 +73,7 @@ fn bin_encoding_1() {
 #[test]
 fn bin_decoding_1() {
     let mut field = Field::new(FIELDNAME, None, BIN, 1, 7);
-    let buffer = decode_from_hexadecimal("aa");
+    let (buffer, _) = decode_from_hexadecimal("aa");
     let result = "101010";
 
     assert_eq!(
@@ -113,7 +113,7 @@ fn bin_encoding_2() {
 #[test]
 fn bin_decoding_2A() {
     let mut field = Field::new(FIELDNAME, None, BIN, 4, 5);
-    let buffer = decode_from_hexadecimal("80");
+    let (buffer, _) = decode_from_hexadecimal("80");
     let result = "1";
 
     assert_eq!(
@@ -131,7 +131,7 @@ fn bin_decoding_2A() {
 #[test]
 fn bin_decoding_2B() {
     let mut field = Field::new(FIELDNAME, None, BIN, 2, 3);
-    let buffer = decode_from_hexadecimal("7f");
+    let (buffer, _) = decode_from_hexadecimal("7f");
     let result = "0";
 
     assert_eq!(
@@ -171,7 +171,7 @@ fn dec_encoding() {
 #[test]
 fn dec_decoding() {
     let mut field = Field::new(FIELDNAME, None, DEC, 0, 3);
-    let buffer = decode_from_hexadecimal("1234");
+    let (buffer, _) = decode_from_hexadecimal("1234");
     let result = "123";
 
     assert_eq!(
@@ -211,7 +211,7 @@ fn hex_encoding() {
 #[test]
 fn hex_decoding() {
     let mut field = Field::new(FIELDNAME, None, HEX, 0, 2);
-    let buffer = decode_from_hexadecimal("0x3f");
+    let (buffer, _) = decode_from_hexadecimal("0x3f");
     let result = "3f";
 
     assert_eq!(
@@ -251,7 +251,7 @@ fn datetime_encoding() {
 #[test]
 fn datetime_decoding() {
     let mut field = Field::new(FIELDNAME, None, DATETIME, 0, -1);
-    let buffer = decode_from_hexadecimal("20200701214223");
+    let (buffer, _) = decode_from_hexadecimal("20200701214223");
     let result = "2020-07-01T21:42:23Z";
 
     assert_eq!(
@@ -291,7 +291,7 @@ fn duration_encoding() {
 #[test]
 fn duration_decoding() {
     let mut field = Field::new(FIELDNAME, None, DURATION, 0, 10);
-    let buffer = decode_from_hexadecimal("241130");
+    let (buffer, _) = decode_from_hexadecimal("241130");
     let result = "P24D11H30M";
 
     assert_eq!(
@@ -331,7 +331,7 @@ fn latitude_encoding() {
 #[test]
 fn latitude_decoding() {
     let mut field = Field::new(FIELDNAME, None, LAT, 0, 9);
-    let buffer = decode_from_hexadecimal("919a1220");
+    let (buffer, _) = decode_from_hexadecimal("919a1220");
     let result = "+23.34244";
 
     assert_eq!(
@@ -371,7 +371,7 @@ fn longitude_encoding() {
 #[test]
 fn longitude_decoding_1() {
     let mut field = Field::new(FIELDNAME, None, LONG, 0, 10);
-    let buffer = decode_from_hexadecimal("8b19a12380");
+    let (buffer, _) = decode_from_hexadecimal("8b19a12380");
     let result = "+163.34247";
 
     assert_eq!(
@@ -389,7 +389,7 @@ fn longitude_decoding_1() {
 #[test]
 fn longitude_decoding_2() {
     let mut field = Field::new(FIELDNAME, None, LONG, 0, 10);
-    let buffer = decode_from_hexadecimal("0319a12380");
+    let (buffer, _) = decode_from_hexadecimal("0319a12380");
     let result = "-063.34247";
 
     assert_eq!(

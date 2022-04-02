@@ -1,3 +1,5 @@
+use crate::wf_codec::common::extract_bits;
+
 use super::{
     error::{WhiteflagError, WhiteflagResult},
     wf_codec::encoding::*,
@@ -127,5 +129,35 @@ impl Field {
      */
     pub fn bit_length(&self) -> usize {
         return self.encoding.bit_length(self.byte_length());
+    }
+
+    /**
+     * Extracts and decodes a Whiteflag message field from the binary buffer
+     * @param field the message field to be extracted and decoded
+     * @param startBit the bit where the encoded field is located in the buffer
+     * @return String with the decoded field value
+     * @throws WfCoreException if field connot be decoded
+     */
+    pub fn extract_message_field(
+        &mut self,
+        message_buffer: &[u8],
+        message_buffer_bit_length: usize,
+        start_bit: usize,
+    ) {
+        let bit_length = if self.bit_length() >= 1 {
+            self.bit_length()
+        } else {
+            let mut bit_length = message_buffer_bit_length - start_bit;
+            bit_length -= bit_length & &self.encoding.bit_length;
+            bit_length
+        };
+
+        let field_buffer: Vec<u8> = extract_bits(
+            message_buffer,
+            message_buffer_bit_length,
+            start_bit,
+            bit_length,
+        );
+        self.decode(field_buffer);
     }
 }
