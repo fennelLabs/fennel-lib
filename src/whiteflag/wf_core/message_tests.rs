@@ -1,4 +1,4 @@
-use super::creator::{compile, decode};
+use super::creator::{decode, encode};
 use super::wf_codec::common::{crop_bits, to_hex};
 
 #[test]
@@ -23,12 +23,9 @@ fn encode_sign_signal_message() {
         "042",
     ];
 
-    let basic_message = compile(field_values);
-    let (message_encoded, len) = basic_message.encode();
-
     assert_eq!(
         encoding_result,
-        to_hex(&crop_bits(message_encoded, len as isize)),
+        encode(&field_values),
         "Encoding should be correct"
     );
 }
@@ -137,6 +134,28 @@ fn decode_sign_signal_message() {
         field_values[15],
         message.get("ObjectOrientation"),
         "Orientation should be correctly set"
+    );
+}
+
+#[test]
+fn encode_auth_message() {
+    let encoding_result: String = "5746313020800000000000000000000000000000000000000000000000000000000000000000b43a3a38399d1797b7b933b0b734b9b0ba34b7b71734b73a17bbb434ba32b33630b380".to_string();
+    let field_values = vec![
+        "WF",
+        "1",
+        "0",
+        "0",
+        "A",
+        "0",
+        "0000000000000000000000000000000000000000000000000000000000000000",
+        "1",
+        "https://organisation.int/whiteflag",
+    ];
+
+    assert_eq!(
+        encoding_result,
+        encode(&field_values),
+        "Encoding should be correct"
     );
 }
 

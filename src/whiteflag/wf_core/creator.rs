@@ -1,7 +1,10 @@
 use super::basic_message::BasicMessage;
 use super::segment::MessageSegment;
 use super::types::MessageType;
-use super::wf_codec::{common::decode_from_hexadecimal, common::from_hex, constants::BYTE};
+use super::wf_codec::{
+    common::{crop_bits, decode_from_hexadecimal, from_hex, to_hex},
+    constants::BYTE,
+};
 
 pub const PREFIX: &str = "WF";
 pub const PROTOCOL_VERSION: &str = "1";
@@ -10,9 +13,9 @@ pub const FIELD_VERSION: &str = "Version";
 pub const FIELD_MESSAGETYPE: &str = "MessageCode";
 pub const FIELD_TESTMESSAGETYPE: &str = "PseudoMessageCode";
 
-pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
+pub fn compile<T: AsRef<str> + Into<String>>(data: &[T]) -> BasicMessage {
     let mut header: MessageSegment = MessageSegment::generic_header_segment();
-    header.set_all(&data, 0);
+    header.set_all(data.as_ref(), 0);
 
     let message_type = get_message_type(&header);
     let body_start_index = header.get_number_of_fields();
@@ -20,8 +23,15 @@ pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
 
     //need switch statement here
 
-    body.set_all(&data, body_start_index);
+    body.set_all(data.as_ref(), body_start_index);
     BasicMessage::new(message_type, header, body)
+}
+
+pub fn encode<T: AsRef<str> + Into<String>>(fields: &[T]) -> String {
+    let basic_message = compile(fields);
+    let (message_encoded, len) = basic_message.encode();
+
+    to_hex(&crop_bits(message_encoded, len as isize))
 }
 
 /**

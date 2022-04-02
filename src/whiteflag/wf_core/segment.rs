@@ -23,7 +23,7 @@ impl MessageSegment {
      * @return TRUE if the data was valid and all field values are set
      * @throws WfCoreException if the provided data is invalid
      */
-    pub fn set_all<T: AsRef<str> + Into<String>>(&mut self, data: &Vec<T>, start_index: usize) {
+    pub fn set_all<T: AsRef<str> + Into<String>>(&mut self, data: &[T], start_index: usize) {
         /* int nItems = data.length - startIndex;
         if (nItems < fields.length) {
             throw new WfCoreException("Message segment has " + fields.length + " fields, but received " + nItems + " items in array", null);
