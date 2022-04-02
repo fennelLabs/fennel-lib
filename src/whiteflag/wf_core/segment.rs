@@ -123,7 +123,8 @@ impl MessageSegment {
                 throw new WfCoreException("Could not decode field at bit " + bitCursor + " of buffer: " + buffer.toHexString(), e);
             } */
 
-            let bit_length = field.extract_message_field(message_buffer, message_buffer_bit_length, bit_cursor);
+            let bit_length =
+                field.extract_message_field(message_buffer, message_buffer_bit_length, bit_cursor);
 
             bit_cursor += bit_length; //field.bit_length();
             byte_cursor = field.end_byte as usize;

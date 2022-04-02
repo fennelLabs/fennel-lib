@@ -1,7 +1,7 @@
 use super::basic_message::BasicMessage;
 use super::segment::MessageSegment;
 use super::types::MessageType;
-use super::wf_codec::{common::decode_from_hexadecimal, constants::BYTE};
+use super::wf_codec::{common::decode_from_hexadecimal, common::from_hex, constants::BYTE};
 
 pub const PREFIX: &str = "WF";
 pub const PROTOCOL_VERSION: &str = "1";
@@ -33,6 +33,8 @@ pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
  */
 pub fn decode<T: AsRef<str>>(message: T) -> BasicMessage {
     let (buffer, bit_length) = decode_from_hexadecimal(message);
+    //let buffer = from_hex(message);
+    //let bit_length = buffer.len() * BYTE;
 
     let mut bit_cursor = 0;
     //let mut next_field = 0;
