@@ -148,7 +148,7 @@ impl Field {
             self.bit_length()
         } else {
             let mut bit_length = message_buffer_bit_length - start_bit;
-            bit_length -= bit_length & &self.encoding.bit_length;
+            bit_length -= bit_length % &self.encoding.bit_length;
             bit_length
         };
 
