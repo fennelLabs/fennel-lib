@@ -31,16 +31,24 @@ pub fn compile<T: AsRef<str> + Into<String>>(data: Vec<T>) -> BasicMessage {
  * @return this message creator
  * @throws WfCoreException if the encoded message is invalid
  */
-/* pub fn decode<T: AsRef<str>>(message: T) -> BasicMessage {
-    let buffer = decode_from_hexadecimal(message);
-    let bit_cursor = 0;
+pub fn decode<T: AsRef<str>>(message: T) -> BasicMessage {
+    let (buffer, bit_length) = decode_from_hexadecimal(message);
+
+    let mut bit_cursor = 0;
     let next_field = 0;
 
     let mut header: MessageSegment = MessageSegment::generic_header_segment();
-    //decode
+    header.decode(&buffer, bit_length, bit_cursor, next_field);
+    bit_cursor += header.bit_length();
 
     let message_type = get_message_type(&header);
-} */
+
+    let mut body = message_type.body.clone();
+    body.decode(&buffer, bit_length, bit_cursor, next_field);
+    bit_cursor += body.bit_length();
+
+    BasicMessage::new(message_type, header, body)
+}
 
 /* public final WfMessageCreator decode(final WfBinaryBuffer msgBuffer) throws WfCoreException {
     /* Keep track of fields and bit position */

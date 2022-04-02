@@ -19,7 +19,7 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
  */
 pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> (Vec<u8>, usize) {
     let buffer = hex::decode(remove_hexadecimal_prefix(data.as_ref())).unwrap();
-    let bit_length = buffer.len() & BYTE;
+    let bit_length = buffer.len() * BYTE;
     (buffer, bit_length)
 }
 
@@ -152,14 +152,14 @@ pub fn extract_bits(
     start_bit: usize,
     mut bit_length: usize,
 ) -> Vec<u8> {
-    if bit_length > (buffer_bit_length - start_bit) {
+    if bit_length < 1 || bit_length > (buffer_bit_length - start_bit) {
         bit_length = buffer_bit_length - start_bit;
     }
 
     let start_byte = start_bit / BYTE;
     let byte_length = byte_length(bit_length as isize) as usize;
     let shift = start_bit % BYTE;
-    let mask = 0xFF << (BYTE - shift);
+    let mask: u8 = (BYTE - shift).checked_shl(0xFF).unwrap_or(u8::MAX as usize) as u8;
 
     let mut new_byte_array: Vec<u8> = vec![0; byte_length];
     if shift == 0 {

@@ -111,7 +111,7 @@ impl MessageSegment {
 
         let mut bit_cursor = start_bit;
         //int byteCursor = fields[fieldIndex].startByte;
-        for field in &mut self.fields {
+        for field in &mut self.fields[field_index..] {
             /* if (fields[index].startByte != byteCursor) {
                 throw new WfCoreException("Invalid field order while decoding: did not expect field " + fields[index].debugInfo() + " at byte " + byteCursor, null);
             }
@@ -120,6 +120,7 @@ impl MessageSegment {
             } catch (WfCoreException e) {
                 throw new WfCoreException("Could not decode field at bit " + bitCursor + " of buffer: " + buffer.toHexString(), e);
             } */
+
             field.extract_message_field(message_buffer, message_buffer_bit_length, bit_cursor);
 
             bit_cursor += field.bit_length();

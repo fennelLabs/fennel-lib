@@ -1,5 +1,5 @@
+use super::wf_codec::common::{append_bits};
 use super::{segment::MessageSegment, types::MessageType};
-use super::wf_codec::common::{crop_bits, append_bits};
 
 pub struct BasicMessage {
     message_type: MessageType,
@@ -31,5 +31,28 @@ impl BasicMessage {
         (buffer, len) = append_bits(&buffer, len, &body_buffer, body_len);
 
         (buffer, len)
+    }
+
+    /**
+     * Gets the value of the specified field
+     * @param fieldname the name of the requested field
+     * @return the field value, or NULL if field does not exist
+     */
+    pub fn get<T: AsRef<str>>(&self, fieldname: T) -> String {
+        self.get_option(fieldname)
+            .expect("no value found")
+            .to_string()
+    }
+
+    /**
+     * Gets the value of the specified field
+     * @param fieldname the name of the requested field
+     * @return the field value, or NULL if field does not exist
+     */
+    pub fn get_option<T: AsRef<str>>(&self, fieldname: T) -> Option<&String> {
+        self.header
+            .get(fieldname.as_ref())
+            .or(self.body.get(fieldname.as_ref()))
+            .or(None)
     }
 }
