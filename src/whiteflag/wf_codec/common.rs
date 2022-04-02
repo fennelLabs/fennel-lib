@@ -24,6 +24,40 @@ pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> (Vec<u8>, usize) {
 }
 
 /**
+ * Converts a hexadecimal string to a byte array
+ * @param hexstr the hexadecimal string
+ * @return a byte array
+ * @throws IllegalArgumentException if argument is not a hexadecimal string
+ */
+pub fn from_hex<T: AsRef<str>>(hex: T) -> Vec<u8> {
+    let mut cleaned_hex = remove_hexadecimal_prefix(hex.as_ref()).to_string();
+
+    if cleaned_hex.len() % 2 == 1 {
+        cleaned_hex += "0";
+    }
+
+    /* if (!HEXPATTERN.matcher(str).matches()) {
+        throw new IllegalArgumentException("Invalid hexadecimal string");
+    } */
+
+    /* Loop through hexadecimal string and take two chars at a time*/
+    let data: Vec<char> = cleaned_hex.chars().into_iter().collect();
+    //let data = cleaned_hex.as_bytes();
+    let str_length = data.len();
+    let mut buffer = vec![0; str_length / 2];
+
+    for i in (0..str_length).step_by(2) {
+        buffer[i / 2] = (u8::from_str_radix(&data[i].to_string(), HEXRADIX as u32)
+            .expect("conversion error")
+            << QUADBIT)
+            + u8::from_str_radix(&data[i + 1].to_string(), HEXRADIX as u32)
+                .expect("conversion error");
+    }
+
+    buffer
+}
+
+/**
  * removes characters from string that are invalid in hexadecimal format
  */
 pub fn remove_all_invalid_hex_characters<T: AsRef<str>>(data: T) -> String {

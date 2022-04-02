@@ -3,7 +3,7 @@ use super::field::Field;
 
 #[derive(Clone)]
 pub struct MessageSegment {
-    fields: Vec<Field>,
+    pub fields: Vec<Field>,
 }
 
 impl MessageSegment {
@@ -103,29 +103,33 @@ impl MessageSegment {
         message_buffer_bit_length: usize,
         start_bit: usize,
         field_index: usize,
-    ) {
+    ) -> usize {
         /* Check if all fields already processed */
         if field_index > self.fields.len() {
-            return;
+            return 0;
         }
 
         let mut bit_cursor = start_bit;
-        //int byteCursor = fields[fieldIndex].startByte;
+        let mut byte_cursor = self.fields[field_index].start_byte;
         for field in &mut self.fields[field_index..] {
-            /* if (fields[index].startByte != byteCursor) {
-                throw new WfCoreException("Invalid field order while decoding: did not expect field " + fields[index].debugInfo() + " at byte " + byteCursor, null);
+            if field.start_byte != byte_cursor {
+                panic!("start byte should match byte cursor");
+                //throw new WfCoreException("Invalid field order while decoding: did not expect field " + fields[index].debugInfo() + " at byte " + byteCursor, null);
             }
+            /*
             try {
                 buffer.extractMessageField(fields[index], bitCursor);
             } catch (WfCoreException e) {
                 throw new WfCoreException("Could not decode field at bit " + bitCursor + " of buffer: " + buffer.toHexString(), e);
             } */
 
-            field.extract_message_field(message_buffer, message_buffer_bit_length, bit_cursor);
+            let bit_length = field.extract_message_field(message_buffer, message_buffer_bit_length, bit_cursor);
 
-            bit_cursor += field.bit_length();
-            //byteCursor = fields[index].endByte;
+            bit_cursor += bit_length; //field.bit_length();
+            byte_cursor = field.end_byte as usize;
         }
+
+        bit_cursor - start_bit
     }
 
     /**
@@ -133,7 +137,7 @@ impl MessageSegment {
      * @return the bit length of this segment
      */
     pub fn bit_length(&self) -> usize {
-        self.bit_length_of_field(-1)
+        self.bit_length_of_field(self.fields.len() as isize)
     }
 
     /**

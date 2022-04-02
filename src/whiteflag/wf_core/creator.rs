@@ -1,7 +1,7 @@
 use super::basic_message::BasicMessage;
 use super::segment::MessageSegment;
 use super::types::MessageType;
-use super::wf_codec::common::decode_from_hexadecimal;
+use super::wf_codec::{common::decode_from_hexadecimal, constants::BYTE};
 
 pub const PREFIX: &str = "WF";
 pub const PROTOCOL_VERSION: &str = "1";
@@ -35,17 +35,19 @@ pub fn decode<T: AsRef<str>>(message: T) -> BasicMessage {
     let (buffer, bit_length) = decode_from_hexadecimal(message);
 
     let mut bit_cursor = 0;
-    let next_field = 0;
+    //let mut next_field = 0;
 
     let mut header: MessageSegment = MessageSegment::generic_header_segment();
-    header.decode(&buffer, bit_length, bit_cursor, next_field);
-    bit_cursor += header.bit_length();
+    bit_cursor += header.decode(&buffer, bit_length, bit_cursor, 0); // header.bit_length();
 
     let message_type = get_message_type(&header);
 
     let mut body = message_type.body.clone();
-    body.decode(&buffer, bit_length, bit_cursor, next_field);
-    bit_cursor += body.bit_length();
+    body.decode(&buffer, bit_length, bit_cursor, 0);
+    //bit_cursor += header.bit_length();
+    //next_field = body.fields.len();
+
+    //body.decode(&buffer, bit_length, bit_cursor, next_field);
 
     BasicMessage::new(message_type, header, body)
 }
