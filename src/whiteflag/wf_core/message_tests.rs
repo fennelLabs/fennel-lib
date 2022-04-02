@@ -139,3 +139,72 @@ fn decode_sign_signal_message() {
         "Orientation should be correctly set"
     );
 }
+
+#[test]
+fn decode_auth_message() {
+    /* Setup */
+    let field_values = vec![
+        "WF",
+        "1",
+        "0",
+        "0",
+        "A",
+        "0",
+        "0000000000000000000000000000000000000000000000000000000000000000",
+        "1",
+        "https://organisation.int/whiteflag",
+    ];
+
+    let message = decode("5746313020800000000000000000000000000000000000000000000000000000000000000000b43a3a38399d1797b7b933b0b734b9b0ba34b7b71734b73a17bbb434ba32b33630b380");
+
+    /* Verify */
+    //assert_eq!("Message type should be correct", A, message.getType());
+    //assert_eq!(fieldValues.length, message.getNoFields(), "Number of fields should be equal to number of provided fields");
+    //assert_eq!(message.getFieldNames().size(), message.getNoFields(), "Number of fields should be equal to number of field names in set");
+    assert_eq!(
+        field_values[0],
+        message.get("Prefix"),
+        "Prefix should be correctly set"
+    );
+    assert_eq!(
+        field_values[1],
+        message.get("Version"),
+        "Version number should be correctly set"
+    );
+    assert_eq!(
+        field_values[2],
+        message.get("EncryptionIndicator"),
+        "Encryption indicator should be correctly set"
+    );
+    assert_eq!(
+        field_values[3],
+        message.get("DuressIndicator"),
+        "Duress indicator should be correctly set"
+    );
+    assert_eq!(
+        field_values[4],
+        message.get("MessageCode"),
+        "Message code should be correctly set"
+    );
+    assert_eq!(
+        field_values[5],
+        message.get("ReferenceIndicator"),
+        "Reference indicator should be correctly set"
+    );
+    assert_eq!(
+        field_values[6],
+        message.get("ReferencedMessage"),
+        "Referenced message should be correctly set"
+    );
+    assert_eq!(
+        field_values[7],
+        message.get("VerificationMethod"),
+        "Verification method should be correctly set"
+    );
+    assert_eq!(
+        field_values[8],
+        message.get("VerificationData"),
+        "Verification data should be correctly set"
+    );
+    //assertTrue("Message should be valid", message.isValid());
+}
