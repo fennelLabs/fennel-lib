@@ -1,5 +1,3 @@
-use super::wf_codec::common::{crop_bits, to_hex};
-use super::wf_core::creator::compile;
 use crate::whiteflag::wf_core::message::WhiteflagMessage;
 
 #[cfg(test)]

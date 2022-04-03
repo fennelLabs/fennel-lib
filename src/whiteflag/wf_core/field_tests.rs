@@ -111,7 +111,7 @@ fn bin_encoding_2() {
 }
 
 #[test]
-fn bin_decoding_2A() {
+fn bin_decoding_2_a() {
     let mut field = Field::new(FIELDNAME, None, BIN, 4, 5);
     let (buffer, _) = decode_from_hexadecimal("80");
     let result = "1";
@@ -129,7 +129,7 @@ fn bin_decoding_2A() {
 }
 
 #[test]
-fn bin_decoding_2B() {
+fn bin_decoding_2_b() {
     let mut field = Field::new(FIELDNAME, None, BIN, 2, 3);
     let (buffer, _) = decode_from_hexadecimal("7f");
     let result = "0";

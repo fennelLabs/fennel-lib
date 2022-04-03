@@ -1,5 +1,4 @@
 use super::creator::{decode, encode};
-use super::wf_codec::common::{crop_bits, to_hex};
 
 #[test]
 fn encode_sign_signal_message() {
