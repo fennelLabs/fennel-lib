@@ -2,8 +2,7 @@ use super::basic_message::BasicMessage;
 use super::segment::MessageSegment;
 use super::types::MessageType;
 use super::wf_codec::{
-    common::{crop_bits, decode_from_hexadecimal, from_hex, to_hex},
-    constants::BYTE,
+    common::{crop_bits, decode_from_hexadecimal, to_hex},
 };
 
 pub const PREFIX: &str = "WF";

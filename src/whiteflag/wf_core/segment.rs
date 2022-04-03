@@ -34,7 +34,7 @@ impl MessageSegment {
                 throw new WfCoreException("Field " + field.debugInfo() + " already set or array item " + index + " contains invalid data: " + data[index], null);
             } */
             let value = &data[index];
-            field.set(value.as_ref());
+            field.set(value.as_ref()).unwrap();
             index += 1;
         }
 
