@@ -77,8 +77,8 @@ pub fn remove_hexadecimal_prefix(data: &str) -> &str {
  * Calculates the number of bytes required to hold the given number of bits
  */
 pub fn byte_length(bit_length: isize) -> isize {
-    let i_BYTE = BYTE as isize;
-    (bit_length / i_BYTE) + (if (bit_length % i_BYTE) > 0 { 1 } else { 0 })
+    let i_byte = BYTE as isize;
+    (bit_length / i_byte) + (if (bit_length % i_byte) > 0 { 1 } else { 0 })
 }
 
 /**
