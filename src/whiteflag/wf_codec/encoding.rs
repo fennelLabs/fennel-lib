@@ -48,7 +48,6 @@ impl Encoding {
                 encode_bdx(remove_all_invalid_hex_characters(value))
             }
             EncodingKind::LAT | EncodingKind::LONG => encode_latlong(value),
-            _ => vec![0],
         }
     }
 
