@@ -13,7 +13,7 @@ use std::sync::Mutex;
 pub struct Identity {
     pub id: [u8; 4],
     pub fingerprint: [u8; 16],
-    pub public_key: [u8; 1038],
+    pub public_key: [u8; 526],
     pub shared_secret_key: [u8; 32],
 }
 
@@ -23,7 +23,7 @@ pub struct Message {
     pub fingerprint: [u8; 16],
     pub message: [u8; 1024],
     pub signature: [u8; 1024],
-    pub public_key: [u8; 1038],
+    pub public_key: [u8; 526],
     pub recipient_id: [u8; 4],
     pub message_type: [u8; 1],
 }

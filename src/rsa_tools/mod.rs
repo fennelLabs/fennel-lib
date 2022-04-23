@@ -88,7 +88,7 @@ pub fn export_keypair_to_file(
 
 /// Read in a public key from a file.
 pub fn import_public_key_from_binary(
-    public_key_binary: &[u8; 1038],
+    public_key_binary: &[u8; 526],
 ) -> Result<RsaPublicKey, Error> {
     let public_key = RsaPublicKey::from_pkcs1_der(public_key_binary)?;
     Ok(public_key)
@@ -96,10 +96,10 @@ pub fn import_public_key_from_binary(
 
 /// Export a public key to network-usable bytes.
 #[allow(unused)]
-pub fn export_public_key_to_binary(public_key: &RsaPublicKey) -> Result<[u8; 1038], Error> {
+pub fn export_public_key_to_binary(public_key: &RsaPublicKey) -> Result<[u8; 526], Error> {
     let public_key_binary = RsaPublicKey::to_pkcs1_der(public_key).unwrap();
     let public_key_ref = public_key_binary.as_der();
-    let public_key_array: [u8; 1038] = match public_key_ref.try_into() {
+    let public_key_array: [u8; 526] = match public_key_ref.try_into() {
         Ok(v) => v,
         Err(e) => {
             println!("{}", public_key_ref.len());

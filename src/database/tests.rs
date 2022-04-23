@@ -10,7 +10,7 @@ fn test_insert_and_retrieve_message() {
         fingerprint: [0; 16],
         message: [0; 1024],
         signature: [0; 1024],
-        public_key: [0; 1038],
+        public_key: [0; 526],
         recipient_id: [2; 4],
         message_type: [0; 1],
     };
@@ -20,7 +20,7 @@ fn test_insert_and_retrieve_message() {
         Identity {
             id: [2; 4],
             fingerprint: [0; 16],
-            public_key: [0; 1038],
+            public_key: [0; 526],
             shared_secret_key: [0; 32],
         },
     );
@@ -35,7 +35,7 @@ fn test_insert_and_retrieve_identity() {
     let identity: Identity = Identity {
         id: [0; 4],
         fingerprint: [0; 16],
-        public_key: [0; 1038],
+        public_key: [0; 526],
         shared_secret_key: [0; 32],
     };
     insert_identity(db, &identity).expect("failed identity insertion");

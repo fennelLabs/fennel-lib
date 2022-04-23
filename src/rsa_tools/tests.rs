@@ -79,13 +79,13 @@ fn test_verify() {
 
 #[test]
 fn test_export_public_key_to_binary() {
-    let (_, public_key) = generate_keypair(8192);
+    let (_, public_key) = generate_keypair(4096);
     assert_eq!(export_public_key_to_binary(&public_key).is_ok(), true);
 }
 
 #[test]
 fn test_import_public_key_from_binary() {
-    let (_, public_key) = generate_keypair(8192);
+    let (_, public_key) = generate_keypair(4096);
     let key_bytes = export_public_key_to_binary(&public_key).expect("failed to decode public key");
     let new_key = import_public_key_from_binary(&key_bytes).expect("failed to encode public key");
     assert_eq!(public_key, new_key);

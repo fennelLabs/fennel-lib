@@ -33,7 +33,7 @@ pub struct FennelServerPacket {
     pub signature: [u8; 1024],
 
     /// Represents an RSA public key used to sign the message.
-    pub public_key: [u8; 1038],
+    pub public_key: [u8; 526],
 
     /// If sending a message, represents the person receiving.
     pub recipient: [u8; 4],

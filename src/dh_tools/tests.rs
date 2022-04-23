@@ -52,7 +52,7 @@ fn try_generating_key_and_encrypting_database() {
     let identity = Identity {
         id: [0; 4],
         fingerprint: [0; 16],
-        public_key: [0; 1038],
+        public_key: [0; 526],
         shared_secret_key: *shared_secret.as_bytes(),
     };
     insert_identity(identity_db, &identity).unwrap();
