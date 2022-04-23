@@ -21,8 +21,8 @@ pub struct Identity {
 pub struct Message {
     pub sender_id: [u8; 4],
     pub fingerprint: [u8; 16],
-    pub message: [u8; 1024],
-    pub signature: [u8; 1024],
+    pub message: [u8; 512],
+    pub signature: [u8; 512],
     pub public_key: [u8; 526],
     pub recipient_id: [u8; 4],
     pub message_type: [u8; 1],

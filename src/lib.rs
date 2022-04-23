@@ -27,10 +27,10 @@ pub struct FennelServerPacket {
     pub fingerprint: [u8; 16],
 
     /// If a message is being sent, this field represents the body of that message.
-    pub message: [u8; 1024],
+    pub message: [u8; 512],
 
     /// A signature used to verify that the message's sender is appropriately claimed.
-    pub signature: [u8; 1024],
+    pub signature: [u8; 512],
 
     /// Represents an RSA public key used to sign the message.
     pub public_key: [u8; 526],
