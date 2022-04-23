@@ -87,9 +87,7 @@ pub fn export_keypair_to_file(
 }
 
 /// Read in a public key from a file.
-pub fn import_public_key_from_binary(
-    public_key_binary: &[u8; 526],
-) -> Result<RsaPublicKey, Error> {
+pub fn import_public_key_from_binary(public_key_binary: &[u8; 526]) -> Result<RsaPublicKey, Error> {
     let public_key = RsaPublicKey::from_pkcs1_der(public_key_binary)?;
     Ok(public_key)
 }
