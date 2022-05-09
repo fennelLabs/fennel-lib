@@ -1,6 +1,9 @@
 use super::constants::*;
 
-//https://github.com/WhiteflagProtocol/whiteflag-java/blob/57db4b6963a4a7913afdeb596e7ce11d46d9d93b/src/main/java/org/whiteflagprotocol/java/core/WfBinaryBuffer.java#L299
+/**
+ * converts buffer into hexadecimal string
+ * java equivalent: WfBinaryBuffer.convertToHexString
+ */
 pub fn to_hex(data: &Vec<u8>) -> String {
     data.iter().flat_map(|b| convert_byte_to_hex(*b)).collect()
 }
@@ -15,7 +18,7 @@ fn convert_byte_to_hex(byte: u8) -> [char; 2] {
 
 /**
  * decodes a hexadecimal string into a buffer and includes bit_length
- * the equivalent to WfBinaryBuffer.convertToByteArray in whiteflag java
+ * java equivalent: WfBinaryBuffer.convertToByteArray
  */
 pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> (Vec<u8>, usize) {
     let buffer = hex::decode(remove_hexadecimal_prefix(data.as_ref())).unwrap();
@@ -28,6 +31,7 @@ pub fn decode_from_hexadecimal<T: AsRef<str>>(data: T) -> (Vec<u8>, usize) {
  * @param hexstr the hexadecimal string
  * @return a byte array
  * @throws IllegalArgumentException if argument is not a hexadecimal string
+ * java equivalent: WfBinaryBuffer.convertToByteArray
  */
 pub fn from_hex<T: AsRef<str>>(hex: T) -> Vec<u8> {
     let mut cleaned_hex = remove_hexadecimal_prefix(hex.as_ref()).to_string();
@@ -36,9 +40,15 @@ pub fn from_hex<T: AsRef<str>>(hex: T) -> Vec<u8> {
         cleaned_hex += "0";
     }
 
-    /* if (!HEXPATTERN.matcher(str).matches()) {
+    /*
+
+    TODO: check for invalid hex strings?
+
+    if (!HEXPATTERN.matcher(str).matches()) {
         throw new IllegalArgumentException("Invalid hexadecimal string");
-    } */
+    }
+
+    */
 
     /* Loop through hexadecimal string and take two chars at a time*/
     let data: Vec<char> = cleaned_hex.chars().into_iter().collect();
@@ -59,12 +69,16 @@ pub fn from_hex<T: AsRef<str>>(hex: T) -> Vec<u8> {
 
 /**
  * removes characters from string that are invalid in hexadecimal format
+ * java equivalent: N/A
  */
 pub fn remove_all_invalid_hex_characters<T: AsRef<str>>(data: T) -> String {
     let re = regex::Regex::new("[-+:.A-Z]").unwrap();
     re.replace_all(data.as_ref(), "").to_string()
 }
 
+/**
+ * java equivalent: N/A
+ */
 pub fn remove_hexadecimal_prefix(data: &str) -> &str {
     if data.starts_with("0x") {
         return &data[2..];
@@ -75,6 +89,7 @@ pub fn remove_hexadecimal_prefix(data: &str) -> &str {
 
 /**
  * Calculates the number of bytes required to hold the given number of bits
+ * java equivalent: WfBinaryBuffer.byteLength
  */
 pub fn byte_length(bit_length: isize) -> isize {
     let i_byte = BYTE as isize;
@@ -83,6 +98,7 @@ pub fn byte_length(bit_length: isize) -> isize {
 
 /**
  * Shortens the byte array to fit the length of the used bits
+ * java equivalent: WfBinaryBuffer.cropBits
  */
 pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
     if bit_length == 0 {
@@ -121,6 +137,7 @@ pub fn crop_bits(buffer: Vec<u8>, bit_length: isize) -> Vec<u8> {
 
 /**
  * Shifts bits in a byte array to the right modulo 8
+ * java equivalent: WfBinaryBuffer.shiftRight
  */
 pub fn shift_right(buffer: &[u8], shift: isize) -> Vec<u8> {
     if shift < 0 {
@@ -148,6 +165,7 @@ pub fn shift_right(buffer: &[u8], shift: isize) -> Vec<u8> {
 
 /**
  * Shifts bits in a byte array to the left modulo 8
+ * java equivalent: WfBinaryBuffer.shiftLeft
  */
 pub fn shift_left(buffer: &[u8], shift: isize) -> Vec<u8> {
     if shift < 0 {
@@ -179,6 +197,7 @@ pub fn shift_left(buffer: &[u8], shift: isize) -> Vec<u8> {
  * @param startBit the first bit of the subset to extract
  * @param bitLength the length of the subset, i.e. the number of bits to extract
  * @return a byte array with the extracted bits
+ * java equivalent: WfBinaryBuffer.extractBits
  */
 pub fn extract_bits(
     buffer: &[u8],
@@ -228,6 +247,7 @@ pub fn extract_bits(
  * @param nBits the number of bits to be appended from the byte array
  * @return this binary buffer
  * @throws IllegalStateException if the buffer is marked complete and cannot be altered
+ * java equivalent: WfBinaryBuffer.appendBits
  */
 pub fn append_bits(
     buffer_1: &[u8],
@@ -254,6 +274,7 @@ pub fn append_bits(
  * @param byte_array_2 byte array containing the second bitset
  * @param n_bits_2 number of bits in the second bitset, i.e. which bits to take from the second byte array
  * @return a new byte array with the concatinated bits
+ * java equivalent: WfBinaryBuffer.concatinateBits
  */
 pub fn concatinate_bits(
     byte_array_1: &[u8],
