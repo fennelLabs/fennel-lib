@@ -1,5 +1,12 @@
 use super::constants::BYTE;
 
+/**
+ * Encodes a binary string into a binary buffer
+ * @since 1.1
+ * @param binstr the binary string to encode
+ * @return a binary buffer containing the bits from the binary string
+ * java equivalent: WfMessageCodec.encodeBIN
+ */
 pub fn encode_binary<T: AsRef<str>>(binary_str: T) -> Vec<u8> {
     let bit_length: usize = binary_str.as_ref().len();
     let byte_length: usize = (bit_length / BYTE)
@@ -26,6 +33,14 @@ pub fn encode_binary<T: AsRef<str>>(binary_str: T) -> Vec<u8> {
     buffer
 }
 
+/**
+ * Decodes a binary buffer into a binary string
+ * @since 1.1
+ * @param buffer the binary buffer to decode
+ * @param bitLength the buffer length, i.e. the number of bits in the buffer to decode
+ * @return a binary string containing the bits from the binary buffer
+ * java equivalent: WfMessageCodec.decodeBIN
+ */
 pub fn decode_binary(buffer: &[u8], bit_length: usize) -> String {
     let mut data: Vec<char> = Vec::new();
 
@@ -40,5 +55,6 @@ pub fn decode_binary(buffer: &[u8], bit_length: usize) -> String {
         }
     }
 
-    data.into_iter().collect() //to lower?
+    /* TODO: may need to convert characters to lower per java implementation */
+    data.into_iter().collect()
 }
