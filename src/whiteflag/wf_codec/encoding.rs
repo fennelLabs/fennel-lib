@@ -39,6 +39,14 @@ impl Encoding {
         }
     }
 
+    /**
+     * Encodes a Whiteflag message field to compressed binary representation
+     * @since 1.1
+     * @param field the message field to be encoded
+     * @return a binary buffer with the encoded field
+     * java equivalent: WfMessageCodec.encodeField
+     */
+
     pub fn encode<T: AsRef<str> + std::fmt::Display>(&self, value: T) -> Vec<u8> {
         match &self.kind {
             EncodingKind::UTF8 => value.as_ref().as_bytes().to_vec(),
@@ -51,6 +59,14 @@ impl Encoding {
         }
     }
 
+    /**
+     * Sets the field value from a binary buffer
+     * @since 1.1
+     * @param field the field for which to decode the binary value
+     * @param buffer a binary buffer with the compressed binary encoded field data
+     * @return the uncompressed value of the field
+     * java equivalent: WfMessageCodec.decodeField
+     */
     pub fn decode(&self, buffer: Vec<u8>, bit_length: usize) -> String {
         let mut s = String::new();
 
@@ -106,6 +122,7 @@ impl Encoding {
      * Returns the bit length of a field for a given encoding and unencoded field byte length
      * @param byteLength the number of bytes in the unencoded field
      * @return the number of bits in a compressed encoded field
+     * java equivalent: Encoding.bitLength (WfMessageCodec.java)
      */
     pub fn bit_length(&self, byte_length: usize) -> usize {
         if self.is_fixed_length() {
@@ -114,6 +131,10 @@ impl Encoding {
         byte_length * self.bit_length
     }
 }
+
+/**
+ * The equivalent of following constants can be found as an enum called "Encoding" in WfMessageCodec.java
+ */
 
 pub const BIN: Encoding = Encoding {
     charset: "[01]",

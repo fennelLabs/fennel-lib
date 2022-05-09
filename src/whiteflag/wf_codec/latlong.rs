@@ -4,6 +4,10 @@ use super::hexadecimal::encode_bdx;
 
 /**
  * Encodes a datum string into binary buffer
+ * @since 1.1
+ * @param datumstr the datum string to encode
+ * @return a binary buffer containing the encoded datum
+ * java equivalent: WfMessageCodec.encodeLatLong
  */
 pub fn encode_latlong<T: AsRef<str>>(data: T) -> Vec<u8> {
     let input = data.as_ref();
