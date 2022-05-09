@@ -1,6 +1,12 @@
 use super::constants::{BYTE, HEXRADIX, QUADBIT};
 
-/// Encodes a (hexa)decimal string into a binary buffer
+/**
+ * Encodes a (hexa)decimal string into a binary buffer
+ * @since 1.1
+ * @param bdxstr the (hexa)decimal string to encode
+ * @return a binary buffer containing the encoded (hexa)decimal string
+ * java equivalent: WfMessageCodec.encodeBDX
+ */
 pub fn encode_bdx<T: AsRef<str>>(raw_input_str: T) -> Vec<u8> {
     let mut data: Vec<char> = raw_input_str.as_ref().chars().collect();
     if data.len() % 2 == 1 {
@@ -19,16 +25,29 @@ pub fn encode_bdx<T: AsRef<str>>(raw_input_str: T) -> Vec<u8> {
     buffer
 }
 
+/**
+ * java equivalent: N/A
+ */
 fn to_hex_digit(data: Option<&char>) -> u8 {
     u8::from_str_radix(&data.expect("out of bounds").to_string(), HEXRADIX as u32)
         .expect("failed to convert to digit")
 }
 
+/**
+ * java equivalent: N/A
+ */
 fn from_hex_digit(data: u8) -> char {
     std::char::from_digit(data as u32, HEXRADIX as u32).expect("failed to convert to char")
 }
 
-/// Decodes a binary buffer into a (hexa)decimal string
+/**
+ * Decodes a binary buffer into a (hexa)decimal string
+ * @since 1.1
+ * @param buffer the binary buffer containing the binary encoded (hexa)decimals to decode
+ * @param bitLength the buffer length, i.e. the number of bits in the buffer to decode
+ * @return a (hexa)decimal string with the decoded data
+ * java equivalent: WfMessageCodec.decodeBDX
+ */
 pub fn decode_bdx(buffer: Vec<u8>, bit_length: usize) -> String {
     let mut hexadecimal_string: Vec<char> = Vec::new();
 
