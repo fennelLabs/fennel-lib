@@ -4,6 +4,7 @@ pub mod dh_tools;
 pub mod fennel;
 pub mod rsa_tools;
 pub mod whiteflag;
+pub mod ipfs;
 
 use codec::{Decode, Encode};
 
@@ -13,6 +14,7 @@ pub use crate::dh_tools::*;
 pub use crate::fennel::*;
 pub use crate::rsa_tools::*;
 pub use crate::whiteflag::*;
+pub use crate::ipfs::*;
 
 /// The FennelServerPacket struct is used for carrying formatted messages between the server and client.
 #[derive(Copy, Clone, Encode, Decode, Debug)]
