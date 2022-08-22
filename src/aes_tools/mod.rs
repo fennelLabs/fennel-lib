@@ -12,8 +12,8 @@ use padding::{pad, pad_remove};
 
 /// Represents encryption and decryption resources.
 pub struct AESCipher {
-    pub encrypt_key: AesKey,
-    pub decrypt_key: AesKey,
+    encrypt_key: AesKey,
+    decrypt_key: AesKey,
 }
 
 impl AESCipher {
@@ -53,10 +53,9 @@ impl AESCipher {
         AESCipher::create(&secret)
     }
 }
-
-trait Cipher {
+pub trait Cipher {
     fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8>;
-    fn decrypt(&self, ciphertext: &[u8]) -> Vec<u8>;
+    fn decrypt<T: AsRef<[u8]>>(&self, ciphertext: T) -> Vec<u8>;
 }
 
 impl Cipher for AESCipher {
@@ -64,25 +63,25 @@ impl Cipher for AESCipher {
         aes_encrypt(&self.encrypt_key, plaintext)
     }
 
-    fn decrypt(&self, ciphertext: &[u8]) -> Vec<u8> {
-        aes_decrypt(&self.decrypt_key, ciphertext)
+    fn decrypt<T: AsRef<[u8]>>(&self, ciphertext: T) -> Vec<u8> {
+        aes_decrypt(&self.decrypt_key, ciphertext.as_ref())
     }
 }
 
-pub fn generate_keys(secret: &[u8]) -> (AesKey, AesKey) {
+fn generate_keys(secret: &[u8]) -> (AesKey, AesKey) {
     let e_aeskey = AesKey::new_encrypt(secret).expect("failed to generate encrypt key");
     let d_aeskey = AesKey::new_decrypt(secret).expect("failed to generate decrypt key");
     (e_aeskey, d_aeskey)
 }
 
-pub fn aes_encrypt<T: AsRef<[u8]>>(key: &AesKey, plaintext: T) -> Vec<u8> {
+fn aes_encrypt<T: AsRef<[u8]>>(key: &AesKey, plaintext: T) -> Vec<u8> {
     let buffer = pad(plaintext.as_ref());
     let iv = iv_helpers::generate_random_iv();
     let ciphertext = aes_crypt(key, iv.clone().as_mut(), &buffer, Mode::Encrypt);
     iv_helpers::append_iv_to_ciphertext(iv, ciphertext)
 }
 
-pub fn aes_decrypt(key: &AesKey, ciphertext: &[u8]) -> Vec<u8> {
+fn aes_decrypt(key: &AesKey, ciphertext: &[u8]) -> Vec<u8> {
     let (iv, cipher) = iv_helpers::extract_iv_and_ciphertext(ciphertext);
     let mut plaintext = aes_crypt(key, iv.to_owned().as_mut(), cipher, Mode::Decrypt);
     pad_remove(plaintext.as_mut());
