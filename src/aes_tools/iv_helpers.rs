@@ -21,9 +21,9 @@ pub fn append_iv_to_ciphertext(mut iv: Vec<u8>, mut ciphertext: Vec<u8>) -> Vec<
 }
 
 /// Breaks IV from ciphertext for later processing.
-pub fn extract_iv_and_ciphertext(data: Vec<u8>) -> (Vec<u8>, Vec<u8>) {
-    let iv = data[..IV_LENGTH].into();
-    let cipher = data[IV_LENGTH..].into();
+pub fn extract_iv_and_ciphertext(data: &[u8]) -> (&[u8], &[u8]) {
+    let iv = &data[..IV_LENGTH];
+    let cipher = &data[IV_LENGTH..];
 
     (iv, cipher)
 }
