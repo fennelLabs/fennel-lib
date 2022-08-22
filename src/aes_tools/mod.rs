@@ -56,7 +56,7 @@ impl AESCipher {
 
 trait Cipher {
     fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8>;
-    fn decrypt(&self, ciphertext: &[u8]) -> String;
+    fn decrypt(&self, ciphertext: &[u8]) -> Vec<u8>;
 }
 
 impl Cipher for AESCipher {
@@ -64,7 +64,7 @@ impl Cipher for AESCipher {
         aes_encrypt(&self.encrypt_key, plaintext)
     }
 
-    fn decrypt(&self, ciphertext: &[u8]) -> String {
+    fn decrypt(&self, ciphertext: &[u8]) -> Vec<u8> {
         aes_decrypt(&self.decrypt_key, ciphertext)
     }
 }
@@ -82,10 +82,11 @@ pub fn aes_encrypt<T: AsRef<[u8]>>(key: &AesKey, plaintext: T) -> Vec<u8> {
     iv_helpers::append_iv_to_ciphertext(iv, ciphertext)
 }
 
-pub fn aes_decrypt(key: &AesKey, ciphertext: &[u8]) -> String {
+pub fn aes_decrypt(key: &AesKey, ciphertext: &[u8]) -> Vec<u8> {
     let (iv, cipher) = iv_helpers::extract_iv_and_ciphertext(ciphertext);
-    let plaintext = aes_crypt(key, iv.to_owned().as_mut(), cipher, Mode::Decrypt);
-    String::from_utf8_lossy(pad_remove(&plaintext)).to_string()
+    let mut plaintext = aes_crypt(key, iv.to_owned().as_mut(), cipher, Mode::Decrypt);
+    pad_remove(plaintext.as_mut());
+    plaintext
 }
 
 fn aes_crypt(key: &AesKey, iv: &mut [u8], input: &[u8], mode: Mode) -> Vec<u8> {

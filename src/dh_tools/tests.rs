@@ -26,7 +26,7 @@ fn try_generating_key_and_encrypting() {
     let ciphertext = aes_encrypt(&cipher.encrypt_key, String::from("This is a test."));
     let plaintext = aes_decrypt(&cipher.decrypt_key, &ciphertext);
 
-    assert_eq!(String::from("This is a test."), plaintext);
+    assert_eq!("This is a test.", String::from_utf8_lossy(&plaintext));
 }
 
 #[test]
@@ -64,5 +64,5 @@ fn try_generating_key_and_encrypting_database() {
     let ciphertext = aes_encrypt(&cipher.encrypt_key, String::from("This is a test."));
     let plaintext = aes_decrypt(&cipher.decrypt_key, &ciphertext);
 
-    assert_eq!(String::from("This is a test."), plaintext);
+    assert_eq!("This is a test.", String::from_utf8_lossy(&plaintext));
 }

@@ -17,19 +17,19 @@ fn test_padding_creates_multiple_16() {
 #[test]
 fn test_padding_returns_original_vector() {
     let buffer = vec![0; 13];
-    let padded_buffer = padding::pad(&buffer);
-    let buffer_returned = padding::pad_remove(&padded_buffer);
+    let mut padded_buffer = padding::pad(&buffer);
+    padding::pad_remove(padded_buffer.as_mut());
 
-    assert_eq!(buffer, buffer_returned);
+    assert_eq!(buffer, padded_buffer);
 }
 
 #[test]
 fn test_padding_returns_original_vector_when_multiple_of_16() {
     let buffer = vec![45; 32];
-    let padded_buffer = padding::pad(&buffer);
-    let buffer_returned = padding::pad_remove(&padded_buffer);
+    let mut padded_buffer = padding::pad(&buffer);
+    padding::pad_remove(padded_buffer.as_mut());
 
-    assert_eq!(buffer, buffer_returned);
+    assert_eq!(buffer, padded_buffer);
 }
 
 #[test]
@@ -59,11 +59,11 @@ fn test_aes_key_load_from_file() {
     let cipher_from_file = AESCipher::from_file(path);
     let plaintext = cipher_from_file.decrypt(&ciphertext);
 
-    assert_eq!(MESSAGE, plaintext)
+    assert_eq!(MESSAGE, String::from_utf8_lossy(&plaintext))
 }
 
 fn test_cipher(cipher: AESCipher) {
     let ciphertext: Vec<u8> = cipher.encrypt(MESSAGE);
     let plaintext = cipher.decrypt(&ciphertext);
-    assert_eq!(MESSAGE, plaintext);
+    assert_eq!(MESSAGE, String::from_utf8_lossy(&plaintext));
 }
