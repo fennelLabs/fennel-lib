@@ -57,13 +57,13 @@ fn test_aes_key_load_from_file() {
     let ciphertext = cipher.encrypt(MESSAGE);
 
     let cipher_from_file = AESCipher::from_file(path);
-    let plaintext = cipher_from_file.decrypt(ciphertext);
+    let plaintext = cipher_from_file.decrypt(&ciphertext);
 
     assert_eq!(MESSAGE, plaintext)
 }
 
 fn test_cipher(cipher: AESCipher) {
     let ciphertext: Vec<u8> = cipher.encrypt(MESSAGE);
-    let plaintext = cipher.decrypt(ciphertext);
+    let plaintext = cipher.decrypt(&ciphertext);
     assert_eq!(MESSAGE, plaintext);
 }

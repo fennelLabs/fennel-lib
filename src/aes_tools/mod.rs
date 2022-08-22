@@ -55,16 +55,16 @@ impl AESCipher {
 }
 
 trait Cipher {
-    fn encrypt<T: AsRef<str>>(&self, plaintext: T) -> Vec<u8>;
-    fn decrypt(&self, ciphertext: Vec<u8>) -> String;
+    fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8>;
+    fn decrypt(&self, ciphertext: &[u8]) -> String;
 }
 
 impl Cipher for AESCipher {
-    fn encrypt<T: AsRef<str>>(&self, plaintext: T) -> Vec<u8> {
+    fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8> {
         aes_encrypt(&self.encrypt_key, plaintext)
     }
 
-    fn decrypt(&self, ciphertext: Vec<u8>) -> String {
+    fn decrypt(&self, ciphertext: &[u8]) -> String {
         aes_decrypt(&self.decrypt_key, ciphertext)
     }
 }
@@ -75,20 +75,20 @@ pub fn generate_keys(secret: &[u8]) -> (AesKey, AesKey) {
     (e_aeskey, d_aeskey)
 }
 
-pub fn aes_encrypt<T: AsRef<str>>(key: &AesKey, plaintext: T) -> Vec<u8> {
-    let buffer = pad(plaintext.as_ref().as_bytes());
+pub fn aes_encrypt<T: AsRef<[u8]>>(key: &AesKey, plaintext: T) -> Vec<u8> {
+    let buffer = pad(plaintext.as_ref());
     let iv = iv_helpers::generate_random_iv();
-    let ciphertext = aes_crypt(key, &mut iv.clone(), buffer, Mode::Encrypt);
+    let ciphertext = aes_crypt(key, iv.clone().as_mut(), &buffer, Mode::Encrypt);
     iv_helpers::append_iv_to_ciphertext(iv, ciphertext)
 }
 
-pub fn aes_decrypt(key: &AesKey, ciphertext: Vec<u8>) -> String {
-    let (mut iv, cipher) = iv_helpers::extract_iv_and_ciphertext(ciphertext);
-    let plaintext = aes_crypt(key, &mut iv, cipher, Mode::Decrypt);
+pub fn aes_decrypt(key: &AesKey, ciphertext: &[u8]) -> String {
+    let (iv, cipher) = iv_helpers::extract_iv_and_ciphertext(ciphertext);
+    let plaintext = aes_crypt(key, iv.to_owned().as_mut(), cipher, Mode::Decrypt);
     String::from_utf8_lossy(pad_remove(&plaintext)).to_string()
 }
 
-fn aes_crypt(key: &AesKey, iv: &mut [u8], input: Vec<u8>, mode: Mode) -> Vec<u8> {
+fn aes_crypt(key: &AesKey, iv: &mut [u8], input: &[u8], mode: Mode) -> Vec<u8> {
     let mut output = vec![0u8; input.len()];
     aes_ige(&input, &mut output, key, iv, mode);
     output
