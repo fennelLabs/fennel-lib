@@ -8,7 +8,7 @@ pub struct AES256CTR<'a> {
 }
 
 impl<'a> AES256CTR<'a> {
-    pub fn new(key: &'a [u8], iv: Option<&'a [u8]>) -> AES256CTR {
+    pub fn new(key: &'a [u8], iv: Option<&'a [u8]>) -> AES256CTR<'a> {
         AES256CTR {
             cipher: Cipher::aes_256_ctr(),
             key,
