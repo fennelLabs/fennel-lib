@@ -67,3 +67,14 @@ fn test_cipher(cipher: AESCipher) {
     let plaintext = cipher.decrypt(&ciphertext);
     assert_eq!(MESSAGE, String::from_utf8_lossy(&plaintext));
 }
+
+#[test]
+fn aes_with_iv() {
+    let iv = iv_helpers::generate_random_iv();
+    let cipher = AESCipher::new().set_iv(iv);
+    let ciphertext = cipher.encrypt(MESSAGE);
+    assert_eq!(
+        MESSAGE,
+        String::from_utf8_lossy(&cipher.decrypt(ciphertext))
+    );
+}
