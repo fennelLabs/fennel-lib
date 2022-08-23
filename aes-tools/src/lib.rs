@@ -11,8 +11,8 @@ mod padding;
 
 use padding::{pad, pad_remove};
 
-pub use iv_helpers::*;
 pub use ctr::AES256CTR;
+pub use iv_helpers::*;
 
 /// Represents encryption and decryption resources.
 pub struct AESCipher {
