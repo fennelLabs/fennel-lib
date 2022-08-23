@@ -10,6 +10,7 @@ pub fn generate_random_buffer(length: usize) -> Vec<u8> {
 }
 
 /// Generates a random initialization vector for AES use.
+/// Using IV length of 32
 pub fn generate_random_iv() -> Vec<u8> {
     generate_random_buffer(IV_LENGTH)
 }

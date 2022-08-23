@@ -11,6 +11,7 @@ mod padding;
 
 use padding::{pad, pad_remove};
 
+pub use iv_helpers::*;
 pub use ctr::AES256CTR;
 
 /// Represents encryption and decryption resources.
