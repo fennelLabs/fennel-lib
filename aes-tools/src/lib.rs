@@ -4,11 +4,14 @@ use openssl::symm::Mode;
 #[cfg(test)]
 mod tests;
 
+mod ctr;
 mod iv_helpers;
 mod key_management;
 mod padding;
 
 use padding::{pad, pad_remove};
+
+pub use ctr::AES256CTR;
 
 /// Represents encryption and decryption resources.
 pub struct AESCipher {
@@ -76,12 +79,12 @@ impl AESCipher {
     }
 }
 
-pub trait Cipher {
+pub trait FennelCipher {
     fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8>;
     fn decrypt<T: AsRef<[u8]>>(&self, ciphertext: T) -> Vec<u8>;
 }
 
-impl Cipher for AESCipher {
+impl FennelCipher for AESCipher {
     fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8> {
         aes_encrypt(&self.encrypt_key, plaintext)
     }
@@ -91,7 +94,7 @@ impl Cipher for AESCipher {
     }
 }
 
-impl Cipher for AESCipherWithIV {
+impl FennelCipher for AESCipherWithIV {
     fn encrypt<T: AsRef<[u8]>>(&self, plaintext: T) -> Vec<u8> {
         let buffer = pad(plaintext.as_ref());
         let ciphertext = aes_crypt(
