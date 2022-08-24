@@ -1,8 +1,8 @@
 pub mod database;
 pub mod dh_tools;
 pub mod fennel;
-pub mod rsa_tools;
 pub mod ipfs;
+pub mod rsa_tools;
 
 use codec::{Decode, Encode};
 

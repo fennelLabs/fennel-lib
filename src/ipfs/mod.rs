@@ -7,8 +7,7 @@ use std::io::Read;
 
 pub fn add_file(filename: &str) {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
-    let file_content =
-        fs::read_to_string(filename).expect("Something went wrong reading the file");
+    let file_content = fs::read_to_string(filename).expect("Something went wrong reading the file");
     let mut data = file_content.as_bytes();
 
     let mut easy = Easy::new();
