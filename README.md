@@ -6,6 +6,7 @@ To run tests, run
 ```bash
 $ ./scripts/setup.sh
 $ ./scripts/build-test.sh
+```
 
 # Dependencies
 Prior to testing, you'll need to install OpenSSL and LLVM, as well as assorted other dependencies on Linux.
