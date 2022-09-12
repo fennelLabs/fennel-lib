@@ -47,4 +47,4 @@ jobs:
 
       - name: Test Build
         run: >
-          cargo test --workspace --lib -- --test-threads 1
+          cargo t
