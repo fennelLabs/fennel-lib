@@ -1,4 +1,4 @@
-use crate::rsa_tools::pk_as_u8::FennelRSAKeyPair;
+use crate::rsa_tools::pk_as_u8::FennelRSAPublicKey;
 
 use super::*;
 use lazy_static::lazy_static;
@@ -74,8 +74,8 @@ fn test_verify() {
 #[test]
 fn test_import_public_key_from_binary() {
     let public_key = &KEYPAIR_4096.1;
-    let pk = FennelRSAKeyPair::new(public_key.clone()).expect("failed to decode public key");
+    let pk = FennelRSAPublicKey::new(public_key.clone()).expect("failed to decode public key");
     let key_bytes = pk.as_u8();
-    let new_key = FennelRSAKeyPair::from_u8(key_bytes).expect("failed to encode public key");
+    let new_key = FennelRSAPublicKey::from_u8(key_bytes).expect("failed to encode public key");
     assert_eq!(public_key, &new_key.pk);
 }

@@ -3,12 +3,12 @@ use rsa::{
     RsaPublicKey,
 };
 
-pub struct FennelRSAKeyPair {
+pub struct FennelRSAPublicKey {
     pkcs1: RsaPublicKeyDocument,
     pub pk: RsaPublicKey,
 }
 
-impl FennelRSAKeyPair {
+impl FennelRSAPublicKey {
     pub fn new(pk: RsaPublicKey) -> Result<Self, rsa::pkcs1::Error> {
         Ok(Self {
             pkcs1: pk.to_pkcs1_der()?,
