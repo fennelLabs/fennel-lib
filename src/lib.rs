@@ -9,8 +9,8 @@ pub use crate::database::*;
 pub use crate::fennel::*;
 pub use crate::rsa_tools::*;
 pub use aes_tools::*;
-pub use ipfs::*;
 pub use dh_tools::*;
+pub use ipfs::*;
 
 /// The FennelServerPacket struct is used for carrying formatted messages between the server and client.
 #[derive(Copy, Clone, Encode, Decode, Debug)]

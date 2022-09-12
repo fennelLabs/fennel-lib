@@ -1,11 +1,8 @@
 use std::sync::Arc;
 
-use fennel_lib::{
-    get_identity_database_handle,
-    insert_identity, retrieve_identity, Identity,
-};
 use crate::{get_session_public_key, get_session_secret, get_shared_secret};
 use aes_tools::{AESCipher, FennelCipher};
+use fennel_lib::{get_identity_database_handle, insert_identity, retrieve_identity, Identity};
 
 #[cfg(test)]
 #[test]
