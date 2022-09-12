@@ -5,7 +5,7 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
-members = ["aes-tools"]
+members = ["aes_tools", "dh_tools"]
 
 
 [dependencies]
@@ -26,9 +26,8 @@ log = "0.4.14"
 hex = "0.4.3"
 thiserror = "1.0.30"
 parking_lot = "0.12.0"
-x25519-dalek = "2.0.0-pre.1"
-rand_core = "0.6.3"
 sp-keyring = "5.0.0"
 regex = "1.5.5"
 curl = "0.4.43"
-aes-tools = { path = "aes-tools" }
+aes_tools = { path = "aes_tools" }
+dh_tools = { path = "dh_tools" }
