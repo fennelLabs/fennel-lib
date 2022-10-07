@@ -2,7 +2,7 @@
 mod tests;
 
 use curl::easy::Easy;
-use std::{io::Read, env};
+use std::{env, io::Read};
 
 pub fn add_file(file_content: &str) {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
@@ -30,8 +30,15 @@ pub fn add_file(file_content: &str) {
 pub fn get_file(cid: &str) {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-get
     let mut easy = Easy::new();
-    easy.url(format!("http://{}:5001/api/v0/block/get?arg={}", env::var("IPFS_HOST").unwrap(), cid).as_str())
-        .unwrap();
+    easy.url(
+        format!(
+            "http://{}:5001/api/v0/block/get?arg={}",
+            env::var("IPFS_HOST").unwrap(),
+            cid
+        )
+        .as_str(),
+    )
+    .unwrap();
     easy.post(true).unwrap();
 
     let mut transfer = easy.transfer();
@@ -47,8 +54,15 @@ pub fn get_file(cid: &str) {
 pub fn del_file(cid: &str) {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-rm
     let mut easy = Easy::new();
-    easy.url(format!("http://{}:5001/api/v0/block/rm?arg={}", env::var("IPFS_HOST").unwrap(), cid).as_str())
-        .unwrap();
+    easy.url(
+        format!(
+            "http://{}:5001/api/v0/block/rm?arg={}",
+            env::var("IPFS_HOST").unwrap(),
+            cid
+        )
+        .as_str(),
+    )
+    .unwrap();
     easy.post(true).unwrap();
 
     let transfer = easy.transfer();
