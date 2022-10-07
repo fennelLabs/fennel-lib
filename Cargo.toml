@@ -7,6 +7,8 @@ edition = "2021"
 [workspace]
 members = ["aes_tools", "dh_tools"]
 
+[env]
+IPFS_HOST = "127.0.0.1"
 
 [dependencies]
 rsa = "0.5.0"
