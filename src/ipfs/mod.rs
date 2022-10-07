@@ -1,68 +1,38 @@
 #[cfg(test)]
 mod tests;
 
-use curl::easy::Easy;
-use std::{env, io::Read};
-
-pub fn add_file(file_content: &str) {
+pub async fn add_file(file_content: &str) -> String {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
-    let mut data = file_content.as_bytes();
+    let client = reqwest::Client::new();
 
-    let mut easy = Easy::new();
-    let url_string = format!("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false");
-    easy.url(&url_string).unwrap();
-    easy.post(true).unwrap();
-    easy.post_field_size(data.len() as u64).unwrap();
-
-    let mut transfer = easy.transfer();
-    transfer
-        .read_function(|buf| Ok(data.read(buf).unwrap_or(0)))
-        .unwrap();
-    transfer
-        .write_function(|buf| {
-            println!("{}", String::from_utf8(Vec::from(buf)).unwrap());
-            Ok(buf.len())
-        })
-        .unwrap();
-    transfer.perform().unwrap();
+    let res = client.post("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false").body(file_content.to_string()).send().await.unwrap().text().await.unwrap();
+    res
 }
 
-pub fn get_file(cid: &str) {
+pub async fn get_file(cid: &str) -> String {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-get
-    let mut easy = Easy::new();
-    easy.url(
-        format!(
-            "http://127.0.0.1:5001/api/v0/block/get?arg={}",
-            cid
-        )
-        .as_str(),
-    )
-    .unwrap();
-    easy.post(true).unwrap();
+    let client = reqwest::Client::new();
 
-    let mut transfer = easy.transfer();
-    transfer
-        .write_function(|buf| {
-            println!("{}", String::from_utf8(Vec::from(buf)).unwrap());
-            Ok(buf.len())
-        })
+    let res = client
+        .post(format!("http://127.0.0.1:5001/api/v0/block/get?arg={}", cid).as_str())
+        .send()
+        .await
+        .unwrap()
+        .text()
+        .await
         .unwrap();
-    transfer.perform().unwrap();
+    res
 }
 
-pub fn del_file(cid: &str) {
+pub async fn del_file(cid: &str) -> bool {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-rm
-    let mut easy = Easy::new();
-    easy.url(
-        format!(
-            "http://127.0.0.1:5001/api/v0/block/rm?arg={}",
-            cid
-        )
-        .as_str(),
-    )
-    .unwrap();
-    easy.post(true).unwrap();
+    let client = reqwest::Client::new();
 
-    let transfer = easy.transfer();
-    transfer.perform().unwrap();
+    let res = client
+        .post(format!("http://127.0.0.1:5001/api/v0/block/rm?arg={}", cid).as_str())
+        .send()
+        .await
+        .unwrap()
+        .status();
+    res.is_success()
 }
