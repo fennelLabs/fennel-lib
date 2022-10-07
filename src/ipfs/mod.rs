@@ -8,7 +8,7 @@ pub async fn add_file(file_content: &str) -> String {
     let client = reqwest::Client::new();
 
     let mut map = HashMap::new();
-    map.insert("body", file_content);
+    map.insert("data", file_content);
 
     let res = client.post("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false")
         .json(&map)
