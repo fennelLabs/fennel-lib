@@ -35,6 +35,7 @@ impl AESCipher {
         }
     }
 
+    #[allow(unused)]
     fn create_with_iv(secret: &[u8], iv: Vec<u8>) -> AESCipherWithIV {
         AESCipherWithIV {
             cipher: AESCipher::create(secret),

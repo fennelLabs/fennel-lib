@@ -1,17 +1,18 @@
-use std::collections::HashMap;
-
 #[cfg(test)]
 mod tests;
+use reqwest::Body;
+use tokio::fs::File;
+use tokio_util::codec::{BytesCodec, FramedRead};
 
-pub async fn add_file(file_content: &str) -> String {
+pub async fn add_file(filename: &str) -> String {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
     let client = reqwest::Client::new();
 
-    let mut map = HashMap::new();
-    map.insert("data", file_content);
+    let file = File::open(filename).await.unwrap();
+    let body = Body::wrap_stream(FramedRead::new(file, BytesCodec::new()));
 
     let res = client.post("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false")
-        .json(&map)
+        .body(body)
         .send()
         .await
         .unwrap()
