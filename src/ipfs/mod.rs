@@ -2,12 +2,10 @@
 mod tests;
 
 use curl::easy::Easy;
-use std::fs;
 use std::io::Read;
 
-pub fn add_file(filename: &str) {
+pub fn add_file(file_content: &str) {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
-    let file_content = fs::read_to_string(filename).expect("Something went wrong reading the file");
     let mut data = file_content.as_bytes();
 
     let mut easy = Easy::new();
@@ -19,6 +17,12 @@ pub fn add_file(filename: &str) {
     transfer
         .read_function(|buf| Ok(data.read(buf).unwrap_or(0)))
         .unwrap();
+    transfer
+        .write_function(|buf| {
+            println!("{}", String::from_utf8(Vec::from(buf)).unwrap());
+            Ok(buf.len())
+        })
+        .unwrap();
     transfer.perform().unwrap();
 }
 
@@ -29,7 +33,13 @@ pub fn get_file(cid: &str) {
         .unwrap();
     easy.post(true).unwrap();
 
-    let transfer = easy.transfer();
+    let mut transfer = easy.transfer();
+    transfer
+        .write_function(|buf| {
+            println!("{}", String::from_utf8(Vec::from(buf)).unwrap());
+            Ok(buf.len())
+        })
+        .unwrap();
     transfer.perform().unwrap();
 }
 
