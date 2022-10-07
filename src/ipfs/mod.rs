@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[cfg(test)]
 mod tests;
 
@@ -5,7 +7,17 @@ pub async fn add_file(file_content: &str) -> String {
     // https://docs.ipfs.io/reference/http/api/#api-v0-block-put
     let client = reqwest::Client::new();
 
-    let res = client.post("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false").body(file_content.to_string()).send().await.unwrap().text().await.unwrap();
+    let mut map = HashMap::new();
+    map.insert("body", file_content);
+
+    let res = client.post("http://127.0.0.1:5001/api/v0/block/put?cid-codec=raw&mhtype=sha2-256&mhlen=-1&pin=false&allow-big-block=false")
+        .json(&map)
+        .send()
+        .await
+        .unwrap()
+        .text()
+        .await
+        .unwrap();
     res
 }
 
