@@ -1,11 +1,9 @@
-pub mod database;
 pub mod fennel;
 pub mod ipfs;
 pub mod rsa_tools;
 
 use codec::{Decode, Encode};
 
-pub use crate::database::*;
 pub use crate::fennel::*;
 pub use crate::rsa_tools::*;
 pub use aes_tools::*;
