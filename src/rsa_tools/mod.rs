@@ -13,6 +13,7 @@ use std::hash::Hash;
 
 mod pk_as_u8;
 
+pub use pk_as_u8::FennelRSAPrivateKey;
 pub use pk_as_u8::FennelRSAPublicKey;
 
 pub fn hash<H: Hash + AsRef<[u8]>>(text: H) -> Vec<u8> {

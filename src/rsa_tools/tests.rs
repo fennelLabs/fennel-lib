@@ -79,3 +79,12 @@ fn test_import_public_key_from_binary() {
     let new_key = FennelRSAPublicKey::from_u8(key_bytes).expect("failed to encode public key");
     assert_eq!(public_key, &new_key.pk);
 }
+
+#[test]
+fn test_import_private_key_from_binary() {
+    let private_key = &KEYPAIR_4096.0;
+    let pk = FennelRSAPrivateKey::new(private_key.clone()).expect("failed to decode private key");
+    let key_bytes = pk.as_u8();
+    let new_key = FennelRSAPrivateKey::from_u8(key_bytes).expect("failed to encode private key");
+    assert_eq!(private_key, &new_key.pk);
+}
