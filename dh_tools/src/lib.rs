@@ -6,7 +6,7 @@ use x25519_dalek::{PublicKey, SharedSecret, StaticSecret};
 
 /// Generates a static secret for the current session, usable in Diffie-Hellman.
 pub fn get_session_secret() -> StaticSecret {
-    StaticSecret::new(OsRng)
+    StaticSecret::random_from_rng(OsRng)
 }
 
 /// Based on the user's static secret, generate a public key that can be used to generate encryption resources.
