@@ -1,25 +1,26 @@
 use rsa::{
     pkcs1::{
-        FromRsaPrivateKey, FromRsaPublicKey, RsaPrivateKeyDocument, RsaPublicKeyDocument,
-        ToRsaPrivateKey, ToRsaPublicKey,
+        DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey,
     },
     RsaPrivateKey, RsaPublicKey,
 };
 
 pub struct FennelRSAPublicKey {
-    pkcs1: RsaPublicKeyDocument,
+    pkcs1: Vec<u8>,
     pub pk: RsaPublicKey,
 }
 
 pub struct FennelRSAPrivateKey {
-    pub pkcs1: RsaPrivateKeyDocument,
+    pub pkcs1: Vec<u8>,
     pub pk: RsaPrivateKey,
 }
 
 impl FennelRSAPrivateKey {
     pub fn new(pk: RsaPrivateKey) -> Result<Self, rsa::pkcs1::Error> {
+        let doc = pk.to_pkcs1_der()?;
+        let pkcs1 = doc.as_bytes().to_vec();
         Ok(Self {
-            pkcs1: pk.to_pkcs1_der()?,
+            pkcs1,
             pk,
         })
     }
@@ -31,14 +32,16 @@ impl FennelRSAPrivateKey {
     }
 
     pub fn as_u8(&self) -> &[u8] {
-        self.pkcs1.as_der()
+        &self.pkcs1
     }
 }
 
 impl FennelRSAPublicKey {
     pub fn new(pk: RsaPublicKey) -> Result<Self, rsa::pkcs1::Error> {
+        let doc = pk.to_pkcs1_der()?;
+        let pkcs1 = doc.as_bytes().to_vec();
         Ok(Self {
-            pkcs1: pk.to_pkcs1_der()?,
+            pkcs1,
             pk,
         })
     }
@@ -50,6 +53,6 @@ impl FennelRSAPublicKey {
     }
 
     pub fn as_u8(&self) -> &[u8] {
-        self.pkcs1.as_der()
+        &self.pkcs1
     }
 }

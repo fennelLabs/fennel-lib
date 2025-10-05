@@ -8,8 +8,9 @@ edition = "2021"
 members = ["aes_tools", "dh_tools"]
 
 [dependencies]
-rsa = "0.5.0"
+rsa = "0.9.8"
 rand = "0.8.4"
+sha2 = "0.10.0"
 sha3 = "0.10.0"
 tokio = { version = "1", features = ["full"] }
 tokio-util = { version = "0.6", features = ["codec"] }
