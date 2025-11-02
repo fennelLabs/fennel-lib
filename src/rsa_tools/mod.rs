@@ -2,15 +2,15 @@
 mod tests;
 
 use rand::rngs::OsRng;
+use rsa::pkcs1v15::Pkcs1v15Encrypt;
 use rsa::pkcs8::{Error, LineEnding};
-use rsa::{
+use rsa::signature::{SignatureEncoding, Signer, Verifier};
+pub use rsa::{
     pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey},
     RsaPrivateKey, RsaPublicKey,
 };
-use rsa::pkcs1v15::Pkcs1v15Encrypt;
-use rsa::signature::{Signer, SignatureEncoding, Verifier};
-use sha2::{Sha256, Digest as Sha2Digest};
-use sha3::{Sha3_512, Digest as Sha3Digest};
+use sha2::{Digest as Sha2Digest, Sha256};
+use sha3::{Digest as Sha3Digest, Sha3_512};
 use std::hash::Hash;
 
 mod pk_as_u8;
@@ -64,7 +64,12 @@ pub fn sign(private_key: &RsaPrivateKey, message: Vec<u8>) -> Vec<u8> {
 pub fn verify(public_key: &RsaPublicKey, message: Vec<u8>, signature: Vec<u8>) -> bool {
     let verifying_key = rsa::pkcs1v15::VerifyingKey::<Sha256>::new_unprefixed(public_key.clone());
     let digest = hash(&message);
-    verifying_key.verify(&digest, &rsa::pkcs1v15::Signature::try_from(signature.as_slice()).unwrap()).is_ok()
+    verifying_key
+        .verify(
+            &digest,
+            &rsa::pkcs1v15::Signature::try_from(signature.as_slice()).unwrap(),
+        )
+        .is_ok()
 }
 
 /// Read in a keypair from a file.

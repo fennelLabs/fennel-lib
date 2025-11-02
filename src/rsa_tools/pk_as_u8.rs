@@ -1,7 +1,5 @@
 use rsa::{
-    pkcs1::{
-        DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey,
-    },
+    pkcs1::{DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey},
     RsaPrivateKey, RsaPublicKey,
 };
 
@@ -19,10 +17,7 @@ impl FennelRSAPrivateKey {
     pub fn new(pk: RsaPrivateKey) -> Result<Self, rsa::pkcs1::Error> {
         let doc = pk.to_pkcs1_der()?;
         let pkcs1 = doc.as_bytes().to_vec();
-        Ok(Self {
-            pkcs1,
-            pk,
-        })
+        Ok(Self { pkcs1, pk })
     }
 
     /// import private key from bytes
@@ -40,10 +35,7 @@ impl FennelRSAPublicKey {
     pub fn new(pk: RsaPublicKey) -> Result<Self, rsa::pkcs1::Error> {
         let doc = pk.to_pkcs1_der()?;
         let pkcs1 = doc.as_bytes().to_vec();
-        Ok(Self {
-            pkcs1,
-            pk,
-        })
+        Ok(Self { pkcs1, pk })
     }
 
     /// import public key from bytes
