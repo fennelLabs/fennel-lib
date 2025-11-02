@@ -8,8 +8,9 @@ edition = "2021"
 members = ["aes_tools", "dh_tools"]
 
 [dependencies]
-rsa = "0.5.0"
+rsa = "0.9.8"
 rand = "0.8.4"
+sha2 = "0.10.0"
 sha3 = "0.10.0"
 tokio = { version = "1", features = ["full"] }
 tokio-util = { version = "0.6", features = ["codec"] }
@@ -17,15 +18,14 @@ base64 = "0.13.0"
 pkcs1 = "0.3.3"
 bincode = "1.3.3"
 slice-of-array = "0.3.1"
-codec = { version = "2.3.1", package = "parity-scale-codec", features = ["derive"] }
+codec = { version = "3.7.5", package = "parity-scale-codec", features = ["derive"] }
 openssl = "0.10.60"
-subxt = "0.17.0"
+subxt = { version = "0.44.0", optional = true }
 env_logger = "0.9.0"
 log = "0.4.14"
 hex = "0.4.3"
 thiserror = "1.0.30"
 parking_lot = "0.12.0"
-sp-keyring = "5.0.0"
 regex = "1.5.5"
 curl = "0.4.43"
 rand_core = "0.6.3"
@@ -35,3 +35,7 @@ reqwest = { version = "0.11", features = ["json", "stream", "blocking", "multipa
 
 [dev-dependencies]
 lazy_static = "1.4.0"
+
+[features]
+fennel-substrate = ["subxt"]
+default = []

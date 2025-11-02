@@ -7,5 +7,17 @@ edition = "2021"
 
 [dependencies]
 aes_tools = { path = "../aes_tools" }
+
+# X25519 (legacy/internal use)
 x25519-dalek = { version = "2.0.1", features=["static_secrets"] }
-rand_core = { version = "0.6.3", features = ["getrandom"] }
+
+# BrainpoolP256r1 (Whiteflag compliance - RFC 5639)
+bp256 = { version = "0.14.0-rc.0", default-features = false, features = ["alloc", "arithmetic"] }
+elliptic-curve = { version = "0.14.0-rc.16", features = ["sec1"] }
+
+# RNG (upgraded to 0.9 for brainpool compatibility)
+rand_core = { version = "0.9", features = ["std", "os_rng"] }
+getrandom = "0.2"
+
+# Memory safety
+zeroize = { version = "1.8", features = ["derive"] }
