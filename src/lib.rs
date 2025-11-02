@@ -1,9 +1,11 @@
+#[cfg(feature = "fennel-substrate")]
 pub mod fennel;
 pub mod ipfs;
 pub mod rsa_tools;
 
 use codec::{Decode, Encode};
 
+#[cfg(feature = "fennel-substrate")]
 pub use crate::fennel::*;
 pub use crate::rsa_tools::*;
 pub use aes_tools::*;
